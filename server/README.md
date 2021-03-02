@@ -24,10 +24,21 @@ Using custom port:
   go run main.go -httpPort {your Port number}
 ```
 
-### Accessing static test data
+### Accessing Static Test Data
 
 Open `http://localhost:3000/test´ using your browser or using the command line:
 
 ```bash
   curl http://localhost:3000/test
 ```
+
+### Sending Test Data To Server
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+  --request POST \
+  --data '{"info":"test data","data":[100,200,300,400,500]}' \
+  http://localhost:3000/test/dynamic
+```
+
+Incorrect data format will return an error code.

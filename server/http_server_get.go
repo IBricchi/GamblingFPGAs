@@ -10,7 +10,7 @@ type staticTestData struct {
 	Data []int  `json:"data"`
 }
 
-func (h *HttpServer) handleStaticTest() http.HandlerFunc {
+func (h *HttpServer) handleGetStaticTest() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)

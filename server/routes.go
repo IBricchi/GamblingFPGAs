@@ -1,5 +1,9 @@
 package server
 
 func (h *HttpServer) routes() {
-	h.router.Get("/test", h.handleStaticTest())
+	// Get
+	h.router.Get("/test", h.handleGetStaticTest())
+
+	// Post
+	h.router.Post("/test/dynamic", h.handlePostDynamicTest())
 }
