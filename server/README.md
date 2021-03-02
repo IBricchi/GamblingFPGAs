@@ -1,5 +1,7 @@
 ## Server Setup
 
+Initial setup for installing the required dependencies.
+
 ```bash
  ./setup.sh
 ```
