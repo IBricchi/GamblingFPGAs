@@ -10,18 +10,19 @@ import (
 )
 
 type HttpServer struct {
-	// db     *SQLiteDB
+	db     DB
 	router *chi.Mux
 	logger *zap.Logger
 }
 
-func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux) (*HttpServer, error) {
+func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux, db *SQLiteDB) *HttpServer {
 	h := &HttpServer{
+		db:     db,
 		router: router,
 		logger: logger,
 	}
 
-	return h, nil
+	return h
 }
 
 func (h *HttpServer) Serve(port string) error {
@@ -35,6 +36,8 @@ func (h *HttpServer) Serve(port string) error {
 }
 
 func (h *HttpServer) Close() error {
-	// used for closing db, etc.
+	if err := h.db.Close(); err != nil {
+		return fmt.Errorf("server: http_server: failed to close db: %w", err)
+	}
 	return nil
 }
