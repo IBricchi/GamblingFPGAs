@@ -1,12 +1,13 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func (h *HttpServer) handlePostDynamicTest() http.HandlerFunc {
+func (h *HttpServer) handlePostDynamicTest(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
@@ -20,6 +21,11 @@ func (h *HttpServer) handlePostDynamicTest() http.HandlerFunc {
 		// check if correct data format was send
 		if data.Info == "" && data.Data == nil {
 			http.Error(w, "Error: Invalid data was send", http.StatusBadRequest)
+			return
+		}
+
+		if err := h.db.insertTestData(ctx, data); err != nil {
+			http.Error(w, "Error: Failed to insert data in DB", http.StatusInternalServerError)
 			return
 		}
 

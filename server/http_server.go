@@ -25,8 +25,8 @@ func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux, db
 	return h
 }
 
-func (h *HttpServer) Serve(port string) error {
-	h.routes()
+func (h *HttpServer) Serve(ctx context.Context, port string) error {
+	h.routes(ctx)
 
 	portStr := ":" + port
 	if err := http.ListenAndServe(portStr, h.router); err != nil {

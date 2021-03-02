@@ -44,7 +44,8 @@ func (s *SQLiteDB) migrate(ctx context.Context) error {
 			CREATE TABLE IF NOT EXISTS tests (
 				id INTEGER NOT NULL PRIMARY KEY,
 				info TEXT NOT NULL,
-				data INTEGER
+				data TEXT,
+				timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 			)
 		`); err != nil {
 			return fmt.Errorf("server: sqlite_db_general: failed to create test table: %w", err)

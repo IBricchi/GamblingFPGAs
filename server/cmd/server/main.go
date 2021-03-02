@@ -38,7 +38,7 @@ func main() {
 	defer httpServer.Close()
 	logger.Info("server: opened http server")
 
-	if err := httpServer.Serve(*httpPort); err != nil {
+	if err := httpServer.Serve(ctx, *httpPort); err != nil {
 		logger.Fatal("server: failed to serve http server", zap.Error(err))
 	}
 }
