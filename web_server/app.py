@@ -7,14 +7,14 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-data = ""
+data = {}
 
 # setup web ports
 @app.route('/')
 def index():
-    return "hello world"
+    return render_template("index.html")
 
-@app.route('/j/')
+@app.route('/data/')
 def data_src():
     global data
     return data
@@ -30,7 +30,7 @@ def curl_data():
     
     while True:
         response = requests.get('https://random-data-api.com/api/beer/random_beer', headers=headers)
-        data = response.content.decode('utf-8')
+        data = json.loads(response.content.decode('utf-8'))
         time.sleep(1)
     
 if __name__ == '__main__':
