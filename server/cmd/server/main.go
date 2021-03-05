@@ -25,14 +25,14 @@ func main() {
 	}
 	defer logger.Sync()
 
-	r := chi.NewRouter()
-
 	// Closed by httpServer.Close()
 	serverDB, err := server.OpenSQLiteDB(ctx, logger, serverDBDSN)
 	if err != nil {
 		logger.Fatal("server: failed to open SQLite server database", zap.Error(err))
 	}
 	logger.Info("server: opened server sqlite3 DB")
+
+	r := chi.NewRouter()
 
 	httpServer := server.OpenHttpServer(ctx, logger, r, serverDB)
 	defer httpServer.Close()
