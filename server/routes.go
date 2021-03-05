@@ -1,14 +1,39 @@
 package server
 
-import "context"
+import (
+	"context"
+	"fmt"
 
-func (h *HttpServer) routes(ctx context.Context) {
-	// Get
-	h.router.Get("/test", h.handleGetStaticTest())
+	"github.com/go-chi/chi"
+)
 
-	// Post
-	h.router.Post("/test/dynamic", h.handlePostDynamicTest(ctx))
+func (h *HttpServer) routes(ctx context.Context) error {
+	// Public routes
+	h.router.Group(func(r chi.Router) {
+		// Get
+		r.Get("/public/test", h.handleGetStaticTest())
+
+		// Post
+		r.Post("/public/test/dynamic", h.handlePostDynamicTest(ctx))
+	})
+
+	// Private routes
+	creds, err := h.db.getCreds(ctx)
+	if err != nil {
+		return fmt.Errorf("server: routes: failed to get creds: %w", err)
+	}
+	h.router.Group(func(r chi.Router) {
+		r.Use(h.basicAuth("GamblingFPGAs-API", creds))
+
+		// Get
+		r.Get("/test", h.handleGetStaticTest())
+
+		// Post
+		r.Post("/test/dynamic", h.handlePostDynamicTest(ctx))
+	})
 
 	// Not found
 	h.router.NotFound(h.handleNotFound())
+
+	return nil
 }

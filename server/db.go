@@ -7,9 +7,11 @@ import (
 
 type DB interface {
 	// insert
+	insertCreds(ctx context.Context, cred credential) error
 	insertTestData(ctx context.Context, testData staticTestData) error
 
 	// retrieve
+	getCreds(ctx context.Context) (map[string]string, error)
 
 	// general
 	migrate(ctx context.Context) error
