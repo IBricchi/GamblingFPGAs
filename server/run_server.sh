@@ -7,6 +7,6 @@ CUSTOMDBNAME="${2:-serverDB.db}"
 
 mkdir -p bin db
 
-make all
+make server
 
 ./bin/server -httpPort ${CUSTOMPORT} -db ${CUSTOMDBNAME}

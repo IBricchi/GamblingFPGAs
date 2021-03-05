@@ -41,6 +41,16 @@ func OpenSQLiteDB(ctx context.Context, logger *zap.Logger, dsn string) (*SQLiteD
 func (s *SQLiteDB) migrate(ctx context.Context) error {
 	if err := s.TransactContext(ctx, func(ctx context.Context, tx *sql.Tx) error {
 		if _, err := tx.ExecContext(ctx, `
+			CREATE TABLE IF NOT EXISTS creds (
+				id INTEGER NOT NULL PRIMARY KEY,
+				username TEXT NOT NULL,
+				password TEXT NOT NULL
+			)
+		`); err != nil {
+			return fmt.Errorf("server: sqlite_db_general: failed to create creds table: %w", err)
+		}
+
+		if _, err := tx.ExecContext(ctx, `
 			CREATE TABLE IF NOT EXISTS tests (
 				id INTEGER NOT NULL PRIMARY KEY,
 				info TEXT NOT NULL,

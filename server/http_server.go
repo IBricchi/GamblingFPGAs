@@ -26,7 +26,9 @@ func OpenHttpServer(ctx context.Context, logger *zap.Logger, router *chi.Mux, db
 }
 
 func (h *HttpServer) Serve(ctx context.Context, port string) error {
-	h.routes(ctx)
+	if err := h.routes(ctx); err != nil {
+		return fmt.Errorf("server: http_server: routes failed: %w", err)
+	}
 
 	portStr := ":" + port
 	if err := http.ListenAndServe(portStr, h.router); err != nil {
@@ -38,7 +40,6 @@ func (h *HttpServer) Serve(ctx context.Context, port string) error {
 func (h *HttpServer) handleNotFound() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusNotFound)
 		http.Error(w, "Endpoint does not exist", http.StatusNotFound)
 	}
 }
