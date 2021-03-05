@@ -42,7 +42,7 @@ Custom database name:
 
 #### Without password protection
 
-Open `http://localhost:3000/public/test´ using your browser or using the command line:
+Open `http://localhost:3000/public/test` using your browser or using the command line:
 
 ```bash
   curl http://localhost:3000/public/test
@@ -50,7 +50,7 @@ Open `http://localhost:3000/public/test´ using your browser or using the comman
 
 #### With password protection
 
-Open `http://{username}:{password}@localhost:3000/test´ using your browser or using the command line:
+Open `http://{username}:{password}@localhost:3000/test` using your browser or using the command line:
 
 ```bash
   curl http://{username}:{password}@localhost:3000/test
