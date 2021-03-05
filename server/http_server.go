@@ -35,6 +35,14 @@ func (h *HttpServer) Serve(ctx context.Context, port string) error {
 	return nil
 }
 
+func (h *HttpServer) handleNotFound() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, "Endpoint does not exist", http.StatusNotFound)
+	}
+}
+
 func (h *HttpServer) Close() error {
 	if err := h.db.Close(); err != nil {
 		return fmt.Errorf("server: http_server: failed to close db: %w", err)

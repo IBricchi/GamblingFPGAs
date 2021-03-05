@@ -8,4 +8,7 @@ func (h *HttpServer) routes(ctx context.Context) {
 
 	// Post
 	h.router.Post("/test/dynamic", h.handlePostDynamicTest(ctx))
+
+	// Not found
+	h.router.NotFound(h.handleNotFound())
 }
