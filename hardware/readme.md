@@ -22,6 +22,11 @@ The recomended setup for this project follows the following steps:
     - enter wsl terminal
     - ``` sudo apt-get install wsl ```
     - nios2 uses this package
+6. The final step is to edit your path:
+    - Type in 'Edit environment variables' in the start menu, and open the control panel program
+    - In the list select 'Path' and click the edit button
+    - On the new window click new, and add the following line:
+        ``` C:\intelFPGA_lite\20.1\quartus\bin64 ```
 
 Everythign should now be set up and working.
 
@@ -43,3 +48,17 @@ Only the minimum required files are included in the repo so to set everything up
     - Replace the hello_world.c file in your workspace with the one from /hardware/Golden_Top/hello_world.c 
 
 Now you should be able to run the project
+
+## Developing
+
+Most files are ignored by git as to keep the repo size small. If big changes are made to the quartus file that creates files that are currently ignored, try and find out what the minimum number of files necessary are to generate the whole project, and ammend the build project instructions if new steps are required.
+
+As for the c program, changes in your workspace will not be caputred by git, so remember to always overwire the hello_world.c file in /hardware/
+
+## Run Project
+
+1. On quartus compile, and programme the fpga
+2. On eclipse (or using the cli for eclipse) compile and run the project.
+3. Open wsl (or powershell and then the wsl command), go to /hardware/communication folder
+4. Run ./run <char>, and you should see a response printed onto your screen from the fpga 
+5. Be careful because if main.cpp doesn't recieve expected sygnal it enters infinite loop, this is only a quick test I came up with, will fix this later
