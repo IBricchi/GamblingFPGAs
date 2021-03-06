@@ -34,18 +34,17 @@ Everythign should now be set up and working.
 
 Only the minimum required files are included in the repo so to set everything up a few files need to be compiled on your system.
 
-1. Open quartus, select open project, and select the bdf file in /hardware/Golden_Top
+1. Open Quartus, select open project, and select the bdf file in /hardware/FPGA
 2. In files you should see a qsys file, double click on that, and compile to HDL
 3. From here you can program you device
 4. Open eclipse tools for nios2
-5. You'll have to create a workspace
-    - I recomened making a folder called workspace in /hardware, it will be fully ignored by git
-6. Copy the socpinfo file from /hardware/Golden_Top/nios_accelerometer/ into your workspace
+5. For the workspace I recomend selecting /hardware/workspace it has .gitignore setup to ignore almost everything
+6. Copy the sopcinfo file from /hardware/FPGA/ into the workspace folder
 7. Create new 'NIOS II Application and BSP from Template'
     - Select SOPC file to be the sopcinfo file you copied
-    - Select name to fpga or whatever you prefer (will be ignored in git anyway)
+    - Set name to whatever you want (setting it to fpga is recomeded)
     - From project template select hello Wolrd
-    - Replace the hello_world.c file in your workspace with the one from /hardware/Golden_Top/hello_world.c 
+    - Copy the contents of hardware/workspace/hello_world.c into the hello_world.c file in your eclipse project. (If you've set it up as recomended, with the project name fpga, you can run ./workspace/srctoproj.sh to automate this)
 
 Now you should be able to run the project
 
@@ -53,12 +52,16 @@ Now you should be able to run the project
 
 Most files are ignored by git as to keep the repo size small. If big changes are made to the quartus file that creates files that are currently ignored, try and find out what the minimum number of files necessary are to generate the whole project, and ammend the build project instructions if new steps are required.
 
-As for the c program, changes in your workspace will not be caputred by git, so remember to always overwire the hello_world.c file in /hardware/
+As for the c program, changes in your workspace will not be caputred by git, so remember to copy the contents of the hello_world.c file from your project back into the file /hardware/workspace/hello_world.c. If you've setup your workspace as recomended in the setup steps you can run ./workspace/projtosrc.sh to automate this.
+
+### Warning
+
+Just in case you accidentally use the wrong one of the projtosrc or srctoproj, both commands make a backup of the src and proj files which can be found in /workspace/bak/ these only hold the state of both files before the last command, so if you run any of the commands twice you could loose changes.
 
 ## Run Project
 
 1. On quartus compile, and programme the fpga
 2. On eclipse (or using the cli for eclipse) compile and run the project.
 3. Open wsl (or powershell and then the wsl command), go to /hardware/communication folder
-4. Run ./run <char>, and you should see a response printed onto your screen from the fpga 
+4. Run ./run.sh <char>, and you should see a response printed onto your screen from the fpga 
 5. Be careful because if main.cpp doesn't recieve expected sygnal it enters infinite loop, this is only a quick test I came up with, will fix this later
