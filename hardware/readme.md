@@ -56,7 +56,7 @@ As for the c program, changes in your workspace will not be caputred by git, so 
 
 ### Warning
 
-Just in case you accidentally use the wrong one of the projtosrc or srctoproj, both commands make a backup of the src and proj files which can be found in /workspace/bak/ these only hold the state of both files before the last command, so if you run any of the commands twice you could loose changes.
+Just in case you accidentally use the wrong one of the projtosrc or srctoproj, both commands make a backup of the src and proj files which can be found in hardware/workspace/bak/ these only hold the state of both files before the last command, so if you run any of the commands twice you could loose changes.
 
 ## Run Project
 
