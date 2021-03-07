@@ -9,7 +9,11 @@ async function run_setup() {
 async function get_data(setup) {
     console.log(setup);
 
-    let response = await fetch(setup.data_url);
+    let response = await fetch(setup.data_url, {
+        body: setup.data,
+        headers: setup.headers,
+        method: setup.request
+    });
     let data = await response.json();
 
     document.querySelector("#data")
