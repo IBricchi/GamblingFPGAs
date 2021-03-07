@@ -1,0 +1,9 @@
+*
+!.gitignore
+!DE10_LITE_Qsys.qsys
+!DE10_LITE_SDRAM_Nios_Test.htm
+!DE10_LITE_SDRAM_Nios_Test.qpf
+!DE10_LITE_SDRAM_Nios_Test.qsf
+!DE10_LITE_SDRAM_Nios_Test.sdc
+!DE10_LITE_SDRAM_Nios_Test.v
+!DE10_LITE_SDRAM_Nios_Test_assignment_defaults.qdf
