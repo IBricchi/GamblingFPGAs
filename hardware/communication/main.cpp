@@ -3,15 +3,13 @@
 using namespace std;
 
 int main(){
-    string data;
-    cin >> data;
-    while(data != "<-->"){
-        cin >> data;
+    string line;
+    cin >> line;
+    while(!cin.fail()){
+        if(line == "<data>") break;
+        cin >> line;
     }
-    cin >> data;
-    while(data != "<-->"){
-        cout << data << " ";
-        cin >> data;
-    }
-    cout << endl;
+    cin >> line;
+    cout << line << endl;
+    return 0;
 }

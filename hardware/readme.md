@@ -63,5 +63,10 @@ Just in case you accidentally use the wrong one of the projtosrc or srctoproj, b
 1. On quartus compile, and programme the fpga
 2. On eclipse (or using the cli for eclipse) compile and run the project.
 3. Open wsl (or powershell and then the wsl command), go to /hardware/communication folder
-4. Run ./run.sh <char>, and you should see a response printed onto your screen from the fpga 
-5. Be careful because if main.cpp doesn't recieve expected sygnal it enters infinite loop, this is only a quick test I came up with, will fix this later
+4. Run ./setup.sh to setup running
+5. Run ./run.sh <char>, and you should see a response printed onto your screen from the fpga
+    - x, y, z will return the accelerometer values for the respective axis
+    - s will return the vlaue of the switch
+    - b will return the vlaue of the button
+    - v will terminate the c program
+    - everythin else will return nothing
