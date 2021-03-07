@@ -1,9 +1,6 @@
 #!/bin/bash
 
-apt-get update
-apt-get -y install --no-install-recommends python3 python3-pip python3-venv make
-python3 -m venv env
-./env/bin/pip3 install -r requirements.txt
-mkdir -p __pycache__
-echo "*" > __pycache__/.gitignore
-echo "*" > env/.gitignore
+# download js dependencies
+mkdir -p js/p5
+curl https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js -o js/p5/p5.js
+echo "*" > js/p5/.gitignore

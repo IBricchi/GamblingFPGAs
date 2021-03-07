@@ -1,11 +1,11 @@
 {
-    "port" : 5000,
-
-    "headers" : {
+    "headers": {
         "Accept": "application/json"
     },
 
-    "data" : {},
+    "data": {},
 
-    "data_url" : "https://random-data-api.com/api/beer/random_beer"
+    "request": {},
+
+    "data_url": "https://random-data-api.com/api/beer/random_beer"
 }
