@@ -29,8 +29,8 @@ void sys_timer_isr() {
     if (pwm > PWM_PERIOD) {
     	// get data
     	alt_up_accelerometer_spi_read_x_axis(data.acc_dev, & data.acc_x_read);
-    	alt_up_accelerometer_spi_read_x_axis(data.acc_dev, & data.acc_y_read);
-    	alt_up_accelerometer_spi_read_x_axis(data.acc_dev, & data.acc_z_read);
+    	alt_up_accelerometer_spi_read_y_axis(data.acc_dev, & data.acc_y_read);
+    	alt_up_accelerometer_spi_read_z_axis(data.acc_dev, & data.acc_z_read);
     	data.switch_read = IORD_ALTERA_AVALON_PIO_DATA(SWITCH_BASE);
     	data.button_read = IORD_ALTERA_AVALON_PIO_DATA(BUTTON_BASE);
         pwm = 0;
