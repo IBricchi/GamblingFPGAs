@@ -22,6 +22,8 @@ The recomended setup for this project follows the following steps:
     - enter wsl terminal
     - ``` sudo apt update ```
     - ``` sudo apt-get install wsl ```
+    - ``` sudo apt install dos2unix ```
+    - ``` sudo apt install make ```
     - nios2 uses this package
 6. The final step is to edit your path:
     - Type in 'Edit environment variables' in the start menu, and open the control panel program
