@@ -20,6 +20,7 @@ The recomended setup for this project follows the following steps:
     - nios2 uses the default distro
     - ``` wsl ```
     - enter wsl terminal
+    - ``` sudo apt update ```
     - ``` sudo apt-get install wsl ```
     - nios2 uses this package
 6. The final step is to edit your path:
