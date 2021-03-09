@@ -52,7 +52,7 @@ type player struct {
 // Expects a slice of players that only have the name attribute initialised.
 // All other attributes will be overriden.
 func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (game, error) {
-	if len(players) == 2 {
+	if len(players) < 2 {
 		return game{}, errors.New("server: poker: Need at least 2 players to play a game")
 	}
 
