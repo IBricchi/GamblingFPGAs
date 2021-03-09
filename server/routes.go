@@ -33,6 +33,7 @@ func (h *HttpServer) routes(ctx context.Context) error {
 		r.Post("/poker/openGame", h.handlePokerOpenGame())
 		r.Patch("/poker/joinGame", h.handlePokerJoinGame())
 		r.Patch("/poker/startGame", h.handlePokerStartGame())
+		r.Patch("/poker/terminateGame", h.handlePokerTerminateGame())
 	})
 
 	// Not found

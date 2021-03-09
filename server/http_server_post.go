@@ -117,3 +117,12 @@ func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
 		pokerGame = game
 	}
 }
+
+// Will force reset all game states.
+// Should be called after a game is finished.
+func (h *HttpServer) handlePokerTerminateGame() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		pokerGameStart = gameStart{}
+		pokerGame = game{}
+	}
+}
