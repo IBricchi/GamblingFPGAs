@@ -5,12 +5,12 @@ import (
 	"net/http"
 )
 
-type staticTestData struct {
-	Info string `json:"info"`
-	Data []int  `json:"data"`
-}
-
 func (h *HttpServer) handleGetStaticTest() http.HandlerFunc {
+	type staticTestData struct {
+		Info string `json:"info"`
+		Data []int  `json:"data"`
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)

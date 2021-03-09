@@ -8,6 +8,11 @@ import (
 )
 
 func (h *HttpServer) handlePostDynamicTest(ctx context.Context) http.HandlerFunc {
+	type staticTestData struct {
+		Info string `json:"info"`
+		Data []int  `json:"data"`
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
