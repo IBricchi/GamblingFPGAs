@@ -37,14 +37,14 @@ func (h *HttpServer) handlePostDynamicTest(ctx context.Context) http.HandlerFunc
 // Players can join by calling the handlePokerJoinGame() endpoint after a game is opened.
 // Receives two ints: initialPlayerMoney, smallBlindValue.
 func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
-	h.logger.Info("handlePokerOpenGame called")
-
 	type pokerOpenGameData struct {
 		InitialPlayerMoney int `json:"initialPlayerMoney"`
 		SmallBlindValue    int `json:"smallBlindValue"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerOpenGame called")
+
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
 
@@ -64,20 +64,20 @@ func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
 		pokerGameStart.initialPlayerMoney = data.InitialPlayerMoney
 		pokerGameStart.smallBlindValue = data.SmallBlindValue
 
-		h.logger.Info("poker game opened successfully")
+		h.logger.Info(fmt.Sprintf("poker game opened successfully: initialPlayerMoney=%v, smallBlindValue=%v", data.InitialPlayerMoney, data.SmallBlindValue))
 	}
 }
 
 // Can be called by players once a game has been opened by handlePokerOpenGame().
 // Expects a string: name
 func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
-	h.logger.Info("handlePokerJoinGame called")
-
 	type playerName struct {
 		Name string `json:"name"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerJoinGame called")
+
 		if !pokerGameStart.open {
 			http.Error(w, "Error: can only join once a game has been started", http.StatusBadRequest)
 			return
@@ -105,8 +105,9 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 }
 
 func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
-	h.logger.Info("handlePokerStartGame called")
 	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerStartGame called")
+
 		if !pokerGameStart.open {
 			http.Error(w, "Error: can only start a game after a game has been opened", http.StatusBadRequest)
 			return
@@ -132,8 +133,9 @@ func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
 // Will force reset all game states.
 // Should be called after a game is finished.
 func (h *HttpServer) handlePokerTerminateGame() http.HandlerFunc {
-	h.logger.Info("handlePokerTerminateGame called")
 	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerTerminateGame called")
+
 		pokerGameStart = gameStart{}
 		pokerGame = game{}
 
