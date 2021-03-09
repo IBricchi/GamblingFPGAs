@@ -94,6 +94,14 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 			return
 		}
 
+		// Prevent a player from joining twice
+		for _, player := range pokerGameStart.players {
+			if player.Name == playerName {
+				http.Error(w, fmt.Sprintf("Error: player %v already joined", playerName), http.StatusBadRequest)
+				return
+			}
+		}
+
 		pokerGameStart.players = append(pokerGameStart.players, player{Name: playerName})
 
 		h.logger.Info(fmt.Sprintf("%v joint poker game successfully", playerName))
