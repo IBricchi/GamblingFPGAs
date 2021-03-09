@@ -39,14 +39,14 @@ type game struct {
 // The score takes all counts that will appear during the duration of the game into account,
 // not just the player's hand.
 type player struct {
-	name              string
-	hand              []poker.Card
-	money             int
-	relativeCardScore int
-	verboseScore      string
-	dealer            bool
-	smallBlind        bool
-	bigBlind          bool
+	Name              string       `json:"name"`
+	Hand              []poker.Card `json:"hand"`
+	Money             int          `json:"money"`
+	RelativeCardScore int          `json:"relativeCardScore"`
+	VerboseScore      string       `json:"verboseScore"`
+	Dealer            bool         `json:"dealer"`
+	SmallBlind        bool         `json:"smallBlind"`
+	BigBlind          bool         `json:"bigBlind"`
 }
 
 // Expects a slice of players that only have the name attribute initialised.
@@ -60,8 +60,8 @@ func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (ga
 
 	// Give each player two cards and initial money
 	for i := range players {
-		players[i].hand = deck.Draw(2)
-		players[i].money = initialPlayerMoney
+		players[i].Hand = deck.Draw(2)
+		players[i].Money = initialPlayerMoney
 	}
 
 	// Determine which other cards will appear in game
@@ -87,7 +87,7 @@ func sortPlayersAccordingToRandomBlind(players []player) []player {
 	// Randomly determine dealer player
 	rand.Seed(time.Now().UnixNano())
 	dealerPlayerIdx := rand.Intn(len(players))
-	players[dealerPlayerIdx].dealer = true
+	players[dealerPlayerIdx].Dealer = true
 
 	// Set small and big blind
 	// Sort players so that index 0 refers to the first player
@@ -97,16 +97,16 @@ func sortPlayersAccordingToRandomBlind(players []player) []player {
 		sortedPlayers[0] = players[dealerPlayerIdx]
 		sortedPlayers[1] = players[(dealerPlayerIdx+1)%2]
 
-		sortedPlayers[0].smallBlind = true
-		sortedPlayers[1].bigBlind = true
+		sortedPlayers[0].SmallBlind = true
+		sortedPlayers[1].BigBlind = true
 	} else {
 		// Dealer -> Small blind -> Big blind
 		for i := range sortedPlayers {
 			sortedPlayers[i] = players[(dealerPlayerIdx+1+i)%len(players)]
 		}
 
-		sortedPlayers[0].smallBlind = true
-		sortedPlayers[1].bigBlind = true
+		sortedPlayers[0].SmallBlind = true
+		sortedPlayers[1].BigBlind = true
 	}
 
 	return sortedPlayers
@@ -121,7 +121,7 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) [
 	// Combine player hands with community cards and calculate absolute cards score
 	scoreMappings := make([]scoreMapping, len(players))
 	for i := range scoreMappings {
-		cards := append(communityCards, players[i].hand...)
+		cards := append(communityCards, players[i].Hand...)
 
 		scoreMappings[i].score = int(poker.Evaluate(cards))
 	}
@@ -143,9 +143,9 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) [
 
 	// scoreMappings idx corresponds to players idx
 	for i := range players {
-		players[i].relativeCardScore = scoreMappings[i].relativeScore
+		players[i].RelativeCardScore = scoreMappings[i].relativeScore
 
-		players[i].verboseScore = poker.RankString(int32(scoreMappings[i].score))
+		players[i].VerboseScore = poker.RankString(int32(scoreMappings[i].score))
 	}
 
 	return players

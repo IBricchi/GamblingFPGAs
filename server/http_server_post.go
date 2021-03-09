@@ -8,11 +8,6 @@ import (
 )
 
 func (h *HttpServer) handlePostDynamicTest(ctx context.Context) http.HandlerFunc {
-	type staticTestData struct {
-		Info string `json:"info"`
-		Data []int  `json:"data"`
-	}
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
@@ -99,7 +94,7 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 			return
 		}
 
-		pokerGameStart.players = append(pokerGameStart.players, player{name: playerName})
+		pokerGameStart.players = append(pokerGameStart.players, player{Name: playerName})
 
 		h.logger.Info(fmt.Sprintf("%v joint poker game successfully", playerName))
 	}
