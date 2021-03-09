@@ -12,7 +12,7 @@ import (
 var pokerGameStart gameStart
 var pokerGame game
 
-// Used when a game is started.
+// Used when a game is open but not yet started.
 type gameStart struct {
 	open               bool
 	players            []player

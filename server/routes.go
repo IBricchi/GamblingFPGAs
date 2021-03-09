@@ -27,6 +27,7 @@ func (h *HttpServer) routes(ctx context.Context) error {
 
 		// Get
 		r.Get("/test", h.handleGetStaticTest())
+		r.Get("/poker/openGameStatus", h.handlePokerGetGameOpenStatus())
 
 		// Post
 		r.Post("/test/dynamic", h.handlePostDynamicTest(ctx))
