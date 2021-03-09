@@ -29,6 +29,8 @@ Custom port and/or database name:
 Default database name is `serverDB.db`.
 This must be the same database that is used for the server!
 
+Every poker player must also be a user.
+
 ```bash
   ./run_credentials.sh
 ```
@@ -81,3 +83,65 @@ Incorrect data formats will return an error code.
 The received data will be inserted into the server's sqlite3 database.
 
 Incorrect data formats will return an error code.
+
+## Poker
+
+### Opening a game
+
+This is the first phase of every game.
+
+Players can join a game during the open phase.
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+  --request POST \
+  --data '{"initialPlayerMoney":2000,"smallBlindValue":5}' \
+  http://test:test@localhost:3000/poker/openGame
+```
+
+### Joining a game
+
+This is only possible during the open phase.
+
+A player must be a registered user to join (See "Create New User" section above).
+The player name will correspond to the username specified in the URL (http basic auth).
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+  --request POST \
+  http://player1:player1@localhost:3000/poker/joinGame
+```
+
+### Starting a game
+
+A game can be started once at least two players have joined.
+This will end the open phase and start the active phase.
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+  --request POST \
+  http://test:test@localhost:3000/poker/startGame
+```
+
+### Terminating a game
+
+All game state can be reset using a terminate request.
+A terminate request can always be called.
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+  --request POST \
+  http://test:test@localhost:3000/poker/terminateGame
+```
+
+### Getting game status/state
+
+Use ```curl -i``` for additional information.
+
+```bash
+  curl http://test:test@localhost:3000/poker/openGameStatus
+```
+
+```bash
+  curl -i http://test:test@localhost:3000/poker/activeGameStatus
+```

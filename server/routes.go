@@ -27,9 +27,15 @@ func (h *HttpServer) routes(ctx context.Context) error {
 
 		// Get
 		r.Get("/test", h.handleGetStaticTest())
+		r.Get("/poker/openGameStatus", h.handlePokerGetGameOpenStatus())
+		r.Get("/poker/activeGameStatus", h.handlePokerGetGameActiveStatus())
 
 		// Post
 		r.Post("/test/dynamic", h.handlePostDynamicTest(ctx))
+		r.Post("/poker/openGame", h.handlePokerOpenGame())
+		r.Post("/poker/joinGame", h.handlePokerJoinGame())
+		r.Post("/poker/startGame", h.handlePokerStartGame())
+		r.Post("/poker/terminateGame", h.handlePokerTerminateGame())
 	})
 
 	// Not found
