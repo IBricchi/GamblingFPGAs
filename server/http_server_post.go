@@ -37,6 +37,8 @@ func (h *HttpServer) handlePostDynamicTest(ctx context.Context) http.HandlerFunc
 // Players can join by calling the handlePokerJoinGame() endpoint after a game is opened.
 // Receives two ints: initialPlayerMoney, smallBlindValue.
 func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
+	h.logger.Info("handlePokerOpenGame called")
+
 	type pokerOpenGameData struct {
 		InitialPlayerMoney int `json:"initialPlayerMoney"`
 		SmallBlindValue    int `json:"smallBlindValue"`
@@ -61,12 +63,16 @@ func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
 		pokerGameStart.open = true
 		pokerGameStart.initialPlayerMoney = data.InitialPlayerMoney
 		pokerGameStart.smallBlindValue = data.SmallBlindValue
+
+		h.logger.Info("poker game opened successfully")
 	}
 }
 
 // Can be called by players once a game has been opened by handlePokerOpenGame().
 // Expects a string: name
 func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
+	h.logger.Info("handlePokerJoinGame called")
+
 	type playerName struct {
 		Name string `json:"name"`
 	}
@@ -93,10 +99,13 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 		}
 
 		pokerGameStart.players = append(pokerGameStart.players, player{name: data.Name})
+
+		h.logger.Info(fmt.Sprintf("%v joint poker game successfully", data.Name))
 	}
 }
 
 func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
+	h.logger.Info("handlePokerStartGame called")
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !pokerGameStart.open {
 			http.Error(w, "Error: can only start a game after a game has been opened", http.StatusBadRequest)
@@ -115,14 +124,19 @@ func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
 		}
 
 		pokerGame = game
+
+		h.logger.Info("poker game started successfully")
 	}
 }
 
 // Will force reset all game states.
 // Should be called after a game is finished.
 func (h *HttpServer) handlePokerTerminateGame() http.HandlerFunc {
+	h.logger.Info("handlePokerTerminateGame called")
 	return func(w http.ResponseWriter, r *http.Request) {
 		pokerGameStart = gameStart{}
 		pokerGame = game{}
+
+		h.logger.Info("poker game terminated successfully")
 	}
 }
