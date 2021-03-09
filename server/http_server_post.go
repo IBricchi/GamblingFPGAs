@@ -58,7 +58,7 @@ func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
 			return
 		}
 
-		pokerGameStart.started = true
+		pokerGameStart.open = true
 		pokerGameStart.initialPlayerMoney = data.InitialPlayerMoney
 		pokerGameStart.smallBlindValue = data.SmallBlindValue
 	}
@@ -72,7 +72,7 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !pokerGameStart.started {
+		if !pokerGameStart.open {
 			http.Error(w, "Error: can only join once a game has been started", http.StatusBadRequest)
 			return
 		}
@@ -93,5 +93,27 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 		}
 
 		pokerGameStart.players = append(pokerGameStart.players, player{name: data.Name})
+	}
+}
+
+func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !pokerGameStart.open {
+			http.Error(w, "Error: can only start a game after a game has been opened", http.StatusBadRequest)
+			return
+		}
+
+		if len(pokerGameStart.players) < 2 {
+			http.Error(w, "Error: can only start a game after at least two players have joined", http.StatusBadRequest)
+			return
+		}
+
+		game, err := initGame(pokerGameStart.players, pokerGameStart.initialPlayerMoney, pokerGameStart.smallBlindValue)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		pokerGame = game
 	}
 }

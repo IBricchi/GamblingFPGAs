@@ -14,7 +14,7 @@ var pokerGame game
 
 // Used when a game is started.
 type gameStart struct {
-	started            bool
+	open               bool
 	players            []player
 	initialPlayerMoney int
 	smallBlindValue    int
@@ -25,6 +25,7 @@ type gameStart struct {
 // currentPlayer refers to the player slice index.
 // The player slice is sorted so that index 0 refers to the first player (small blind).
 type game struct {
+	active          bool
 	deck            *poker.Deck
 	communityCards  []poker.Card
 	players         []player
@@ -71,6 +72,7 @@ func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (ga
 	players = allocateRelativeCardScores(players, communityCards)
 
 	return game{
+		active:          true,
 		deck:            deck,
 		communityCards:  communityCards,
 		players:         players,
