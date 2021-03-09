@@ -30,6 +30,8 @@ func (h *HttpServer) routes(ctx context.Context) error {
 
 		// Post
 		r.Post("/test/dynamic", h.handlePostDynamicTest(ctx))
+		r.Post("/poker/openGame", h.handlePokerOpenGame())
+		r.Patch("/poker/joinGame", h.handlePokerJoinGame())
 	})
 
 	// Not found

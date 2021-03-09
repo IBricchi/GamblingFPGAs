@@ -8,6 +8,18 @@ import (
 	"github.com/chehsunliu/poker"
 )
 
+// The active game
+var pokerGameStart gameStart
+var pokerGame game
+
+// Used when a game is started.
+type gameStart struct {
+	started            bool
+	players            []player
+	initialPlayerMoney int
+	smallBlindValue    int
+}
+
 // gameCards is a slice of cards that will appear in the game.
 // currentRound is an integer between 1 and 4.
 // currentPlayer refers to the player slice index.
@@ -28,6 +40,7 @@ type game struct {
 type player struct {
 	name              string
 	hand              []poker.Card
+	money             int
 	relativeCardScore int
 	verboseScore      string
 	dealer            bool
@@ -37,16 +50,17 @@ type player struct {
 
 // Expects a slice of players that only have the name attribute initialised.
 // All other attributes will be overriden.
-func initGame(players []player, smallBlindValue int) (game, error) {
+func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (game, error) {
 	if len(players) == 2 {
 		return game{}, errors.New("server: poker: Need at least 2 players to play a game")
 	}
 
 	deck := poker.NewDeck()
 
-	// Give each player two cards
+	// Give each player two cards and initial money
 	for i := range players {
 		players[i].hand = deck.Draw(2)
+		players[i].money = initialPlayerMoney
 	}
 
 	// Determine which other cards will appear in game
