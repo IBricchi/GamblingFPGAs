@@ -45,6 +45,15 @@ func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		h.logger.Info("handlePokerOpenGame called")
 
+		if pokerGameStart.open {
+			http.Error(w, "Error: a poker game is already open", http.StatusBadRequest)
+			return
+		}
+		if pokerGame.active {
+			http.Error(w, "Error: a poker game is already active", http.StatusBadRequest)
+			return
+		}
+
 		decoder := json.NewDecoder(r.Body)
 		defer r.Body.Close()
 
@@ -69,38 +78,25 @@ func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
 }
 
 // Can be called by players once a game has been opened by handlePokerOpenGame().
-// Expects a string: name
+// Uses the username from http basic auth for the player's name.
 func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
-	type playerName struct {
-		Name string `json:"name"`
-	}
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		h.logger.Info("handlePokerJoinGame called")
 
 		if !pokerGameStart.open {
-			http.Error(w, "Error: can only join once a game has been started", http.StatusBadRequest)
+			http.Error(w, "Error: can only join when a game is open", http.StatusBadRequest)
 			return
 		}
 
-		decoder := json.NewDecoder(r.Body)
-		defer r.Body.Close()
-
-		data := playerName{}
-		if err := decoder.Decode(&data); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+		playerName, _, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, "Error: getting username from http basic auth failed", http.StatusInternalServerError)
 			return
 		}
 
-		// check if valid data was send
-		if data.Name == "" {
-			http.Error(w, "Error: player name cannot be an empty string", http.StatusBadRequest)
-			return
-		}
+		pokerGameStart.players = append(pokerGameStart.players, player{name: playerName})
 
-		pokerGameStart.players = append(pokerGameStart.players, player{name: data.Name})
-
-		h.logger.Info(fmt.Sprintf("%v joint poker game successfully", data.Name))
+		h.logger.Info(fmt.Sprintf("%v joint poker game successfully", playerName))
 	}
 }
 
@@ -125,6 +121,7 @@ func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
 		}
 
 		pokerGame = game
+		pokerGameStart.open = false
 
 		h.logger.Info("poker game started successfully")
 	}
