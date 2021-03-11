@@ -6,11 +6,13 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 )
 
 func (h *HttpServer) routes(ctx context.Context) error {
 	// General middleware
 	h.router.Use(middleware.Logger)
+	h.router.Use(cors.Handler(cors.Options{AllowedOrigins: []string{"https://*", "http://*"}}))
 
 	// Public routes
 	h.router.Group(func(r chi.Router) {
