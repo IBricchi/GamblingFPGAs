@@ -39,14 +39,19 @@ type game struct {
 // The score takes all counts that will appear during the duration of the game into account,
 // not just the player's hand.
 type player struct {
-	Name              string       `json:"name"`
-	Hand              []poker.Card `json:"hand"`
-	Money             int          `json:"money"`
-	RelativeCardScore int          `json:"relativeCardScore"`
-	VerboseScore      string       `json:"verboseScore"`
-	Dealer            bool         `json:"dealer"`
-	SmallBlind        bool         `json:"smallBlind"`
-	BigBlind          bool         `json:"bigBlind"`
+	Name                string       `json:"name"`
+	Hand                []poker.Card `json:"hand"`
+	Money               int          `json:"money"`
+	RelativeCardScore   int          `json:"relativeCardScore"`
+	VerboseScore        string       `json:"verboseScore"`
+	Dealer              bool         `json:"dealer"`
+	SmallBlind          bool         `json:"smallBlind"`
+	BigBlind            bool         `json:"bigBlind"`
+	HasFolded           bool         `json:"hadFolded"`
+	LastBetAmount       int          `json:"lastBetAmount"`
+	TotalMoneyBetAmount int          `json:"totalMoneyBetAmount"`
+	ShowCardsMe         bool         `json:"showCardsMe"`
+	ShowCardsEveryone   bool         `json:"showCardsEveryone"`
 }
 
 // Expects a slice of players that only have the name attribute initialised.
