@@ -27,13 +27,14 @@ type gameStart struct {
  	The player slice is sorted so that index 0 refers to the first player (small blind).
 */
 type game struct {
-	active          bool
-	deck            *poker.Deck
-	communityCards  []poker.Card
-	players         []player
-	currentRound    int
-	currentPlayer   int
-	smallBlindValue int
+	active                    bool
+	deck                      *poker.Deck
+	communityCards            []poker.Card
+	players                   []player
+	currentRound              int
+	currentPlayer             int
+	lastBetAmountCurrentRound int
+	smallBlindAmount          int
 }
 
 /*
@@ -48,9 +49,9 @@ type player struct {
 	MoneyAvailableAmount int          `json:"moneyAvailableAmount"`
 	RelativeCardScore    int          `json:"relativeCardScore"`
 	VerboseScore         string       `json:"verboseScore"`
-	Dealer               bool         `json:"dealer"`
-	SmallBlind           bool         `json:"smallBlind"`
-	BigBlind             bool         `json:"bigBlind"`
+	IsDealer             bool         `json:"dealer"`
+	IsSmallBlind         bool         `json:"smallBlind"`
+	IsBigBlind           bool         `json:"bigBlind"`
 	HasFolded            bool         `json:"hadFolded"`
 	LastBetAmount        int          `json:"lastBetAmount"`
 	TotalMoneyBetAmount  int          `json:"totalMoneyBetAmount"`
@@ -95,7 +96,7 @@ type outgoingFPGAData struct {
 	Expects a slice of players that only have the name attribute initialised.
  	All other attributes will be overriden.
 */
-func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (game, error) {
+func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (game, error) {
 	if len(players) < 2 {
 		return game{}, errors.New("server: poker: Need at least 2 players to play a game")
 	}
@@ -116,13 +117,14 @@ func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (ga
 	players = allocateRelativeCardScores(players, communityCards)
 
 	return game{
-		active:          true,
-		deck:            deck,
-		communityCards:  communityCards,
-		players:         players,
-		currentRound:    1,
-		currentPlayer:   0,
-		smallBlindValue: smallBlindValue,
+		active:                    true,
+		deck:                      deck,
+		communityCards:            communityCards,
+		players:                   players,
+		currentRound:              1,
+		currentPlayer:             0,
+		lastBetAmountCurrentRound: 0,
+		smallBlindAmount:          smallBlindAmount,
 	}, nil
 }
 
@@ -131,7 +133,7 @@ func sortPlayersAccordingToRandomBlind(players []player) []player {
 	// Randomly determine dealer player
 	rand.Seed(time.Now().UnixNano())
 	dealerPlayerIdx := rand.Intn(len(players))
-	players[dealerPlayerIdx].Dealer = true
+	players[dealerPlayerIdx].IsDealer = true
 
 	// Set small and big blind
 	// Sort players so that index 0 refers to the first player
@@ -141,16 +143,16 @@ func sortPlayersAccordingToRandomBlind(players []player) []player {
 		sortedPlayers[0] = players[dealerPlayerIdx]
 		sortedPlayers[1] = players[(dealerPlayerIdx+1)%2]
 
-		sortedPlayers[0].SmallBlind = true
-		sortedPlayers[1].BigBlind = true
+		sortedPlayers[0].IsSmallBlind = true
+		sortedPlayers[1].IsBigBlind = true
 	} else {
 		// Dealer -> Small blind -> Big blind
 		for i := range sortedPlayers {
 			sortedPlayers[i] = players[(dealerPlayerIdx+1+i)%len(players)]
 		}
 
-		sortedPlayers[0].SmallBlind = true
-		sortedPlayers[1].BigBlind = true
+		sortedPlayers[0].IsSmallBlind = true
+		sortedPlayers[1].IsBigBlind = true
 	}
 
 	return sortedPlayers
