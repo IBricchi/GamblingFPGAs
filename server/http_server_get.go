@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/chehsunliu/poker"
@@ -66,6 +65,7 @@ func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 	type gameActiveInfo struct {
 		Active          bool         `json:"active"`
+		HasEnded        bool         `json:"hasEnded"`
 		CommunityCards  []poker.Card `json:"communityCards"`
 		Players         []player     `json:"players"`
 		PlayerAmount    int          `json:"playerAmount"`
@@ -82,6 +82,7 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 
 		gameActiveInfo := gameActiveInfo{
 			Active:          pokerGame.active,
+			HasEnded:        pokerGame.hasEnded,
 			CommunityCards:  pokerGame.communityCards,
 			Players:         pokerGame.players,
 			PlayerAmount:    len(pokerGame.players),
@@ -116,43 +117,18 @@ func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 			return
 		}
 
-		var player player
-		var playerIsPartOfActiveGame bool
-		for i := range pokerGame.players {
-			if pokerGame.players[i].Name == playerName {
-				playerIsPartOfActiveGame = true
-				player = pokerGame.players[i]
-			}
-		}
-		if !playerIsPartOfActiveGame {
-			http.Error(w, fmt.Sprintf("Error: player %v not part of the active poker game", playerName), http.StatusBadRequest)
+		player, err := getPlayerPointerFromName(playerName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
-		}
-
-		// Determine available next moves
-		var availableNextMoves []string
-		if pokerGame.lastBetAmountCurrentRound == 0 {
-			availableNextMoves = []string{"check", "bet"}
-		} else {
-			availableNextMoves = []string{"fold", "call", "raise"}
-		}
-
-		// Determine minimum next bet amount
-		var minimumNextBetAmount int
-		if pokerGame.lastBetAmountCurrentRound != 0 {
-			minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
-		} else if player.IsSmallBlind {
-			minimumNextBetAmount = pokerGame.smallBlindAmount
-		} else if player.IsBigBlind {
-			minimumNextBetAmount = pokerGame.smallBlindAmount * 2
 		}
 
 		// playerAndGameData := getPlayerDataForFPGA()
 		playerAndGameData := outgoingFPGAData{
 			IsTurn:               pokerGame.players[pokerGame.currentPlayer].Name == player.Name,
-			AvailableNextMoves:   availableNextMoves,
+			AvailableNextMoves:   getAvailableNextMoves(),
 			MoneyAvailableAmount: player.MoneyAvailableAmount,
-			MinimumNextBetAmount: minimumNextBetAmount,
+			MinimumNextBetAmount: player.getMinimumBetAmount(),
 			RelativeCardScore:    player.RelativeCardScore,
 		}
 
