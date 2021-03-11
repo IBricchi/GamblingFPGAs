@@ -5,9 +5,13 @@ import (
 	"fmt"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 func (h *HttpServer) routes(ctx context.Context) error {
+	// General middleware
+	h.router.Use(middleware.Logger)
+
 	// Public routes
 	h.router.Group(func(r chi.Router) {
 		// Get
