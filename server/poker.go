@@ -20,10 +20,12 @@ type gameStart struct {
 	smallBlindValue    int
 }
 
-// gameCards is a slice of cards that will appear in the game.
-// currentRound is an integer between 1 and 4.
-// currentPlayer refers to the player slice index.
-// The player slice is sorted so that index 0 refers to the first player (small blind).
+/*
+	gameCards is a slice of cards that will appear in the game.
+ 	currentRound is an integer between 1 and 4.
+ 	currentPlayer refers to the player slice index.
+ 	The player slice is sorted so that index 0 refers to the first player (small blind).
+*/
 type game struct {
 	active          bool
 	deck            *poker.Deck
@@ -34,28 +36,65 @@ type game struct {
 	smallBlindValue int
 }
 
-// relativeCardScore reveals how good the player's cards are compared to the other player's cards.
-// The score is between 0 and 100 with 0 being the worst and 100 being the best.
-// The score takes all counts that will appear during the duration of the game into account,
-// not just the player's hand.
+/*
+	RelativeCardScore reveals how good the player's cards are compared to the other player's cards.
+	The score is between 0 and 100 with 0 being the worst and 100 being the best.
+ 	The score takes all counts that will appear during the duration of the game into account,
+	not just the player's hand.
+*/
 type player struct {
-	Name                string       `json:"name"`
-	Hand                []poker.Card `json:"hand"`
-	Money               int          `json:"money"`
-	RelativeCardScore   int          `json:"relativeCardScore"`
-	VerboseScore        string       `json:"verboseScore"`
-	Dealer              bool         `json:"dealer"`
-	SmallBlind          bool         `json:"smallBlind"`
-	BigBlind            bool         `json:"bigBlind"`
-	HasFolded           bool         `json:"hadFolded"`
-	LastBetAmount       int          `json:"lastBetAmount"`
-	TotalMoneyBetAmount int          `json:"totalMoneyBetAmount"`
-	ShowCardsMe         bool         `json:"showCardsMe"`
-	ShowCardsEveryone   bool         `json:"showCardsEveryone"`
+	Name                 string       `json:"name"`
+	Hand                 []poker.Card `json:"hand"`
+	MoneyAvailableAmount int          `json:"moneyAvailableAmount"`
+	RelativeCardScore    int          `json:"relativeCardScore"`
+	VerboseScore         string       `json:"verboseScore"`
+	Dealer               bool         `json:"dealer"`
+	SmallBlind           bool         `json:"smallBlind"`
+	BigBlind             bool         `json:"bigBlind"`
+	HasFolded            bool         `json:"hadFolded"`
+	LastBetAmount        int          `json:"lastBetAmount"`
+	TotalMoneyBetAmount  int          `json:"totalMoneyBetAmount"`
+	ShowCardsMe          bool         `json:"showCardsMe"`
+	ShowCardsEveryone    bool         `json:"showCardsEveryone"`
 }
 
-// Expects a slice of players that only have the name attribute initialised.
-// All other attributes will be overriden.
+/*
+	Data/state object that is send from FPGA nodes to server.
+	IsActiveData is used to differentiating data that is send due to player action (active data)
+	from data that is send regardless of player actions (passive data). Active data can only be send
+	once during a player's turn (e.g. placing a new bet) while passive data is send multiple times during
+	a player's turn (e.g. ShowCardsMe). A player's turn ends once active data has been received. Active data
+	is ignored if it is not the player's turn.
+	NewMoveType can be any of 'fold', 'check', 'bet', 'call', or 'raise'. Not all of these might be available,
+	depending on the actions taken by the previous players. A list of the available next moves can be obtained
+	from outgoingFPGAData:AvailableNextMoves.
+	NewBetAmount is only used when NewMoveType is either 'bet' or 'raise'.
+*/
+type incomingFPGAData struct {
+	IsActiveData           bool   `json:"isActiveData"`
+	ShowCardsMe            bool   `json:"showCardsMe"`
+	ShowCardsEveryone      bool   `json:"showCardsEveryone"`
+	NewTryPeak             bool   `json:"newTryPeak"`
+	NewTryPeakPlayerNumber int    `json:"newTryPeakPlayerNumber"`
+	NewMoveType            string `json:"newMoveType"`
+	NewBetAmount           int    `json:"newBetAmount"`
+}
+
+/*
+	Data/state object that is send from server to FPGA nodes.
+*/
+type outgoingFPGAData struct {
+	IsTurn               bool     `json:"isTurn"`
+	AvailableNextMoves   []string `json:"availableNextMoves"`
+	MoneyAvailableAmount int      `json:"moneyAvailableAmount"`
+	MinimumNextBetAmount int      `json:"minimumNextBetAmount"`
+	RelativeCardScore    int      `json:"relativeCardScore"`
+}
+
+/*
+	Expects a slice of players that only have the name attribute initialised.
+ 	All other attributes will be overriden.
+*/
 func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (game, error) {
 	if len(players) < 2 {
 		return game{}, errors.New("server: poker: Need at least 2 players to play a game")
@@ -66,7 +105,7 @@ func initGame(players []player, initialPlayerMoney int, smallBlindValue int) (ga
 	// Give each player two cards and initial money
 	for i := range players {
 		players[i].Hand = deck.Draw(2)
-		players[i].Money = initialPlayerMoney
+		players[i].MoneyAvailableAmount = initialPlayerMoney
 	}
 
 	// Determine which other cards will appear in game
