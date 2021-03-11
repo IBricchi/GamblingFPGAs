@@ -1,29 +1,18 @@
-/// <reference path="./p5/p5.js" />
+/// <reference path="p5/p5.js" />
+/// <reference path="GetData.js" />
 
-async function run_setup() {
-    let response = await fetch("./setup.json");
-    let setup = response.json();
-    return setup;
+let getData;
+let game;
+
+function preload() {
+    getData = new GetData();
 }
 
-async function get_data(setup) {
-    console.log(setup);
+function setup() {
+    createCanvas(800, 600);
 
-    let response = await fetch(setup.data_url, {
-        body: setup.data,
-        headers: setup.headers,
-        method: setup.request
-    });
-    let data = await response.json();
-
-    document.querySelector("#data")
-        .innerHTML = JSON.stringify(data, null, "<br>");
 }
 
-run_setup()
-    .then(setup => {
-        setInterval(get_data, 1000, setup);
-    })
-    .catch(_ => {
-        console.error("Unable to find setup data");
-    })
+function draw() {
+    background();
+}

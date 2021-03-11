@@ -3,9 +3,7 @@
         "Accept": "application/json"
     },
 
-    "data": {},
-
-    "request": {},
+    "request": "GET",
 
     "data_url": "https://random-data-api.com/api/beer/random_beer"
 }
