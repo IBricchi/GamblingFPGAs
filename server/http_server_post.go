@@ -147,3 +147,47 @@ func (h *HttpServer) handlePokerTerminateGame() http.HandlerFunc {
 		h.logger.Info("poker game terminated successfully")
 	}
 }
+
+// Called by FPGA nodes
+func (h *HttpServer) handlePokerReceiveFPGAData() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerReceiveFPGAData called")
+
+		if !pokerGame.active {
+			http.Error(w, "Error: no active poker game exists", http.StatusBadRequest)
+			return
+		}
+
+		playerName, _, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, "Error: getting username from http basic auth failed", http.StatusInternalServerError)
+			return
+		}
+
+		player, err := getPlayerPointerFromName(playerName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		decoder := json.NewDecoder(r.Body)
+		defer r.Body.Close()
+
+		data := incomingFPGAData{}
+		if err := decoder.Decode(&data); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// check if valid data was send
+		if data.IsActiveData && data.NewBetAmount < player.getMinimumBetAmount() {
+			http.Error(w, "Error: placed bet is smaller than the minimum bet", http.StatusBadRequest)
+			return
+		}
+
+		if err := pokerGame.updateWithFPGAData(player, data); err != nil {
+			http.Error(w, fmt.Errorf("Error: failed to update active game with FPGA data from player %v: %w", player.Name, err).Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+}
