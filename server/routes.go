@@ -12,7 +12,11 @@ import (
 func (h *HttpServer) routes(ctx context.Context) error {
 	// General middleware
 	h.router.Use(middleware.Logger)
-	h.router.Use(cors.Handler(cors.Options{AllowedOrigins: []string{"https://*", "http://*"}}))
+	h.router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT"},
+		AllowCredentials: true,
+	}))
 
 	// Public routes
 	h.router.Group(func(r chi.Router) {
