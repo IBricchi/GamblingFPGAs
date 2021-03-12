@@ -7,6 +7,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func allowOriginFunc(r *http.Request, origin string) bool {
+	// Allow all without checking origin
+	return true
+}
+
 func (h *HttpServer) basicAuth(realm string, creds map[string]string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
