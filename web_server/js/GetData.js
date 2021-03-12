@@ -1,11 +1,18 @@
 class GetData {
     requestSettings = true;
+    username = "player1";
+    password = "player1";
     constructor() {
         fetch("./setup.json")
             .then(response => response.json())
-            .then(data => this.requestSettings = data)
-            .catch(_ => {
+            .then(data => {
+                this.requestSettings = data;
+                this.requestSettings.headers.Authorization = 'Basic ' + btoa(this.username + ":" + this.password);
+                // this.requestSettings.mode = "no-cors";
+            })
+            .catch(err => {
                 this.requestSettings = false;
+                console.error(err);
                 console.error("Unable to fetch setup.json file.");
             });
     }
@@ -18,15 +25,12 @@ class GetData {
             console.log("GetData is still fetching settings.");
             return {}
         } else {
-            return fetch(this.requestSettings.data_url, {
-                    // body: setup.data,
-                    headers: this.requestSettings.headers,
-                    method: this.requestSettings.request
-                })
+            return fetch(this.requestSettings.url, this.requestSettings)
                 .then(request => request.json())
                 .then(data => { return data })
-                .catch(_ => {
-                    console.warn("Unable to fetch data from ", this.requestSettings.data_url);
+                .catch(err => {
+                    console.warn(err);
+                    console.warn("Unable to fetch data from ", this.requestSettings.url);
                     return {}
                 })
         }

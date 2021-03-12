@@ -5,6 +5,12 @@
 
 let getData;
 let game;
+let ds;
+
+let iconTypes = [
+    "user"
+];
+let icons = {};
 
 let cardTypes = [
     "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "TS", "JS", "QS", "KS",
@@ -12,34 +18,40 @@ let cardTypes = [
     "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "TC", "JC", "QC", "KC",
     "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "TH", "JH", "QH", "KH",
     "back"
-]
+];
 let cards = {};
 
 function preload() {
     cardTypes.forEach(name => {
         cards[name] = loadImage("./src/cards/" + name + ".png");
     })
+    iconTypes.forEach(name => {
+        icons[name] = loadImage("./src/icons/" + name + ".png");
+    })
 }
 
 function setup() {
-    // setup canvas
-    createCanvas(800, 600);
-
-    // setup drawing params
-    rectMode(CENTER);
-    imageMode(CENTER);
-
     // startup data game
     getData = new GetData();
     game = new GameSettings(getData);
     game.start();
+    ds = new DS();
+
+    // setup canvas
+    createCanvas(ds.canvasw, ds.canvash);
+
+    // setup drawing params
+    rectMode(CENTER);
+    imageMode(CENTER);
+    textAlign(CENTER);
 }
 
 function draw() {
-    const bgcolor = color(29, 117, 63);
-    background(bgcolor);
+    background(ds.tablec);
 
     // draw table
-    drawTable();
+    drawTable(game);
 
+    // draw player table
+    drawPlayerTable(game);
 }
