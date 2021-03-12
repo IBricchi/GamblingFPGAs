@@ -1,5 +1,5 @@
 /// <reference path="p5/p5.global-mode.d.ts" />
-/// <reference path="GetData.js" />
+/// <reference path="Communicator.js" />
 /// <reference path="GameSettings.js" />
 /// <reference path="drawHelpers.js" />
 
@@ -32,8 +32,8 @@ function preload() {
 
 function setup() {
     // startup data game
-    getData = new GetData();
-    game = new GameSettings(getData);
+    comm = new Communicator("player1", "player1");
+    game = new GameSettings(comm);
     game.start();
     ds = new DS();
 

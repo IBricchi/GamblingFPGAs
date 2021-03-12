@@ -1,12 +1,12 @@
 class GameSettings {
-    getData = {};
+    comm = {};
     intervalGet;
 
     me = {};
     players = [];
 
-    constructor(getData) {
-        this.getData = getData;
+    constructor(comm) {
+        this.comm = comm;
     }
 
     start() {
@@ -16,7 +16,7 @@ class GameSettings {
     }
 
     update() {
-        this.getData.get()
+        this.comm.getActive()
             .then(data => this.processData(data))
             .catch(_ => console.warn("GameSettings: Unable to obtain new data."));
     }
@@ -30,7 +30,7 @@ class GameSettings {
             let player = data.players[i];
             this.currentPot += player.totalMoneyBetAmount;
             player.order = i;
-            if (player.name == getData.username) {
+            if (player.name == comm.username) {
                 this.me = player;
             }
             this.players.push(player);
