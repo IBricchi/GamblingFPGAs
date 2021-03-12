@@ -97,6 +97,17 @@ module DE10_LITE_SDRAM_Nios_Test(
 );
 
 
+// ============================================================================
+//  Peek code 
+// ============================================================================
+	
+		
+		hex_to_7seg		SEG0 (HEX0, SW[3:0]);
+	
+	 
+
+
+
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
@@ -145,12 +156,7 @@ DE10_LITE_Qsys u0 (
     //OUTPUT
     .led_external_connection_export     (LEDR[9:0]),
 
-    .hex_0_external_connection_export   (HEX0),
-    .hex_1_external_connection_export   (HEX1),
-    .hex_2_external_connection_export   (HEX2),
-    .hex_3_external_connection_export   (HEX3),
-    .hex_4_external_connection_export   (HEX4),
-    .hex_5_external_connection_export   (HEX5)
+    
 );
 
 

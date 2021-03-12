@@ -1,6 +1,6 @@
 #!/bin/bash
 rm out.txt
-(echo $1 | nios2-terminal.exe | ./main > out.txt) &
+(echo $1 | nios2-terminal | ./main > out.txt) &
 i=0
 while ! [ -s out.txt ]; do
     ((i++))
@@ -10,4 +10,4 @@ while ! [ -s out.txt ]; do
     sleep 0.1
 done
 cat out.txt
-killall nios2-terminal.exe
+killall nios2-terminal
