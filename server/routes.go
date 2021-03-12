@@ -15,7 +15,7 @@ func (h *HttpServer) routes(ctx context.Context) error {
 	h.router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedHeaders:   []string{"X-PINGOTHER", "Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		AllowedMethods:   []string{"GET", "POST", "PUT"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowCredentials: true,
 	}))
 
