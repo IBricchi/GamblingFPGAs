@@ -44,6 +44,7 @@ func (h *HttpServer) routes(ctx context.Context) error {
 		r.Get("/test", h.handleGetStaticTest())
 		r.Get("/poker/openGameStatus", h.handlePokerGetGameOpenStatus())
 		r.Get("/poker/activeGameStatus", h.handlePokerGetGameActiveStatus())
+		r.Get("/poker/activeGameStatus/showdown", h.handlePokerGetGameShowdownData())
 		r.Get("/poker/fpgaData", h.handlePokerGetFPGAData())
 
 		// Post

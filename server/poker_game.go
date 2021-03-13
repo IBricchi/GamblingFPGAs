@@ -10,6 +10,7 @@ import (
 // The active game
 var pokerGameStart gameStart
 var pokerGame game
+var pokerGameShowdwon gameShowdown
 
 // Used when a game is open but not yet started.
 type gameStart struct {
@@ -35,6 +36,16 @@ type game struct {
 	currentPlayer             int
 	lastBetAmountCurrentRound int
 	smallBlindAmount          int
+}
+
+// Index in Winners corresponds with the index in WinningMoneyAmounts
+type gameShowdown struct {
+	CommunityCards      []poker.Card `json:"communityCards"`
+	Players             []player     `json:"players"`
+	Winners             []player     `json:"winners"`
+	WinningReason       string       `json:"winningReason"`
+	PotMoneyAmount      int          `json:"potMoneyAmount"`
+	WinningMoneyAmounts []int        `json:"winningMoneyAmounts"`
 }
 
 /*
@@ -130,4 +141,43 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	g.next()
 
 	return nil
+}
+
+/*
+	Assumes that an active game exists that has ended
+ 	(relevant checks should be performed before calling this method).
+
+	Currently, every winner receives an equal amount. Side pots are not implemented.
+*/
+func (g *game) computeShowdownData() {
+	// Ensure that data is reset
+	pokerGameShowdwon = gameShowdown{}
+
+	pokerGameShowdwon.CommunityCards = pokerGame.communityCards
+	pokerGameShowdwon.Players = pokerGame.players
+
+	potMoneyAmount := 0
+	winningCardScore := 0
+	winningPlayers := []int{}
+	for i, player := range pokerGameShowdwon.Players {
+		potMoneyAmount += player.TotalMoneyBetAmount
+
+		if !player.HasFolded {
+			if player.RelativeCardScore > winningCardScore {
+				winningCardScore = player.RelativeCardScore
+				winningPlayers = []int{i}
+			} else if player.RelativeCardScore == winningCardScore {
+				winningPlayers = append(winningPlayers, i)
+			}
+		}
+	}
+	pokerGameShowdwon.PotMoneyAmount = potMoneyAmount
+
+	winningMoneyAmount := potMoneyAmount / len(winningPlayers)
+	for i := range winningPlayers {
+		pokerGameShowdwon.Winners = append(pokerGameShowdwon.Winners, pokerGameShowdwon.Players[winningPlayers[i]])
+		pokerGameShowdwon.WinningMoneyAmounts = append(pokerGameShowdwon.WinningMoneyAmounts, winningMoneyAmount)
+	}
+
+	pokerGameShowdwon.WinningReason = pokerGameShowdwon.Winners[0].VerboseScore
 }

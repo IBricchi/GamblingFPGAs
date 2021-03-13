@@ -137,6 +137,30 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 	}
 }
 
+// Showdown data
+func (h *HttpServer) handlePokerGetGameShowdownData() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerGetGameShowdownData called")
+
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+
+		if !pokerGame.active {
+			http.Error(w, "Error: no active poker game exists", http.StatusBadRequest)
+			return
+		}
+		if !pokerGame.hasEnded {
+			http.Error(w, "Error: the active poker game is not in the showdown phase (has not yet ended)", http.StatusBadRequest)
+			return
+		}
+
+		if err := json.NewEncoder(w).Encode(pokerGameShowdwon); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+}
+
 // Called by FPGA nodes
 func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
