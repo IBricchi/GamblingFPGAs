@@ -54,6 +54,7 @@ func (p *player) getMinimumBetAmount() int {
 func (p *player) allIn() {
 	p.AllIn = true
 	p.LastBetAmount = p.MoneyAvailableAmount
+	p.TotalMoneyBetAmount += p.LastBetAmount
 	p.MoneyAvailableAmount = 0
 }
 
@@ -64,6 +65,7 @@ func (p *player) bet(amount int) error {
 		return fmt.Errorf("server: poker: player %v's bet amount is smaller than the minimum bet amount", p.Name)
 	} else {
 		p.LastBetAmount = amount
+		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
 	}
 
@@ -75,6 +77,7 @@ func (p *player) call() {
 		p.allIn()
 	} else {
 		p.LastBetAmount = pokerGame.lastBetAmountCurrentRound
+		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
 	}
 }
@@ -86,6 +89,7 @@ func (p *player) raise(amount int) error {
 		return fmt.Errorf("server: poker: player %v's raise amount is smaller than or equal to the minimum bet amount", p.Name)
 	} else {
 		p.LastBetAmount = amount
+		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
 	}
 

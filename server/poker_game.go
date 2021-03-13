@@ -94,6 +94,7 @@ func (g *game) next() {
 		g.currentPlayer++
 	} else if g.currentRound < 4 {
 		g.currentRound++
+		g.currentPlayer = 0
 		g.lastBetAmountCurrentRound = 0
 	} else {
 		g.hasEnded = true
@@ -109,6 +110,11 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 
 	if !data.IsActiveData {
 		return nil
+	}
+
+	// check if it is the player's turn
+	if pokerGame.players[pokerGame.currentPlayer].Name != player.Name {
+		return fmt.Errorf("server: poker: updateGameWithFPGAData: not player %v's turn, cannot process active data", player.Name)
 	}
 
 	if data.NewTryPeek {
