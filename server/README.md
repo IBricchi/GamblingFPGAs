@@ -151,5 +151,14 @@ Use ```curl -i``` for additional information.
 ```
 
 ```bash
-  curl -i http://test:test@localhost:3000/poker/activeGameStatus
+  curl http://test:test@localhost:3000/poker/activeGameStatus
+```
+
+### Getting showdown data and starting a new game
+
+Showdown data can be retrieved once the `HasEnded` data property of `activeGameStatus` is true.
+Retriving showdown data will start a new game with the existing players and the existing small blind value.
+
+```bash
+  curl http://test:test@localhost:3000/poker/activeGameStatus/showdown
 ```
