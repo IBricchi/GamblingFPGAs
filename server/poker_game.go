@@ -98,7 +98,8 @@ func (g *game) next() {
 	} else {
 		g.hasEnded = true
 		g.computeShowdownData()
-		g.startNewGame()
+
+		// New game is started by handlePokerGetGameShowdownData()
 	}
 }
 

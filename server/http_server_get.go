@@ -158,6 +158,9 @@ func (h *HttpServer) handlePokerGetGameShowdownData() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// Start new game
+		pokerGame.startNewGame()
 	}
 }
 
