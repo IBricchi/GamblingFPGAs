@@ -97,7 +97,7 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		return nil
 	}
 
-	if data.NewTryPeak {
+	if data.NewTryPeek {
 		return fmt.Errorf("server: poker: updateGameWithFPGAData: NewTryPeak not yet implemented!")
 	}
 
