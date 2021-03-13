@@ -169,7 +169,7 @@ The URL credentials must correspond with the ones used for joining a game.
 
 ### Getting data from server
 
-Please see ... for an up to date version of the data object.
+Please see [here](https://github.com/IBricchi/GamblingFPGAs/blob/master/server/poker_fpga.go) for an up to date version of the data object.
 
 ```bash
   curl http://player1:player1@localhost:3000/poker/fpgaData
@@ -183,7 +183,7 @@ once during a player's turn (e.g. placing a new bet) while passive data is send 
 a player's turn (e.g. `ShowCardsMe`). A player's turn ends once active data has been received. Active data
 is ignored if it is not the player's turn.
 
-Please see ... for an up to date version of the data object.
+Please see [here](https://github.com/IBricchi/GamblingFPGAs/blob/master/server/poker_fpga.go) for an up to date version of the data object.
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
