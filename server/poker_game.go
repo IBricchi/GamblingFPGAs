@@ -97,6 +97,8 @@ func (g *game) next() {
 		g.lastBetAmountCurrentRound = 0
 	} else {
 		g.hasEnded = true
+		g.computeShowdownData()
+		g.startNewGame()
 	}
 }
 
@@ -113,7 +115,7 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	}
 
 	// Player can't do anything
-	if player.AllInCurrentRound {
+	if player.AllIn {
 		g.next()
 	}
 
@@ -180,4 +182,46 @@ func (g *game) computeShowdownData() {
 	}
 
 	pokerGameShowdwon.WinningReason = pokerGameShowdwon.Winners[0].VerboseScore
+}
+
+/*
+	Start new game with existing players and existing small blind amount.
+	This method should only be called after showdown data has been computed for the current ended game.
+
+	Uses both pokerGame and pokerGameShowdwon objects for computing values for the new poker game.
+*/
+func (g *game) startNewGame() {
+	// Reset game attributes
+	pokerGame.hasEnded = false
+	pokerGame.currentRound = 1
+	pokerGame.currentPlayer = 0
+	pokerGame.lastBetAmountCurrentRound = 0
+
+	pokerGame.deck = poker.NewDeck()
+
+	// Reset player attributes, give each player two new cards,
+	for i := range pokerGame.players {
+		pokerGame.players[i].HasFolded = false
+		pokerGame.players[i].LastBetAmount = 0
+		pokerGame.players[i].TotalMoneyBetAmount = 0
+		pokerGame.players[i].AllIn = false
+		pokerGame.players[i].ShowCardsMe = false
+		pokerGame.players[i].ShowCardsEveryone = false
+
+		pokerGame.players[i].Hand = pokerGame.deck.Draw(2)
+
+		for j := range pokerGameShowdwon.Winners {
+			if pokerGame.players[i].Name == pokerGameShowdwon.Winners[j].Name {
+				pokerGame.players[i].MoneyAvailableAmount += pokerGameShowdwon.WinningMoneyAmounts[j]
+			}
+		}
+	}
+
+	// Determine which other cards will appear in game
+	communityCards := pokerGame.deck.Draw(5)
+
+	// Move dealer button by one
+	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, 1)
+
+	pokerGame.players = allocateRelativeCardScores(pokerGame.players, communityCards)
 }

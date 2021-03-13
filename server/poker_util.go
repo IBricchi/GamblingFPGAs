@@ -7,11 +7,23 @@ import (
 	"github.com/chehsunliu/poker"
 )
 
-// Expects a slice of players of length >= 2.
 func sortPlayersAccordingToRandomBlind(players []player) []player {
 	// Randomly determine dealer player
 	rand.Seed(time.Now().UnixNano())
 	dealerPlayerIdx := rand.Intn(len(players))
+
+	return sortPlayersAccordingToBlind(players, dealerPlayerIdx)
+}
+
+// Expects a slice of players of length >= 2.
+func sortPlayersAccordingToBlind(players []player, dealerPlayerIdx int) []player {
+	// Reset all remaining dealer/blind data
+	for i := range players {
+		players[i].IsDealer = false
+		players[i].IsSmallBlind = false
+		players[i].IsBigBlind = false
+	}
+
 	players[dealerPlayerIdx].IsDealer = true
 
 	// Set small and big blind

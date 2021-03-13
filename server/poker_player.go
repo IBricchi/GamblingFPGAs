@@ -24,7 +24,7 @@ type player struct {
 	HasFolded            bool         `json:"hadFolded"`
 	LastBetAmount        int          `json:"lastBetAmount"`
 	TotalMoneyBetAmount  int          `json:"totalMoneyBetAmount"`
-	AllInCurrentRound    bool         `json:"allInCurrentRound"`
+	AllIn                bool         `json:"allIn"`
 	ShowCardsMe          bool         `json:"showCardsMe"`
 	ShowCardsEveryone    bool         `json:"showCardsEveryone"`
 }
@@ -52,7 +52,7 @@ func (p *player) getMinimumBetAmount() int {
 }
 
 func (p *player) allIn() {
-	p.AllInCurrentRound = true
+	p.AllIn = true
 	p.LastBetAmount = p.MoneyAvailableAmount
 	p.MoneyAvailableAmount = 0
 }
