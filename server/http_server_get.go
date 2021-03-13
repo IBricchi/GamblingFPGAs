@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/chehsunliu/poker"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type staticTestData struct {
@@ -23,6 +24,44 @@ func (h *HttpServer) handleGetStaticTest() http.HandlerFunc {
 				1, 2, 3, 4, 5,
 			},
 		}
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+}
+
+func (h *HttpServer) handleGetIsAuthorised(creds map[string]string) http.HandlerFunc {
+	type isAuthorised struct {
+		Valid bool `json:"valid"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handleGetIsAuthorised called")
+
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+
+		data := isAuthorised{
+			Valid: true,
+		}
+
+		user, pass, ok := r.BasicAuth()
+		if !ok {
+			data.Valid = false
+		}
+
+		credPassHash, credUserOk := creds[user]
+		if !credUserOk {
+			data.Valid = false
+		}
+
+		byteCredPassHash := []byte(credPassHash)
+		bytePass := []byte(pass)
+		if err := bcrypt.CompareHashAndPassword(byteCredPassHash, bytePass); err != nil {
+			data.Valid = false
+		}
+
 		if err := json.NewEncoder(w).Encode(data); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

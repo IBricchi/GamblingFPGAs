@@ -20,20 +20,23 @@ func (h *HttpServer) routes(ctx context.Context) error {
 	}))
 	h.router.Use(middleware.Logger)
 
+	// Credentials from database
+	creds, err := h.db.getCreds(ctx)
+	if err != nil {
+		return fmt.Errorf("server: routes: failed to get credentials: %w", err)
+	}
+
 	// Public routes
 	h.router.Group(func(r chi.Router) {
 		// Get
 		r.Get("/public/test", h.handleGetStaticTest())
+		r.Get("/isAuthorised", h.handleGetIsAuthorised(creds))
 
 		// Post
 		r.Post("/public/test/dynamic", h.handlePostDynamicTest(ctx))
 	})
 
 	// Private routes
-	creds, err := h.db.getCreds(ctx)
-	if err != nil {
-		return fmt.Errorf("server: routes: failed to get creds: %w", err)
-	}
 	h.router.Group(func(r chi.Router) {
 		r.Use(h.basicAuth("GamblingFPGAs-API", creds))
 
