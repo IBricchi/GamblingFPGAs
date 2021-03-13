@@ -40,6 +40,14 @@ Custom database name:
   ./run_credentials.sh {optional custom database name}
 ```
 
+### Checking if a user is authorised
+
+```bash
+  curl http://localhost:3000/isAuthorised
+```
+
+Returns a boolean `valid` value.
+
 ### Accessing Static Test Data
 
 #### Without password protection
