@@ -92,7 +92,7 @@ The received data will be inserted into the server's sqlite3 database.
 
 Incorrect data formats will return an error code.
 
-## Poker
+## Poker - Web server view
 
 ### Opening a game
 
@@ -161,4 +161,33 @@ Retriving showdown data will start a new game with the existing players and the 
 
 ```bash
   curl http://test:test@localhost:3000/poker/activeGameStatus/showdown
+```
+
+## Poker - FPGA node view
+
+The URL credentials must correspond with the ones used for joining a game.
+
+### Getting data from server
+
+Please see ... for an up to date version of the data object.
+
+```bash
+  curl http://player1:player1@localhost:3000/poker/fpgaData
+```
+
+### Sending data to server
+
+`IsActiveData` is used to differentiating data that is send due to player action (active data)
+from data that is send regardless of player actions (passive data). Active data can only be send
+once during a player's turn (e.g. placing a new bet) while passive data is send multiple times during
+a player's turn (e.g. `ShowCardsMe`). A player's turn ends once active data has been received. Active data
+is ignored if it is not the player's turn.
+
+Please see ... for an up to date version of the data object.
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+  --request POST \
+  --data '{"isActiveData":true,"showCardsMe":false,"showCardsEveryone":false,"newTryPeek":false,"newTryPeekPlayerNumber":0,"newMoveType":"bet","newBetAmount":20}' \
+  http://player1:player1@localhost:3000/poker/fpgaData
 ```
