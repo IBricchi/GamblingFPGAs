@@ -1,10 +1,10 @@
 {
     "active": true,
     "hasEnded": false,
-    "communityCards": ["6D", "2S", "9C", "JS", "AH"],
+    "communityCards": ["6d", "2s", "9c", "Js", "Ah"],
     "players": [{
             "name": "John",
-            "hand": ["AS", "KC"],
+            "hand": ["As", "Kc"],
             "moneyAvailableAmount": 500,
             "relativeCardScore": 10,
             "verboseScore": "flush",
@@ -20,7 +20,7 @@
         },
         {
             "name": "Ben",
-            "hand": ["Ts", "3H"],
+            "hand": ["Ts", "3h"],
             "moneyAvailableAmount": 500,
             "relativeCardScore": 10,
             "verboseScore": "pair",
@@ -36,13 +36,13 @@
         },
         {
             "name": "player1",
-            "hand": ["2D", "9D"],
+            "hand": ["2d", "9d"],
             "moneyAvailableAmount": 500,
             "relativeCardScore": 10,
             "verboseScore": "stuff",
             "dealer": false,
             "smallBlind": false,
-            "bigBlind": false,
+            "bigBlind": true,
             "hadFolded": false,
             "lastBetAmount": 500,
             "totalMoneyBetAmount": 100,
@@ -52,7 +52,7 @@
         },
         {
             "name": "Anna",
-            "hand": ["4S", "8C"],
+            "hand": ["4s", "8c"],
             "moneyAvailableAmount": 500,
             "relativeCardScore": 10,
             "verboseScore": "poker",
@@ -69,6 +69,6 @@
     ],
     "playerAmmount": 4,
     "currentRound": 1,
-    "currentPlayer": 0,
+    "currentPlayer": 2,
     "smallBlineValue": 0
 }

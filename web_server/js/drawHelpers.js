@@ -19,6 +19,7 @@ class DS {
         this.playercw = this.playertw; // player card width
         this.playerch = this.playerth / 6; // player card height
         this.playerco = color(0); // player card outline color
+        this.playercto = color(252, 186, 3); // player card outline color if turn
         this.playerc = [
             color(255, 0, 0),
             color(0, 255, 0),
@@ -28,6 +29,7 @@ class DS {
             color(0, 255, 255)
         ]; // possible player colors
         this.picons = this.playerch - 30; // player icon size
+        this.pcardl = 10; // player label size
         this.pnames = this.playerch / 3; // size of name text
         this.ptexts = this.playerch / 6; // size of rest of player text
         this.pfoldc = color(0, 0, 0, 150) // tint on folded players
@@ -54,7 +56,7 @@ function drawTable(game) {
         drawCardSlot(centre_start_x + i * ds.slotw + i * ds.slotm, centre_start_y, ds.slotw, ds.sloth, ds.slotc);
     }
 
-    const comm_on_round = [0, 3, 4, 5];
+    const comm_on_round = [0, 0, 3, 4, 5];
     for (let i = 0; i < comm_on_round[game.currentRound]; i++) {
         drawCard(centre_start_x + i * ds.slotw + i * ds.slotm, centre_start_y, ds.cardw, ds.cardh, game.communityCards[i]);
     }
@@ -94,6 +96,12 @@ function drawPlayerTable(game) {
     for (let i = 0; i < game.players.length; i++) {
         drawPlayerCard(game, game.players[i], 0, ds.playerch * i);
     }
+
+    // outline who's turn it is
+    strokeWeight(5);
+    stroke(ds.playercto);
+    noFill();
+    rect(ds.playercw / 2, ds.playerch * game.currentPlayer + ds.playerch / 2, ds.playercw, ds.playerch);
 
     pop();
 }
@@ -148,7 +156,7 @@ function drawCard(x, y, w, h, v, t = 0) {
     pop();
 }
 
-function drawPlayerCard(game, player, x, y) {
+function drawPlayerCard(game, player, x, y, turn) {
     push();
     translate(x, y);
 
@@ -179,6 +187,16 @@ function drawPlayerCard(game, player, x, y) {
     tint(ds.playerc[player.order]);
     image(icons.user, avaiablex + ds.playerch / 2, ds.playerch / 2, ds.picons, ds.picons);
     avaiablex += ds.picons;
+
+    // draw labels if necessary
+    textSize(ds.pcardl);
+    if (player.dealer) {
+        text("D", avaiablex, ds.cardh * 4 / 5);
+    } else if (player.smallBlind) {
+        text("SB", avaiablex, ds.cardh * 4 / 5);
+    } else if (player.bigBlind) {
+        text("BB", avaiablex, ds.cardh * 4 / 5);
+    }
 
     // remaining space left
     translate(avaiablex, 0);
