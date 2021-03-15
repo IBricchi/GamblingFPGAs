@@ -47,19 +47,18 @@ Only the minimum required files are included in the repo so to set everything up
     - Select SOPC file to be the sopcinfo file you copied
     - Set name to whatever you want (setting it to fpga is recomeded)
     - From project template select hello Wolrd
-    - Copy the contents of hardware/workspace/hello_world.c into the hello_world.c file in your eclipse project. (If you've set it up as recomended, with the project name fpga, you can run ./workspace/srctoproj.sh to automate this)
-
-Now you should be able to run the project
+    - Delete the hello_world.c file
+    - From file explorer on windows, drag both main.c and the src folder from /hardware/workspace into your created project. This should link up the make files appropriately.
+Now you should be able to run the project.
 
 ## Developing
 
 Most files are ignored by git as to keep the repo size small. If big changes are made to the quartus file that creates files that are currently ignored, try and find out what the minimum number of files necessary are to generate the whole project, and ammend the build project instructions if new steps are required.
 
-As for the c program, changes in your workspace will not be caputred by git, so remember to copy the contents of the hello_world.c file from your project back into the file /hardware/workspace/hello_world.c. If you've setup your workspace as recomended in the setup steps you can run ./workspace/projtosrc.sh to automate this.
-
+As for the c program, changes in your workspace will not be caputred by git, so remember to copy the contents of the main.c and src from your project back into the file /hardware/workspace/. If you've setup your workspace as recomended in the setup steps you can run ./projtosrc.sh to automate this.
 ### Warning
 
-Just in case you accidentally use the wrong one of the projtosrc or srctoproj, both commands make a backup of the src and proj files which can be found in hardware/workspace/bak/ these only hold the state of both files before the last command, so if you run any of the commands twice you could loose changes.
+Just in case you accidentally use the projtosrc.sh command at the wrong time. The file makes a backup of the main.c file and src folder in /hardware/workspace/. This only caputre the perevious version of these files so be careful not to accidentally run the helper tool twice.
 
 ## Run Project
 
