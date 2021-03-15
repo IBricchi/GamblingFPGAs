@@ -75,12 +75,12 @@ func (h *HttpServer) handleGetIsAuthorised(creds map[string]string) http.Handler
 func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 	// Open refers to the open phase while active refers to the active phase
 	type gameOpenInfo struct {
-		Open               bool   `json:"open"`
-		Active             bool   `json:"active"`
-		Player             player `json:"player"`
-		PlayerAmount       int    `json:"playerAmount"`
-		InitialPlayerMoney int    `json:"initialPlayerMoney"`
-		SmallBlindValue    int    `json:"smallBlindValue"`
+		Open               bool           `json:"open"`
+		Active             bool           `json:"active"`
+		Players            []maskedPlayer `json:"players"`
+		PlayerAmount       int            `json:"playerAmount"`
+		InitialPlayerMoney int            `json:"initialPlayerMoney"`
+		SmallBlindValue    int            `json:"smallBlindValue"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -95,16 +95,16 @@ func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 		}
 
 		// A player can request open phase data without having joined the game
-		playerPtr, err := getPlayerPointerFromName(pokerGameStart.players, playerName)
-		var player player
+		player, err := getPlayerPointerFromName(pokerGameStart.players, playerName)
+		var maskedPlayers []maskedPlayer
 		if err == nil {
-			player = *playerPtr
+			maskedPlayers = player.computeMaskedPlayers(pokerGameStart.players)
 		}
 
 		gameOpenInfo := gameOpenInfo{
 			Open:               pokerGameStart.open,
 			Active:             pokerGame.active,
-			Player:             player,
+			Players:            maskedPlayers,
 			PlayerAmount:       len(pokerGameStart.players),
 			InitialPlayerMoney: pokerGameStart.initialPlayerMoney,
 			SmallBlindValue:    pokerGameStart.smallBlindValue,
@@ -122,14 +122,14 @@ func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 // Status of poker game in active phase.
 func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 	type gameActiveInfo struct {
-		Active          bool         `json:"active"`
-		HasEnded        bool         `json:"hasEnded"`
-		CommunityCards  []poker.Card `json:"communityCards"`
-		Player          player       `json:"player"`
-		PlayerAmount    int          `json:"playerAmount"`
-		CurrentRound    int          `json:"currentRound"`
-		CurrentPlayer   int          `json:"currentPlayer"`
-		SmallBlindValue int          `json:"smallBlindValue"`
+		Active          bool           `json:"active"`
+		HasEnded        bool           `json:"hasEnded"`
+		CommunityCards  []poker.Card   `json:"communityCards"`
+		Players         []maskedPlayer `json:"players"`
+		PlayerAmount    int            `json:"playerAmount"`
+		CurrentRound    int            `json:"currentRound"`
+		CurrentPlayer   int            `json:"currentPlayer"`
+		SmallBlindValue int            `json:"smallBlindValue"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -143,7 +143,7 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 			return
 		}
 
-		player, err := getPlayerPointerFromName(pokerGameStart.players, playerName)
+		player, err := getPlayerPointerFromName(pokerGame.players, playerName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -153,7 +153,7 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 			Active:          pokerGame.active,
 			HasEnded:        pokerGame.hasEnded,
 			CommunityCards:  pokerGame.getCommunityCardsCurrentRound(),
-			Player:          *player,
+			Players:         player.computeMaskedPlayers(pokerGame.players),
 			PlayerAmount:    len(pokerGame.players),
 			CurrentRound:    pokerGame.currentRound,
 			CurrentPlayer:   pokerGame.currentPlayer,
@@ -223,11 +223,13 @@ func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 
 		// playerAndGameData := getPlayerDataForFPGA()
 		playerAndGameData := outgoingFPGAData{
-			IsTurn:               pokerGame.players[pokerGame.currentPlayer].Name == player.Name,
-			AvailableNextMoves:   getAvailableNextMoves(),
-			MoneyAvailableAmount: player.MoneyAvailableAmount,
-			MinimumNextBetAmount: player.getMinimumBetAmount(),
-			RelativeCardScore:    player.RelativeCardScore,
+			IsTurn:                        pokerGame.players[pokerGame.currentPlayer].Name == player.Name,
+			CurrentPlayerNumber:           pokerGame.currentPlayer,
+			AvailableNextMoves:            getAvailableNextMoves(),
+			MoneyAvailableAmount:          player.MoneyAvailableAmount,
+			MinimumNextBetAmount:          player.getMinimumBetAmount(),
+			RelativeCardScore:             player.RelativeCardScore,
+			FailedPeekAttemptsCurrentGame: player.FailedPeekAttemptsCurrentGame,
 		}
 
 		if err := json.NewEncoder(w).Encode(playerAndGameData); err != nil {

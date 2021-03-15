@@ -96,6 +96,7 @@ func (g *game) next() {
 		g.currentRound++
 		g.currentPlayer = 0
 		g.lastBetAmountCurrentRound = 0
+		resetRoundSpecificPlayerData(g.players)
 	} else {
 		g.hasEnded = true
 		g.computeShowdownData()
@@ -106,7 +107,18 @@ func (g *game) next() {
 
 func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	player.ShowCardsMe = data.ShowCardsMe
-	player.ShowCardsEveryone = data.ShowCardsEveryone
+
+	// Will be set back to false at end of round
+	if data.ShowCardsIfPeek {
+		player.ShowCardsIfPeek = data.ShowCardsIfPeek
+	}
+
+	if data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
+		peekSucceeded := g.tryPeek(data.NewTryPeekPlayerNumber, g.getPlayerNumber(player.Name))
+		if !peekSucceeded {
+			player.FailedPeekAttemptsCurrentGame++
+		}
+	}
 
 	if !data.IsActiveData {
 		return nil
@@ -115,10 +127,6 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	// check if it is the player's turn
 	if pokerGame.players[pokerGame.currentPlayer].Name != player.Name {
 		return fmt.Errorf("server: poker: updateGameWithFPGAData: not player %v's turn, cannot process active data", player.Name)
-	}
-
-	if data.NewTryPeek {
-		return fmt.Errorf("server: poker: updateGameWithFPGAData: NewTryPeak not yet implemented!")
 	}
 
 	// Player can't do anything
@@ -150,6 +158,24 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	g.next()
 
 	return nil
+}
+
+// Return true if peek succeeded
+func (g *game) tryPeek(peekedAtPlayerNumber int, peekingPlayerNumber int) bool {
+	if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
+		g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
+		return true
+	}
+	return false
+}
+
+func (g *game) getPlayerNumber(playerName string) int {
+	for i := range g.players {
+		if g.players[i].Name == playerName {
+			return i
+		}
+	}
+	return -1
 }
 
 func (g *game) getCommunityCardsCurrentRound() []poker.Card {
@@ -228,7 +254,9 @@ func (g *game) startNewGame() {
 		pokerGame.players[i].TotalMoneyBetAmount = 0
 		pokerGame.players[i].AllIn = false
 		pokerGame.players[i].ShowCardsMe = false
-		pokerGame.players[i].ShowCardsEveryone = false
+		pokerGame.players[i].ShowCardsIfPeek = false
+		pokerGame.players[i].ShowCardsToPlayerNumbers = []int{}
+		pokerGame.players[i].FailedPeekAttemptsCurrentGame = 0
 
 		pokerGame.players[i].Hand = pokerGame.deck.Draw(2)
 

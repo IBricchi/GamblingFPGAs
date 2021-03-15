@@ -147,6 +147,7 @@ func (h *HttpServer) handlePokerTerminateGame() http.HandlerFunc {
 
 		pokerGameStart = gameStart{}
 		pokerGame = game{}
+		pokerGameShowdwon = gameShowdown{}
 
 		w.WriteHeader(http.StatusOK)
 		h.logger.Info("poker game terminated successfully")
