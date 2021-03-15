@@ -1,0 +1,28 @@
+#terminate {
+    top: 50px;
+    right: 50px;
+    position: fixed;
+    background-color: red;
+    color: white;
+    font-size: large;
+    font-weight: bolder;
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    margin: auto;
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
+
+canvas {
+    position: absolute;
+    left: calc((100vw - 1200px) / 2);
+}
