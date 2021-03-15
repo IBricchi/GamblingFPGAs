@@ -71,8 +71,10 @@ func (h *HttpServer) handleGetIsAuthorised(creds map[string]string) http.Handler
 
 // Status of poker game in open phase.
 func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
+	// Open refers to the open phase while active refers to the active phase
 	type gameOpenInfo struct {
 		Open               bool     `json:"open"`
+		Active             bool     `json:"active"`
 		Players            []player `json:"players"`
 		PlayerAmount       int      `json:"playerAmount"`
 		InitialPlayerMoney int      `json:"initialPlayerMoney"`
@@ -87,6 +89,7 @@ func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 
 		gameOpenInfo := gameOpenInfo{
 			Open:               pokerGameStart.open,
+			Active:             pokerGame.active,
 			Players:            pokerGameStart.players,
 			PlayerAmount:       len(pokerGameStart.players),
 			InitialPlayerMoney: pokerGameStart.initialPlayerMoney,
