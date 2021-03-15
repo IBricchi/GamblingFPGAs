@@ -223,11 +223,13 @@ func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 
 		// playerAndGameData := getPlayerDataForFPGA()
 		playerAndGameData := outgoingFPGAData{
-			IsTurn:               pokerGame.players[pokerGame.currentPlayer].Name == player.Name,
-			AvailableNextMoves:   getAvailableNextMoves(),
-			MoneyAvailableAmount: player.MoneyAvailableAmount,
-			MinimumNextBetAmount: player.getMinimumBetAmount(),
-			RelativeCardScore:    player.RelativeCardScore,
+			IsTurn:                        pokerGame.players[pokerGame.currentPlayer].Name == player.Name,
+			CurrentPlayerNumber:           pokerGame.currentPlayer,
+			AvailableNextMoves:            getAvailableNextMoves(),
+			MoneyAvailableAmount:          player.MoneyAvailableAmount,
+			MinimumNextBetAmount:          player.getMinimumBetAmount(),
+			RelativeCardScore:             player.RelativeCardScore,
+			FailedPeekAttemptsCurrentGame: player.FailedPeekAttemptsCurrentGame,
 		}
 
 		if err := json.NewEncoder(w).Encode(playerAndGameData); err != nil {

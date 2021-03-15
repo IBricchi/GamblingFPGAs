@@ -103,3 +103,9 @@ func isMoveAnAvailableNextMove(move string) bool {
 	}
 	return false
 }
+
+func resetRoundSpecificPlayerData(players []player) {
+	for i := range players {
+		players[i].ShowCardsIfPeek = false
+	}
+}

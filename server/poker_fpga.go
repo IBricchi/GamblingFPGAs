@@ -11,11 +11,15 @@ package server
 	depending on the actions taken by the previous players. A list of the available next moves can be obtained
 	from outgoingFPGAData:AvailableNextMoves.
 	NewBetAmount is only used when NewMoveType is either 'bet' or 'raise'.
+	NewTryPeek is only counted once during a player's turn and is ignored if NewTryPeekPlayerNumber does not
+	correspond to the current player number.
+	NewTryPeekPlayerNumber should correspond to CurrentPlayerNumber from outgoingFPGAData.
+	ShowCardsIfPeek indicates that any peek attempts by other players should succeed.
 */
 type incomingFPGAData struct {
 	IsActiveData           bool   `json:"isActiveData"`
 	ShowCardsMe            bool   `json:"showCardsMe"`
-	ShowCardsEveryone      bool   `json:"showCardsEveryone"`
+	ShowCardsIfPeek        bool   `json:"showCardsIfPeek"`
 	NewTryPeek             bool   `json:"newTryPeak"`
 	NewTryPeekPlayerNumber int    `json:"newTryPeakPlayerNumber"`
 	NewMoveType            string `json:"newMoveType"`
@@ -26,9 +30,11 @@ type incomingFPGAData struct {
 	Data/state object that is send from server to FPGA nodes.
 */
 type outgoingFPGAData struct {
-	IsTurn               bool     `json:"isTurn"`
-	AvailableNextMoves   []string `json:"availableNextMoves"`
-	MoneyAvailableAmount int      `json:"moneyAvailableAmount"`
-	MinimumNextBetAmount int      `json:"minimumNextBetAmount"`
-	RelativeCardScore    int      `json:"relativeCardScore"`
+	IsTurn                        bool     `json:"isTurn"`
+	CurrentPlayerNumber           int      `json:"currentPlayerNumber"`
+	AvailableNextMoves            []string `json:"availableNextMoves"`
+	MoneyAvailableAmount          int      `json:"moneyAvailableAmount"`
+	MinimumNextBetAmount          int      `json:"minimumNextBetAmount"`
+	RelativeCardScore             int      `json:"relativeCardScore"`
+	FailedPeekAttemptsCurrentGame int      `json:"failedPeekAttemptsCurrentGame"`
 }
