@@ -2,13 +2,16 @@
 #include "src/setup.h"
 #include "src/request.h"
 #include "src/timerLoop.h"
+#include "src/jsonDecode.h"
 
 Data data;
+InputData inputData;
 DataSrc dataSrc;
 
 int main()
 {
-	printf("Checking Peripherals..\n");
+	// setup inputData
+	setupInputData();
 
 	// setup peripherals
 	if (setupPeripherals()) {

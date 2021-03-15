@@ -26,9 +26,19 @@ typedef struct{
 	uint32_t acc_y_read;
 	uint32_t acc_z_read;
 	uint16_t switch_read;
-	uint button_read;
+	uint8_t button_read;
 } Data;
 extern Data data;
+
+typedef struct{
+	int IsTurn;
+	char **AvailableNextMoves;
+	int AviablableNextMovesCount;
+	int MoneyAvailableAmount;
+	int MinimumNextBetAmount;
+	int RelativeCardScor;
+} InputData;
+extern InputData inputData;
 
 typedef struct{
 	alt_up_accelerometer_spi_dev * acc;
