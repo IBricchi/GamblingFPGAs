@@ -29,6 +29,7 @@ func (h *HttpServer) handlePostDynamicTest(ctx context.Context) http.HandlerFunc
 			return
 		}
 
+		w.WriteHeader(http.StatusOK)
 		fmt.Println("Received data: ", data.Info, data.Data)
 	}
 }
@@ -73,6 +74,7 @@ func (h *HttpServer) handlePokerOpenGame() http.HandlerFunc {
 		pokerGameStart.initialPlayerMoney = data.InitialPlayerMoney
 		pokerGameStart.smallBlindValue = data.SmallBlindValue
 
+		w.WriteHeader(http.StatusOK)
 		h.logger.Info(fmt.Sprintf("poker game opened successfully: initialPlayerMoney=%v, smallBlindValue=%v", data.InitialPlayerMoney, data.SmallBlindValue))
 	}
 }
@@ -104,6 +106,7 @@ func (h *HttpServer) handlePokerJoinGame() http.HandlerFunc {
 
 		pokerGameStart.players = append(pokerGameStart.players, player{Name: playerName})
 
+		w.WriteHeader(http.StatusOK)
 		h.logger.Info(fmt.Sprintf("%v joint poker game successfully", playerName))
 	}
 }
@@ -131,6 +134,7 @@ func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
 		pokerGame = game
 		pokerGameStart.open = false
 
+		w.WriteHeader(http.StatusOK)
 		h.logger.Info("poker game started successfully")
 	}
 }
@@ -144,6 +148,7 @@ func (h *HttpServer) handlePokerTerminateGame() http.HandlerFunc {
 		pokerGameStart = gameStart{}
 		pokerGame = game{}
 
+		w.WriteHeader(http.StatusOK)
 		h.logger.Info("poker game terminated successfully")
 	}
 }
@@ -164,7 +169,7 @@ func (h *HttpServer) handlePokerReceiveFPGAData() http.HandlerFunc {
 			return
 		}
 
-		player, err := getPlayerPointerFromName(playerName)
+		player, err := getPlayerPointerFromName(pokerGame.players, playerName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -189,5 +194,7 @@ func (h *HttpServer) handlePokerReceiveFPGAData() http.HandlerFunc {
 			http.Error(w, fmt.Errorf("Error: failed to update active game with FPGA data from player %v: %w", player.Name, err).Error(), http.StatusInternalServerError)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }

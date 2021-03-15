@@ -152,6 +152,21 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	return nil
 }
 
+func (g *game) getCommunityCardsCurrentRound() []poker.Card {
+	switch g.currentRound {
+	case 1:
+		return []poker.Card{}
+	case 2:
+		return g.communityCards[:3]
+	case 3:
+		return g.communityCards[:4]
+	case 4:
+		return g.communityCards
+	}
+
+	return nil
+}
+
 /*
 	Assumes that an active game exists that has ended
  	(relevant checks should be performed before calling this method).
