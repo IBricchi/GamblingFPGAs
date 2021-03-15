@@ -16,7 +16,6 @@ type staticTestData struct {
 func (h *HttpServer) handleGetStaticTest() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
 
 		data := staticTestData{
 			Info: "Some static test data",
@@ -28,6 +27,8 @@ func (h *HttpServer) handleGetStaticTest() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -40,7 +41,6 @@ func (h *HttpServer) handleGetIsAuthorised(creds map[string]string) http.Handler
 		h.logger.Info("handleGetIsAuthorised called")
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
 
 		data := isAuthorised{
 			Valid: true,
@@ -66,6 +66,8 @@ func (h *HttpServer) handleGetIsAuthorised(creds map[string]string) http.Handler
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -73,24 +75,36 @@ func (h *HttpServer) handleGetIsAuthorised(creds map[string]string) http.Handler
 func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 	// Open refers to the open phase while active refers to the active phase
 	type gameOpenInfo struct {
-		Open               bool     `json:"open"`
-		Active             bool     `json:"active"`
-		Players            []player `json:"players"`
-		PlayerAmount       int      `json:"playerAmount"`
-		InitialPlayerMoney int      `json:"initialPlayerMoney"`
-		SmallBlindValue    int      `json:"smallBlindValue"`
+		Open               bool   `json:"open"`
+		Active             bool   `json:"active"`
+		Player             player `json:"player"`
+		PlayerAmount       int    `json:"playerAmount"`
+		InitialPlayerMoney int    `json:"initialPlayerMoney"`
+		SmallBlindValue    int    `json:"smallBlindValue"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		h.logger.Info("handlePokerGetGameOpenStatus called")
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
+
+		playerName, _, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, "Error: getting username from http basic auth failed", http.StatusInternalServerError)
+			return
+		}
+
+		// A player can request open phase data without having joined the game
+		playerPtr, err := getPlayerPointerFromName(pokerGameStart.players, playerName)
+		var player player
+		if err == nil {
+			player = *playerPtr
+		}
 
 		gameOpenInfo := gameOpenInfo{
 			Open:               pokerGameStart.open,
 			Active:             pokerGame.active,
-			Players:            pokerGameStart.players,
+			Player:             player,
 			PlayerAmount:       len(pokerGameStart.players),
 			InitialPlayerMoney: pokerGameStart.initialPlayerMoney,
 			SmallBlindValue:    pokerGameStart.smallBlindValue,
@@ -100,6 +114,8 @@ func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -109,7 +125,7 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 		Active          bool         `json:"active"`
 		HasEnded        bool         `json:"hasEnded"`
 		CommunityCards  []poker.Card `json:"communityCards"`
-		Players         []player     `json:"players"`
+		Player          player       `json:"player"`
 		PlayerAmount    int          `json:"playerAmount"`
 		CurrentRound    int          `json:"currentRound"`
 		CurrentPlayer   int          `json:"currentPlayer"`
@@ -120,13 +136,24 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 		h.logger.Info("handlePokerGetGameActiveStatus called")
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
+
+		playerName, _, ok := r.BasicAuth()
+		if !ok {
+			http.Error(w, "Error: getting username from http basic auth failed", http.StatusInternalServerError)
+			return
+		}
+
+		player, err := getPlayerPointerFromName(pokerGameStart.players, playerName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
 		gameActiveInfo := gameActiveInfo{
 			Active:          pokerGame.active,
 			HasEnded:        pokerGame.hasEnded,
-			CommunityCards:  pokerGame.communityCards,
-			Players:         pokerGame.players,
+			CommunityCards:  pokerGame.getCommunityCardsCurrentRound(),
+			Player:          *player,
 			PlayerAmount:    len(pokerGame.players),
 			CurrentRound:    pokerGame.currentRound,
 			CurrentPlayer:   pokerGame.currentPlayer,
@@ -137,6 +164,8 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -146,7 +175,6 @@ func (h *HttpServer) handlePokerGetGameShowdownData() http.HandlerFunc {
 		h.logger.Info("handlePokerGetGameShowdownData called")
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
 
 		if !pokerGame.active {
 			http.Error(w, "Error: no active poker game exists", http.StatusBadRequest)
@@ -164,6 +192,8 @@ func (h *HttpServer) handlePokerGetGameShowdownData() http.HandlerFunc {
 
 		// Start new game
 		pokerGame.startNewGame()
+
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -173,7 +203,6 @@ func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 		h.logger.Info("handlePokerGetFPGAData called")
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
 
 		if !pokerGame.active {
 			http.Error(w, "Error: no active poker game exists", http.StatusBadRequest)
@@ -186,7 +215,7 @@ func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 			return
 		}
 
-		player, err := getPlayerPointerFromName(playerName)
+		player, err := getPlayerPointerFromName(pokerGame.players, playerName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -205,5 +234,7 @@ func (h *HttpServer) handlePokerGetFPGAData() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }

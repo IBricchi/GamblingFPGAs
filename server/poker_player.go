@@ -29,10 +29,10 @@ type player struct {
 	ShowCardsEveryone    bool         `json:"showCardsEveryone"`
 }
 
-func getPlayerPointerFromName(playerName string) (*player, error) {
-	for i := range pokerGame.players {
-		if pokerGame.players[i].Name == playerName {
-			return &pokerGame.players[i], nil
+func getPlayerPointerFromName(players []player, playerName string) (*player, error) {
+	for i := range players {
+		if players[i].Name == playerName {
+			return &players[i], nil
 		}
 	}
 	return &player{}, fmt.Errorf("server: poker: player %v is not part of the active poker game", playerName)

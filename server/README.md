@@ -146,12 +146,15 @@ A terminate request can always be called.
 
 Use ```curl -i``` for additional information.
 
+Active game phase data must be requested using the credentials of a joined player.
+Open game phase data does not need to be requested using the credentials of a joined player.
+
 ```bash
   curl http://test:test@localhost:3000/poker/openGameStatus
 ```
 
 ```bash
-  curl http://test:test@localhost:3000/poker/activeGameStatus
+  curl http://player1:player1@localhost:3000/poker/activeGameStatus
 ```
 
 ### Getting showdown data and starting a new game
