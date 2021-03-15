@@ -1,5 +1,5 @@
 *
 !.gitignore
-!hello_world.c
-!srctoproj.sh
+!main.c
 !projtosrc.sh
+!src

@@ -1,6 +1,10 @@
 #!/bin/bash
 
+rm -rf bak
+
 mkdir -p bak/
-cat software/fpga/hello_world.c > bak/hw_proj.c
-cat hello_world.c > bak/hw_src.c
-cat software/fpga/hello_world.c > hello_world.c
+cp -rf src/ bak/src/
+cp main.c bak/main.c
+
+cp -f software/fpga/src/* src/
+cp -f software/fpga/main.c main.c
