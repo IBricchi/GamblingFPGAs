@@ -186,7 +186,7 @@ func (h *HttpServer) handlePokerReceiveFPGAData() http.HandlerFunc {
 		}
 
 		// check if valid data was send
-		if data.IsActiveData && data.NewBetAmount < player.getMinimumBetAmount() {
+		if data.IsActiveData && (data.NewMoveType == "bet" || data.NewMoveType == "raise") && data.NewBetAmount < player.getMinimumBetAmount() {
 			http.Error(w, "Error: placed bet is smaller than the minimum bet", http.StatusBadRequest)
 			return
 		}
