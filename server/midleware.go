@@ -23,7 +23,7 @@ func (h *HttpServer) basicAuth(realm string, creds map[string]string) func(next 
 
 			credPassHash, credUserOk := creds[user]
 			if !credUserOk {
-				h.basicAuthFailed(w, realm, "Invalid username")
+				h.basicAuthFailed(w, realm, fmt.Sprintf("Invalid username: %v", user))
 				return
 			}
 
