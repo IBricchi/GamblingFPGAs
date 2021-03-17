@@ -20,8 +20,8 @@ type incomingFPGAData struct {
 	IsActiveData           bool   `json:"isActiveData"`
 	ShowCardsMe            bool   `json:"showCardsMe"`
 	ShowCardsIfPeek        bool   `json:"showCardsIfPeek"`
-	NewTryPeek             bool   `json:"newTryPeak"`
-	NewTryPeekPlayerNumber int    `json:"newTryPeakPlayerNumber"`
+	NewTryPeek             bool   `json:"newTryPeek"`
+	NewTryPeekPlayerNumber int    `json:"newTryPeekPlayerNumber"`
 	NewMoveType            string `json:"newMoveType"`
 	NewBetAmount           int    `json:"newBetAmount"`
 }
