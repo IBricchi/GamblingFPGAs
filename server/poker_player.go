@@ -22,7 +22,7 @@ type player struct {
 	IsDealer                      bool         `json:"dealer"`
 	IsSmallBlind                  bool         `json:"smallBlind"`
 	IsBigBlind                    bool         `json:"bigBlind"`
-	HasFolded                     bool         `json:"hadFolded"`
+	HasFolded                     bool         `json:"hasFolded"`
 	LastBetAmount                 int          `json:"lastBetAmount"`
 	TotalMoneyBetAmount           int          `json:"totalMoneyBetAmount"`
 	AllIn                         bool         `json:"allIn"`
@@ -39,7 +39,7 @@ type maskedPlayer struct {
 	IsDealer                      bool         `json:"dealer"`
 	IsSmallBlind                  bool         `json:"smallBlind"`
 	IsBigBlind                    bool         `json:"bigBlind"`
-	HasFolded                     bool         `json:"hadFolded"`
+	HasFolded                     bool         `json:"hasFolded"`
 	LastBetAmount                 int          `json:"lastBetAmount"`
 	TotalMoneyBetAmount           int          `json:"totalMoneyBetAmount"`
 	AllIn                         bool         `json:"allIn"`
