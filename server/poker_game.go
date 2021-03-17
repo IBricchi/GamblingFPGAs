@@ -63,6 +63,9 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	for i := range players {
 		players[i].Hand = deck.Draw(2)
 		players[i].MoneyAvailableAmount = initialPlayerMoney
+
+		// Initialise field to avoid null JSON
+		players[i].ShowCardsToPlayerNumbers = []int{}
 	}
 
 	// Determine which other cards will appear in game
