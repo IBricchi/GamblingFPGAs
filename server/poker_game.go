@@ -271,7 +271,7 @@ func (g *game) startNewGame() {
 	communityCards := pokerGame.deck.Draw(5)
 
 	// Move dealer button by one
-	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, 1)
+	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
 
 	pokerGame.players = allocateRelativeCardScores(pokerGame.players, communityCards)
 }
