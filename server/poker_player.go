@@ -74,6 +74,8 @@ func (p *player) allIn() {
 	p.LastBetAmount = p.MoneyAvailableAmount
 	p.TotalMoneyBetAmount += p.LastBetAmount
 	p.MoneyAvailableAmount = 0
+
+	pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 }
 
 func (p *player) bet(amount int) error {
@@ -85,6 +87,8 @@ func (p *player) bet(amount int) error {
 		p.LastBetAmount = amount
 		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
+
+		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
 
 	return nil
@@ -97,6 +101,8 @@ func (p *player) call() {
 		p.LastBetAmount = pokerGame.lastBetAmountCurrentRound
 		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
+
+		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
 }
 
@@ -109,6 +115,8 @@ func (p *player) raise(amount int) error {
 		p.LastBetAmount = amount
 		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
+
+		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
 
 	return nil
