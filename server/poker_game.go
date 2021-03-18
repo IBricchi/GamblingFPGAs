@@ -63,6 +63,9 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	for i := range players {
 		players[i].Hand = deck.Draw(2)
 		players[i].MoneyAvailableAmount = initialPlayerMoney
+
+		// Initialise field to avoid null JSON
+		players[i].ShowCardsToPlayerNumbers = []int{}
 	}
 
 	// Determine which other cards will appear in game
@@ -271,7 +274,7 @@ func (g *game) startNewGame() {
 	communityCards := pokerGame.deck.Draw(5)
 
 	// Move dealer button by one
-	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, 1)
+	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
 
 	pokerGame.players = allocateRelativeCardScores(pokerGame.players, communityCards)
 }

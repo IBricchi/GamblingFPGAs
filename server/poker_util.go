@@ -49,6 +49,15 @@ func sortPlayersAccordingToBlind(players []player, dealerPlayerIdx int) []player
 	return sortedPlayers
 }
 
+func getDealerPlayerIdx(players []player) int {
+	for i := range players {
+		if players[i].IsDealer {
+			return i
+		}
+	}
+	return 0
+}
+
 func allocateRelativeCardScores(players []player, communityCards []poker.Card) []player {
 	type scoreMapping struct {
 		score         int

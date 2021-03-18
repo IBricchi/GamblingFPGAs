@@ -9,7 +9,8 @@ sudo apt-get -y upgrade
 yes | sudo apt install \
     make \
     gcc \
-    sqlite3
+    sqlite3 \
+    jq
 
 # Install Golang
 wget https://dl.google.com/go/go1.16.linux-amd64.tar.gz
