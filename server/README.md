@@ -194,3 +194,9 @@ Please see [here](https://github.com/IBricchi/GamblingFPGAs/blob/master/server/p
   --data '{"isActiveData":true,"showCardsMe":false,"showCardsEveryone":false,"newTryPeek":false,"newTryPeekPlayerNumber":0,"newMoveType":"bet","newBetAmount":20}' \
   http://player1:player1@localhost:3000/poker/fpgaData
 ```
+
+### Random game flow testing
+
+Open `test/simulate_random_poker_game.sh` to adjust the game variables at the top.
+The script runs random possible game flows (based on random number generation) and outputs error messages and the showdown data of each simulated game.
+The outputed showdown data should be manually checked for errors.
