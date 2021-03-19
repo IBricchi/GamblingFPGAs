@@ -101,6 +101,19 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	Go to next round if last player of this round.
 */
 func (g *game) next() {
+	// Check if only one player remaining
+	foldedPlayerAmount := 0
+	for _, player := range g.players {
+		if player.HasFolded {
+			foldedPlayerAmount++
+		}
+	}
+	if foldedPlayerAmount == len(g.players) {
+		g.hasEnded = true
+		g.computeShowdownData()
+		return
+	}
+
 	// Skip folded players
 	if g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
 		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
