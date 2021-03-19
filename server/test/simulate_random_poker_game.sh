@@ -59,7 +59,10 @@ for (( i=0; i<$NUMBER_OF_GAMES; i++ )) do
             # Determine which of two possible sets of moves is available
             AVAILABLE_MOVES=$(curl -s --show-error http://${player}:${player}@$ADDRESS/poker/fpgaData | jq -r '.availableNextMoves[]')
             MIN_NEXT_BET_AMOUNT=$(curl -s --show-error http://${player}:${player}@$ADDRESS/poker/fpgaData | jq -r '.minimumNextBetAmount')
-            if [[ "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
+            if [[ "${AVAILABLE_MOVES[@]}" =~ "bet" ]] && [[ ! "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
+                MOVE="bet"
+                BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
+            elif [[ "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
                 case $((RANDOM % 2)) in
                     0)
                         MOVE="check"
