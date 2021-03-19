@@ -72,9 +72,9 @@ Open `http://{username}:{password}@localhost:3000/test` using your browser or us
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
-  --request POST \
-  --data '{"info":"test data","data":[100,200,300,400,500]}' \
-  http://localhost:3000/public/test/dynamic
+   --request POST \
+   --data '{"info":"test data","data":[100,200,300,400,500]}' \
+   http://localhost:3000/public/test/dynamic
 ```
 The received data will be inserted into the server's sqlite3 database.
 
@@ -84,9 +84,9 @@ Incorrect data formats will return an error code.
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
-  --request POST \
-  --data '{"info":"test data","data":[100,200,300,400,500]}' \
-  http://{username}:{password}@localhost:3000/test/dynamic
+   --request POST \
+   --data '{"info":"test data","data":[100,200,300,400,500]}' \
+   http://{username}:{password}@localhost:3000/test/dynamic
 ```
 The received data will be inserted into the server's sqlite3 database.
 
@@ -102,9 +102,9 @@ Players can join a game during the open phase.
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
-  --request POST \
-  --data '{"initialPlayerMoney":2000,"smallBlindValue":5}' \
-  http://test:test@localhost:3000/poker/openGame
+   --request POST \
+   --data '{"initialPlayerMoney":2000,"smallBlindValue":5}' \
+   http://test:test@localhost:3000/poker/openGame
 ```
 
 ### Joining a game
@@ -116,8 +116,8 @@ The player name will correspond to the username specified in the URL (http basic
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
-  --request POST \
-  http://player1:player1@localhost:3000/poker/joinGame
+   --request POST \
+   http://player1:player1@localhost:3000/poker/joinGame
 ```
 
 ### Starting a game
@@ -127,8 +127,8 @@ This will end the open phase and start the active phase.
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
-  --request POST \
-  http://test:test@localhost:3000/poker/startGame
+   --request POST \
+   http://test:test@localhost:3000/poker/startGame
 ```
 
 ### Terminating a game
@@ -138,8 +138,8 @@ A terminate request can always be called.
 
 ```bash
   curl --header "Content-Type: application/json; charset=UTF-8" \
-  --request POST \
-  http://test:test@localhost:3000/poker/terminateGame
+   --request POST \
+   http://test:test@localhost:3000/poker/terminateGame
 ```
 
 ### Getting game status/state
@@ -157,13 +157,22 @@ Open game phase data does not need to be requested using the credentials of a jo
   curl http://player1:player1@localhost:3000/poker/activeGameStatus
 ```
 
-### Getting showdown data and starting a new game
+### Getting showdown data
 
 Showdown data can be retrieved once the `HasEnded` data property of `activeGameStatus` is true.
-Retriving showdown data will start a new game with the existing players and the existing small blind value.
 
 ```bash
   curl http://test:test@localhost:3000/poker/activeGameStatus/showdown
+```
+
+### Starting a new game with the same players
+
+Start a new game with the existing players and the existing small blind value.
+
+```bash
+  curl --header "Content-Type: application/json; charset=UTF-8" \
+   --request POST \
+   http://test:test@localhost:3000/poker/startNewGameSamePlayers
 ```
 
 ## Poker - FPGA node view
