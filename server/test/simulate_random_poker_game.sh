@@ -32,8 +32,6 @@ for (( i=0; i<$NUMBER_OF_GAMES; i++ )) do
 
     HAS_ENDED=false
     while ! $HAS_ENDED; do
-        HAS_ENDED=$(curl -s --show-error http://${PLAYERS[0]}:${PLAYERS[0]}@$ADDRESS/poker/activeGameStatus | jq -r '.hasEnded')
-
         for player in ${PLAYERS[@]}; do
             HAS_ENDED=$(curl -s --show-error http://${PLAYERS[0]}:${PLAYERS[0]}@$ADDRESS/poker/activeGameStatus | jq -r '.hasEnded')
             if $HAS_ENDED; then
