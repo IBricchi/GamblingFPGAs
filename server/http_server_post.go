@@ -133,9 +133,31 @@ func (h *HttpServer) handlePokerStartGame() http.HandlerFunc {
 
 		pokerGame = game
 		pokerGameStart.open = false
+		pokerGameShowdwon.Active = true
 
 		w.WriteHeader(http.StatusOK)
 		h.logger.Info("poker game started successfully")
+	}
+}
+
+func (h *HttpServer) handlePokerStarNewGameSamePlayers() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		h.logger.Info("handlePokerStarNewGameSamePlayers called")
+
+		if !pokerGame.active {
+			http.Error(w, "Error: no active poker game exists", http.StatusBadRequest)
+			return
+		}
+
+		if !pokerGame.hasEnded {
+			http.Error(w, "Error: the active poker game has not ended", http.StatusBadRequest)
+			return
+		}
+
+		pokerGame.startNewGame()
+
+		w.WriteHeader(http.StatusOK)
+		h.logger.Info("new poker game with same players started successfully")
 	}
 }
 

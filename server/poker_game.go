@@ -38,8 +38,14 @@ type game struct {
 	smallBlindAmount          int
 }
 
-// Index in Winners corresponds with the index in WinningMoneyAmounts
+/*
+	Index in Winners corresponds with the index in WinningMoneyAmounts.
+	Active is true when there exists an active poker game. This stays true when the active poker game has ended.
+	NewGameStarted is true when a new game has been started with the same players (handlePokerStarNewGameSamePlayers).
+*/
 type gameShowdown struct {
+	Active              bool         `json:"active"`
+	NewGameStarted      bool         `json:"newGameStarted"`
 	CommunityCards      []poker.Card `json:"communityCards"`
 	Players             []player     `json:"players"`
 	Winners             []player     `json:"winners"`
@@ -205,6 +211,7 @@ func (g *game) getCommunityCardsCurrentRound() []poker.Card {
 func (g *game) computeShowdownData() {
 	// Ensure that data is reset
 	pokerGameShowdwon = gameShowdown{}
+	pokerGameShowdwon.Active = true
 
 	pokerGameShowdwon.CommunityCards = pokerGame.communityCards
 	pokerGameShowdwon.Players = pokerGame.players
@@ -277,4 +284,6 @@ func (g *game) startNewGame() {
 	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
 
 	pokerGame.players = allocateRelativeCardScores(pokerGame.players, communityCards)
+
+	pokerGameShowdwon.NewGameStarted = true
 }
