@@ -8,6 +8,9 @@ SMALL_BLIND_VALUE=5
 NUMBER_OF_GAMES=3
 ADDRESS="localhost:3000"
 
+# Seed for RANDOM
+RANDOM=$(date +%s)
+
 # Open game
 curl --header "Content-Type: application/json; charset=UTF-8" \
  --request POST \

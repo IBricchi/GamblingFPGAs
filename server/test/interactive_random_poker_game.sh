@@ -4,12 +4,23 @@
 
 set -eou pipefail
 
-PLAYERS=("player1" "player2" "player3")
-ADDRESS="localhost:3000"
+PLAYERS=("player1" "player2")
+ADDRESS="18.132.52.158:3000"
+
+# Seed for RANDOM
+RANDOM=$(date +%s)
 
 # Play
+GAME_NUMBER=0
 while true; do
-    tput setaf 1; echo    "Game number $i:"; tput sgr0; printf "\n"
+    # Leave time for starting new game
+    HAS_ENDED=true
+    while $HAS_ENDED; do 
+        HAS_ENDED=$(curl -s --show-error http://${PLAYERS[0]}:${PLAYERS[0]}@$ADDRESS/poker/activeGameStatus | jq -r '.hasEnded')
+    done
+
+    GAME_NUMBER=$((GAME_NUMBER+1))
+    tput setaf 1; echo    "Game number $GAME_NUMBER:"; tput sgr0; printf "\n"
 
     HAS_ENDED=false
     while ! $HAS_ENDED; do
@@ -43,7 +54,11 @@ while true; do
             # Determine which of two possible sets of moves is available
             AVAILABLE_MOVES=$(curl -s --show-error http://${player}:${player}@$ADDRESS/poker/fpgaData | jq -r '.availableNextMoves[]')
             MIN_NEXT_BET_AMOUNT=$(curl -s --show-error http://${player}:${player}@$ADDRESS/poker/fpgaData | jq -r '.minimumNextBetAmount')
-            if [[ "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
+            if [[ "${AVAILABLE_MOVES[@]}" =~ "bet" ]] && [[ ! "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
+                MOVE="bet"
+                BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
+                echo "bet => amount=$BET_AMOUNT"
+            elif [[ "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
                 case $((RANDOM % 2)) in
                     0)
                         MOVE="check"
