@@ -36,7 +36,6 @@ while true; do
 
             echo "Player: ${player}"
             read -p "Press any key to make a random move ..."
-            printf "\n"
 
             MOVE=""
             BET_AMOUNT=0
@@ -48,26 +47,33 @@ while true; do
                 case $((RANDOM % 2)) in
                     0)
                         MOVE="check"
+                        echo "check"
                         ;;
                     1)
                         MOVE="bet"
                         BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
+                        echo "bet => amount=$BET_AMOUNT"
                         ;;
                 esac
             else
                 case $((RANDOM % 3)) in
                     0)
                         MOVE="fold"
+                        echo "fold"
                         ;;
                     1)
                         MOVE="call"
+                        echo "call"
                         ;;
                     2)
                         MOVE="raise"
                         BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
+                        echo "raise => amount=$BET_AMOUNT"
                         ;;
                 esac
             fi
+
+            printf "\n"
 
             # Randomly tild cards too much
             SHOW_CARDS_IF_PEEK=false
