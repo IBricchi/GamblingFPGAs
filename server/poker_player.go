@@ -91,6 +91,8 @@ func (p *player) bet(amount int) error {
 		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
 
+	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
+
 	return nil
 }
 
@@ -118,6 +120,8 @@ func (p *player) raise(amount int) error {
 
 		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
+
+	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
 
 	return nil
 }

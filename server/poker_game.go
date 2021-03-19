@@ -24,6 +24,7 @@ type gameStart struct {
 	gameCards is a slice of cards that will appear in the game.
  	currentRound is an integer between 1 and 4.
  	currentPlayer refers to the player slice index.
+	lastRaisePlayerNumber is the last player that bet/raised. It is 0 (first player) if no player raised this round.
  	The player slice is sorted so that index 0 refers to the first player (small blind).
 */
 type game struct {
@@ -36,6 +37,7 @@ type game struct {
 	currentPlayer             int
 	lastBetAmountCurrentRound int
 	smallBlindAmount          int
+	lastRaisePlayerNumber     int
 }
 
 /*
@@ -99,8 +101,8 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	Go to next round if last player of this round.
 */
 func (g *game) next() {
-	if g.currentPlayer != len(g.players)-1 {
-		g.currentPlayer++
+	if g.lastRaisePlayerNumber != (g.currentPlayer+1)%len(g.players) {
+		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	} else if g.currentRound < 4 {
 		g.currentRound++
 		g.currentPlayer = 0
@@ -109,8 +111,6 @@ func (g *game) next() {
 	} else {
 		g.hasEnded = true
 		g.computeShowdownData()
-
-		// New game is started by handlePokerGetGameShowdownData()
 	}
 }
 
