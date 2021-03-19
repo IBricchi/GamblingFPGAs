@@ -101,6 +101,11 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	Go to next round if last player of this round.
 */
 func (g *game) next() {
+	// Skip folded players
+	if g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
+		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
+	}
+
 	if g.lastRaisePlayerNumber != (g.currentPlayer+1)%len(g.players) {
 		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	} else if g.currentRound < 4 {
