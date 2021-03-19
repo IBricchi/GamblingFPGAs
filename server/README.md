@@ -209,3 +209,9 @@ Please see [here](https://github.com/IBricchi/GamblingFPGAs/blob/master/server/p
 Open `test/simulate_random_poker_game.sh` to adjust the game variables at the top.
 The script runs random possible game flows (based on random number generation) and outputs error messages and the showdown data of each simulated game.
 The outputed showdown data should be manually checked for errors.
+
+
+### Interactive game with webpage testing
+
+Open `test/interactive_random_poker_game.sh` to adjust the game variables at the top.
+The script only works in combination with the game webpage and solely simulates the FPGA nodes.
