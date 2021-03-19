@@ -180,18 +180,11 @@ func (h *HttpServer) handlePokerGetGameShowdownData() http.HandlerFunc {
 			http.Error(w, "Error: no active poker game exists", http.StatusBadRequest)
 			return
 		}
-		if !pokerGame.hasEnded {
-			http.Error(w, "Error: the active poker game is not in the showdown phase (has not yet ended)", http.StatusBadRequest)
-			return
-		}
 
 		if err := json.NewEncoder(w).Encode(pokerGameShowdwon); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		// Start new game
-		pokerGame.startNewGame()
 
 		w.WriteHeader(http.StatusOK)
 	}

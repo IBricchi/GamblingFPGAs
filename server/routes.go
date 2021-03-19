@@ -52,6 +52,7 @@ func (h *HttpServer) routes(ctx context.Context) error {
 		r.Post("/poker/openGame", h.handlePokerOpenGame())
 		r.Post("/poker/joinGame", h.handlePokerJoinGame())
 		r.Post("/poker/startGame", h.handlePokerStartGame())
+		r.Post("/poker/startNewGameSamePlayers", h.handlePokerStarNewGameSamePlayers())
 		r.Post("/poker/terminateGame", h.handlePokerTerminateGame())
 		r.Post("/poker/fpgaData", h.handlePokerReceiveFPGAData())
 	})
