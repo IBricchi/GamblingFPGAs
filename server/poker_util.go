@@ -118,5 +118,6 @@ func isMoveAnAvailableNextMove(move string) bool {
 func resetRoundSpecificPlayerData(players []player) {
 	for i := range players {
 		players[i].ShowCardsIfPeek = false
+		players[i].TryPeekPlayerNumbers = []int{}
 	}
 }

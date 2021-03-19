@@ -135,13 +135,19 @@ func (g *game) next() {
 func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	player.ShowCardsMe = data.ShowCardsMe
 
-	// Will be set back to false at end of round
 	if data.ShowCardsIfPeek {
+		// Will be set back to false at end of round
 		player.ShowCardsIfPeek = data.ShowCardsIfPeek
-	}
 
-	if data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
-		peekSucceeded := g.tryPeek(data.NewTryPeekPlayerNumber, g.getPlayerNumber(player.Name))
+		peekSucceeded := g.tryPeek(g.players, g.getPlayerNumber(player.Name))
+		if !peekSucceeded {
+			player.FailedPeekAttemptsCurrentGame++
+		}
+	} else if data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
+		// Will be set back to []int{} at end of round
+		player.TryPeekPlayerNumbers = append(player.TryPeekPlayerNumbers, data.NewTryPeekPlayerNumber)
+
+		peekSucceeded := g.tryPeek(g.players, g.getPlayerNumber(player.Name))
 		if !peekSucceeded {
 			player.FailedPeekAttemptsCurrentGame++
 		}
@@ -188,10 +194,14 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 }
 
 // Return true if peek succeeded
-func (g *game) tryPeek(peekedAtPlayerNumber int, peekingPlayerNumber int) bool {
-	if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
-		g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
-		return true
+func (g *game) tryPeek(players []player, peekingPlayerNumber int) bool {
+	for i := range players {
+		for _, peekedAtPlayerNumber := range players[i].TryPeekPlayerNumbers {
+			if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
+				g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
+				return true
+			}
+		}
 	}
 	return false
 }

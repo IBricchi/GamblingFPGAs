@@ -12,6 +12,7 @@ import (
  	The score takes all counts that will appear during the duration of the game into account,
 	not just the player's hand.
 	ShowCardsToPlayerNumbers refers to the players that are able to see the player's cards.
+	TryPeekPlayerNumbers are the players that this player tried to peek in the current round.
 */
 type player struct {
 	Name                          string       `json:"name"`
@@ -28,6 +29,7 @@ type player struct {
 	AllIn                         bool         `json:"allIn"`
 	ShowCardsMe                   bool         `json:"showCardsMe"`
 	ShowCardsIfPeek               bool         `json:"showCardsIfPeek"`
+	TryPeekPlayerNumbers          []int        `json:"tryPeekPlayerNumbers"`
 	ShowCardsToPlayerNumbers      []int        `json:"showCardsToPlayerNumbers"`
 	FailedPeekAttemptsCurrentGame int          `json:"failedPeekAttemptsCurrentGame"`
 }
