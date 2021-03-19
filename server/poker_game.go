@@ -108,7 +108,7 @@ func (g *game) next() {
 			foldedPlayerAmount++
 		}
 	}
-	if foldedPlayerAmount == len(g.players) {
+	if foldedPlayerAmount == len(g.players)-1 {
 		g.hasEnded = true
 		g.computeShowdownData()
 		return
