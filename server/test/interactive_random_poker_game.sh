@@ -71,16 +71,16 @@ while true; do
                         ;;
                 esac
             else
-                case $((RANDOM % 3)) in
+                case $((RANDOM % 6)) in
                     0)
                         MOVE="fold"
                         echo "fold"
                         ;;
-                    1)
+                    1|2|3)
                         MOVE="call"
                         echo "call"
                         ;;
-                    2)
+                    4|5)
                         MOVE="raise"
                         BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
                         echo "raise => amount=$BET_AMOUNT"

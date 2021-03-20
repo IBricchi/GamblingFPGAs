@@ -76,14 +76,14 @@ for (( i=0; i<$NUMBER_OF_GAMES; i++ )) do
                         ;;
                 esac
             else
-                case $((RANDOM % 3)) in
+                case $((RANDOM % 6)) in
                     0)
                         MOVE="fold"
                         ;;
-                    1)
+                    1|2|3)
                         MOVE="call"
                         ;;
-                    2)
+                    4|5)
                         MOVE="raise"
                         BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
                         ;;
