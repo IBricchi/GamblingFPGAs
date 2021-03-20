@@ -98,7 +98,9 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) [
 }
 
 func getAvailableNextMoves() []string {
-	if pokerGame.lastBetAmountCurrentRound == 0 {
+	if pokerGame.currentRound == 1 && pokerGame.lastBetAmountCurrentRound == 0 {
+		return []string{"bet"}
+	} else if pokerGame.lastBetAmountCurrentRound == 0 {
 		return []string{"check", "bet"}
 	}
 	return []string{"fold", "call", "raise"}
@@ -116,5 +118,6 @@ func isMoveAnAvailableNextMove(move string) bool {
 func resetRoundSpecificPlayerData(players []player) {
 	for i := range players {
 		players[i].ShowCardsIfPeek = false
+		players[i].TryPeekPlayerNumbers = []int{}
 	}
 }

@@ -24,6 +24,7 @@ type gameStart struct {
 	gameCards is a slice of cards that will appear in the game.
  	currentRound is an integer between 1 and 4.
  	currentPlayer refers to the player slice index.
+	lastRaisePlayerNumber is the last player that bet/raised. It is 0 (first player) if no player raised this round.
  	The player slice is sorted so that index 0 refers to the first player (small blind).
 */
 type game struct {
@@ -36,6 +37,7 @@ type game struct {
 	currentPlayer             int
 	lastBetAmountCurrentRound int
 	smallBlindAmount          int
+	lastRaisePlayerNumber     int
 }
 
 /*
@@ -99,8 +101,26 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	Go to next round if last player of this round.
 */
 func (g *game) next() {
-	if g.currentPlayer != len(g.players)-1 {
-		g.currentPlayer++
+	// Check if only one player remaining
+	foldedPlayerAmount := 0
+	for _, player := range g.players {
+		if player.HasFolded {
+			foldedPlayerAmount++
+		}
+	}
+	if foldedPlayerAmount == len(g.players)-1 {
+		g.hasEnded = true
+		g.computeShowdownData()
+		return
+	}
+
+	// Skip folded players
+	if g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
+		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
+	}
+
+	if g.lastRaisePlayerNumber != (g.currentPlayer+1)%len(g.players) {
+		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	} else if g.currentRound < 4 {
 		g.currentRound++
 		g.currentPlayer = 0
@@ -109,21 +129,25 @@ func (g *game) next() {
 	} else {
 		g.hasEnded = true
 		g.computeShowdownData()
-
-		// New game is started by handlePokerGetGameShowdownData()
 	}
 }
 
 func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	player.ShowCardsMe = data.ShowCardsMe
 
-	// Will be set back to false at end of round
 	if data.ShowCardsIfPeek {
+		// Will be set back to false at end of round
 		player.ShowCardsIfPeek = data.ShowCardsIfPeek
-	}
 
-	if data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
-		peekSucceeded := g.tryPeek(data.NewTryPeekPlayerNumber, g.getPlayerNumber(player.Name))
+		peekSucceeded := g.tryPeek(g.players, g.getPlayerNumber(player.Name))
+		if !peekSucceeded {
+			player.FailedPeekAttemptsCurrentGame++
+		}
+	} else if data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
+		// Will be set back to []int{} at end of round
+		player.TryPeekPlayerNumbers = append(player.TryPeekPlayerNumbers, data.NewTryPeekPlayerNumber)
+
+		peekSucceeded := g.tryPeek(g.players, g.getPlayerNumber(player.Name))
 		if !peekSucceeded {
 			player.FailedPeekAttemptsCurrentGame++
 		}
@@ -170,10 +194,14 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 }
 
 // Return true if peek succeeded
-func (g *game) tryPeek(peekedAtPlayerNumber int, peekingPlayerNumber int) bool {
-	if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
-		g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
-		return true
+func (g *game) tryPeek(players []player, peekingPlayerNumber int) bool {
+	for i := range players {
+		for _, peekedAtPlayerNumber := range players[i].TryPeekPlayerNumbers {
+			if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
+				g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
+				return true
+			}
+		}
 	}
 	return false
 }
@@ -239,7 +267,18 @@ func (g *game) computeShowdownData() {
 		pokerGameShowdwon.WinningMoneyAmounts = append(pokerGameShowdwon.WinningMoneyAmounts, winningMoneyAmount)
 	}
 
-	pokerGameShowdwon.WinningReason = pokerGameShowdwon.Winners[0].VerboseScore
+	// Check if won because only one player remaining
+	foldedPlayerAmount := 0
+	for _, player := range g.players {
+		if player.HasFolded {
+			foldedPlayerAmount++
+		}
+	}
+	if foldedPlayerAmount == len(g.players)-1 {
+		pokerGameShowdwon.WinningReason = "Last player remaining"
+	} else {
+		pokerGameShowdwon.WinningReason = pokerGameShowdwon.Winners[0].VerboseScore
+	}
 }
 
 /*
