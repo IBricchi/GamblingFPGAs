@@ -150,6 +150,11 @@ func (p *player) computeMaskedPlayers(players []player) []maskedPlayer {
 				ShowCardsMe:                   p.ShowCardsMe,
 				FailedPeekAttemptsCurrentGame: p.FailedPeekAttemptsCurrentGame,
 			}
+
+			if !p.ShowCardsMe {
+				maskedPlayers[i].Hand = []poker.Card{}
+			}
+
 			continue
 		}
 
