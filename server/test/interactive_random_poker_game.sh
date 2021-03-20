@@ -5,7 +5,7 @@
 set -eou pipefail
 
 PLAYERS=("player1" "player2")
-ADDRESS="18.132.52.158:3000"
+ADDRESS="localhost:3000"
 
 # Seed for RANDOM
 RANDOM=$(date +%s)
