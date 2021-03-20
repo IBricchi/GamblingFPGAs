@@ -267,7 +267,18 @@ func (g *game) computeShowdownData() {
 		pokerGameShowdwon.WinningMoneyAmounts = append(pokerGameShowdwon.WinningMoneyAmounts, winningMoneyAmount)
 	}
 
-	pokerGameShowdwon.WinningReason = pokerGameShowdwon.Winners[0].VerboseScore
+	// Check if won because only one player remaining
+	foldedPlayerAmount := 0
+	for _, player := range g.players {
+		if player.HasFolded {
+			foldedPlayerAmount++
+		}
+	}
+	if foldedPlayerAmount == len(g.players)-1 {
+		pokerGameShowdwon.WinningReason = "Last player remaining"
+	} else {
+		pokerGameShowdwon.WinningReason = pokerGameShowdwon.Winners[0].VerboseScore
+	}
 }
 
 /*
