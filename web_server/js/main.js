@@ -8,6 +8,7 @@ let canvas;
 
 let form = {};
 let terminate = null;
+let continueGame = null;
 
 let comm;
 let game;
@@ -65,7 +66,11 @@ function draw() {
     background(ds.tablec);
 
     // draw table
-    drawTable(game);
+    if (game.state == "active") {
+        drawTable(game);
+    } else if (game.state == "showdown") {
+        drawShowdown(game);
+    }
 
     // draw player table
     drawPlayerTable(game);

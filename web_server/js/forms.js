@@ -12,6 +12,20 @@ function removeTerminate() {
     }
 }
 
+function createContinueGame() {
+    if (!continueGame || !document.querySelector("#continueGame")) {
+        continueGame = createButton("Continue Game");
+        continueGame.id("continueGame");
+        continueGame.mousePressed(() => { comm.sendContinueGame() });
+    }
+}
+
+function removeContinueGame() {
+    if (continueGame) {
+        continueGame.remove();
+    }
+}
+
 function createLogin() {
     form = {
         name: "LOGIN",
@@ -24,6 +38,7 @@ function createLogin() {
         submit: createInput("Login", "button"),
         info: createElement("p", "Please wait a second to see changes, do not submit multiple times.")
     }
+    form.submit.id("submit")
     form.usernameLabel.parent(form.container);
     form.username.parent(form.container);
     form.passwordLabel.parent(form.container);
@@ -61,6 +76,7 @@ function createOpenForm() {
         submit: createInput("Open Game", "button"),
         info: createElement("p", "Please wait a second to see changes, do not submit multiple times.")
     };
+    form.submit.id("submit")
     form.smLabel.parent(form.container);
     form.sm.parent(form.container);
     form.sbbLabel.parent(form.container);
@@ -86,7 +102,7 @@ function createJoinForm() {
     form = {
         name: "JOIN",
         container: createElement("form"),
-        submit: createInput("join", "button"),
+        submit: createInput("Join", "button"),
         info: createElement("p", "Please wait a second to see changes, do not submit multiple times.")
     }
     form.submit.parent(form.container);

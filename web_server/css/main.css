@@ -1,3 +1,10 @@
+/* input[type=button]:not(#submit) {
+    font-size: xx-large;
+    font-weight: bolder;
+    text-align: center;
+    margin-top: 20px;
+} */
+
 #terminate {
     top: 50px;
     right: 50px;
@@ -9,7 +16,19 @@
     text-align: center;
 }
 
-h1 {
+#continueGame {
+    top: 50px;
+    left: 50px;
+    position: fixed;
+    background-color: green;
+    color: white;
+    font-size: large;
+    font-weight: bolder;
+    text-align: center;
+}
+
+h1,
+h2 {
     text-align: center;
 }
 
@@ -20,9 +39,85 @@ form {
 
 p {
     text-align: center;
+    position: fixed;
+    bottom: 10px;
+}
+
+#lobby {
+    text-align: center;
+}
+
+#lobby span:after {
+    content: "\a";
+    white-space: pre;
 }
 
 canvas {
     position: absolute;
     left: calc((100vw - 1200px) / 2);
+}
+
+#showInstructions {
+    display: none;
+}
+
+#showInstructionsLabel {
+    content: icon();
+    position: absolute;
+    width: 100px;
+    top: 40px;
+    right: 200px;
+    z-index: 100;
+    width: 50px;
+    transition: 100ms;
+}
+
+#showInstructions:checked~#showInstructionsLabel {
+    top: 12vh;
+    right: 12vw;
+}
+
+#infoContent {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9;
+    transition: 100ms linear;
+}
+
+#showInstructions:checked~#infoContent {
+    visibility: visible;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#content {
+    box-sizing: border-box;
+    padding: 5%;
+    display: block;
+    margin: 10vh 10vw;
+    width: 80vw;
+    height: 80vh;
+    background-color: white;
+}
+
+#content div {
+    width: 50%;
+    float: left;
+}
+
+#content img {
+    width: 40%;
+    float: left;
+}
+
+#content p {
+    margin-top: 5%;
+    position: relative;
+    display: block;
+    float: left;
 }
