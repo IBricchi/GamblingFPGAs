@@ -122,8 +122,9 @@ func (g *game) next() {
 	}
 
 	// Skip folded players
-	for g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
+	if g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
 		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
+		g.next()
 	}
 
 	if g.lastRaisePlayerNumber != (g.currentPlayer+1)%len(g.players) {
