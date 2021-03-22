@@ -122,6 +122,7 @@ func resetRoundSpecificGameData(game *game) {
 	game.currentPlayer = 0
 	game.lastBetAmountCurrentRound = 0
 	game.maxBetAmountCurrentRound = 0
+	game.lastRaisePlayerNumber = 0
 }
 
 func resetRoundSpecificPlayerData(players []player) {
