@@ -98,8 +98,12 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) [
 }
 
 func getAvailableNextMoves() []string {
-	if pokerGame.currentRound == 1 && pokerGame.lastBetAmountCurrentRound == 0 {
+	if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 0 && !pokerGame.smallBlindPlayed {
+		// Small blind
 		return []string{"bet"}
+	} else if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 1 && !pokerGame.bigBlindPlayed {
+		// Big blind
+		return []string{"raise"}
 	} else if pokerGame.lastBetAmountCurrentRound == 0 {
 		return []string{"check", "bet"}
 	}

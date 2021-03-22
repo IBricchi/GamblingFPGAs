@@ -60,12 +60,12 @@ func getPlayerPointerFromName(players []player, playerName string) (*player, err
 
 func (p *player) getMinimumBetAmount() int {
 	var minimumNextBetAmount int
-	if pokerGame.lastBetAmountCurrentRound != 0 {
-		minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
-	} else if p.IsSmallBlind {
+	if pokerGame.currentRound == 1 && p.IsSmallBlind && !pokerGame.smallBlindPlayed {
 		minimumNextBetAmount = pokerGame.smallBlindAmount
-	} else if p.IsBigBlind {
-		minimumNextBetAmount = pokerGame.smallBlindAmount * 2
+	} else if pokerGame.currentRound == 1 && p.IsBigBlind && !pokerGame.bigBlindPlayed {
+		minimumNextBetAmount = pokerGame.smallBlindAmount*2 - 1 // Minus one due to raise logic
+	} else if pokerGame.lastBetAmountCurrentRound != 0 {
+		minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
 	}
 
 	return minimumNextBetAmount
@@ -94,6 +94,10 @@ func (p *player) bet(amount int) error {
 	}
 
 	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
+
+	if p.IsSmallBlind && !pokerGame.smallBlindPlayed {
+		pokerGame.smallBlindPlayed = true
+	}
 
 	return nil
 }
@@ -124,6 +128,10 @@ func (p *player) raise(amount int) error {
 	}
 
 	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
+
+	if p.IsBigBlind && !pokerGame.bigBlindPlayed {
+		pokerGame.bigBlindPlayed = true
+	}
 
 	return nil
 }

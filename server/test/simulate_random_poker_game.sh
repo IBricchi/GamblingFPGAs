@@ -63,8 +63,13 @@ for (( i=0; i<$NUMBER_OF_GAMES; i++ )) do
             AVAILABLE_MOVES=$(curl -s --show-error http://${player}:${player}@$ADDRESS/poker/fpgaData | jq -r '.availableNextMoves[]')
             MIN_NEXT_BET_AMOUNT=$(curl -s --show-error http://${player}:${player}@$ADDRESS/poker/fpgaData | jq -r '.minimumNextBetAmount')
             if [[ "${AVAILABLE_MOVES[@]}" =~ "bet" ]] && [[ ! "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
+                # Small blind
                 MOVE="bet"
-                BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
+                BET_AMOUNT=$MIN_NEXT_BET_AMOUNT
+            elif [[ "${AVAILABLE_MOVES[@]}" =~ "raise" ]] && [[ ! "${AVAILABLE_MOVES[@]}" =~ "fold" ]]; then
+                # Big blind
+                MOVE="raise"
+                BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + 1))
             elif [[ "${AVAILABLE_MOVES[@]}" =~ "check" ]]; then
                 case $((RANDOM % 2)) in
                     0)
@@ -85,7 +90,7 @@ for (( i=0; i<$NUMBER_OF_GAMES; i++ )) do
                         ;;
                     4|5)
                         MOVE="raise"
-                        BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + RANDOM % 100))
+                        BET_AMOUNT=$(($MIN_NEXT_BET_AMOUNT + 1 + RANDOM % 100))
                         ;;
                 esac
             fi

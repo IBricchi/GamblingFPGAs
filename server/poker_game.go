@@ -38,6 +38,8 @@ type game struct {
 	lastBetAmountCurrentRound int
 	smallBlindAmount          int
 	lastRaisePlayerNumber     int
+	smallBlindPlayed          bool
+	bigBlindPlayed            bool
 }
 
 /*
@@ -93,6 +95,9 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 		currentPlayer:             0,
 		lastBetAmountCurrentRound: 0,
 		smallBlindAmount:          smallBlindAmount,
+		lastRaisePlayerNumber:     0,
+		smallBlindPlayed:          false,
+		bigBlindPlayed:            false,
 	}, nil
 }
 
@@ -178,13 +183,13 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		// Do nothing
 	case "bet":
 		if err := player.bet(data.NewBetAmount); err != nil {
-			return fmt.Errorf("server: poker: failed to place bet")
+			return fmt.Errorf("server: poker: failed to place bet: %w", err)
 		}
 	case "call":
 		player.call()
 	case "raise":
 		if err := player.raise(data.NewBetAmount); err != nil {
-			return fmt.Errorf("server: poker: failed to place raise")
+			return fmt.Errorf("server: poker: failed to place raise: %w", err)
 		}
 	}
 
@@ -293,6 +298,8 @@ func (g *game) startNewGame() {
 	pokerGame.currentRound = 1
 	pokerGame.currentPlayer = 0
 	pokerGame.lastBetAmountCurrentRound = 0
+	pokerGame.smallBlindPlayed = false
+	pokerGame.bigBlindPlayed = false
 
 	pokerGame.deck = poker.NewDeck()
 
