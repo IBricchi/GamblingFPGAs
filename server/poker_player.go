@@ -11,6 +11,8 @@ import (
 	The score is between 0 and 100 with 0 being the worst and 100 being the best.
  	The score takes all counts that will appear during the duration of the game into account,
 	not just the player's hand.
+	LastBetAmount refers to the current round.
+	TotalMoneyBetAmount refers to the current game.
 	ShowCardsToPlayerNumbers refers to the players that are able to see the player's cards.
 	TryPeekPlayerNumbers are the players that this player tried to peek in the current round.
 */
@@ -106,7 +108,7 @@ func (p *player) call() {
 	if p.MoneyAvailableAmount < pokerGame.lastBetAmountCurrentRound {
 		p.allIn()
 	} else {
-		p.LastBetAmount = pokerGame.lastBetAmountCurrentRound
+		p.LastBetAmount = pokerGame.lastBetAmountCurrentRound - p.LastBetAmount
 		p.TotalMoneyBetAmount += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
 
