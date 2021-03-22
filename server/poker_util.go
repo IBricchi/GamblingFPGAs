@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -58,7 +59,8 @@ func getDealerPlayerIdx(players []player) int {
 	return 0
 }
 
-func allocateRelativeCardScores(players []player, communityCards []poker.Card) []player {
+// Modifies players in place.
+func allocateRelativeCardScores(players []player, communityCards []poker.Card) {
 	type scoreMapping struct {
 		score         int
 		relativeScore int
@@ -93,12 +95,11 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) [
 
 		players[i].VerboseScore = poker.RankString(int32(scoreMappings[i].score))
 	}
-
-	return players
 }
 
 func getAvailableNextMoves() []string {
 	if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 0 && !pokerGame.smallBlindPlayed {
+		fmt.Println(pokerGame.smallBlindPlayed)
 		// Small blind
 		return []string{"bet"}
 	} else if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 1 && !pokerGame.bigBlindPlayed {

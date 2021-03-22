@@ -81,16 +81,16 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	// Determine which other cards will appear in game
 	communityCards := deck.Draw(5)
 
-	players = sortPlayersAccordingToRandomBlind(players)
+	sortedPlayers := sortPlayersAccordingToRandomBlind(players)
 
-	players = allocateRelativeCardScores(players, communityCards)
+	allocateRelativeCardScores(sortedPlayers, communityCards)
 
 	return game{
 		active:                    true,
 		hasEnded:                  false,
 		deck:                      deck,
 		communityCards:            communityCards,
-		players:                   players,
+		players:                   sortedPlayers,
 		currentRound:              1,
 		currentPlayer:             0,
 		lastBetAmountCurrentRound: 0,
