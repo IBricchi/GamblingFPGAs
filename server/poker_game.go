@@ -324,12 +324,13 @@ func (g *game) startNewGame() {
 	}
 
 	// Determine which other cards will appear in game
-	communityCards := pokerGame.deck.Draw(5)
+	pokerGame.communityCards = pokerGame.deck.Draw(5)
 
 	// Move dealer button by one
-	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
+	sortedPlayers := sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
 
-	pokerGame.players = allocateRelativeCardScores(pokerGame.players, communityCards)
+	allocateRelativeCardScores(sortedPlayers, pokerGame.communityCards)
+	pokerGame.players = sortedPlayers
 
 	pokerGameShowdwon.NewGameStarted = true
 }
