@@ -58,7 +58,8 @@ func getDealerPlayerIdx(players []player) int {
 	return 0
 }
 
-func allocateRelativeCardScores(players []player, communityCards []poker.Card) []player {
+// Modifies players in place.
+func allocateRelativeCardScores(players []player, communityCards []poker.Card) {
 	type scoreMapping struct {
 		score         int
 		relativeScore int
@@ -93,13 +94,15 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) [
 
 		players[i].VerboseScore = poker.RankString(int32(scoreMappings[i].score))
 	}
-
-	return players
 }
 
 func getAvailableNextMoves() []string {
-	if pokerGame.currentRound == 1 && pokerGame.lastBetAmountCurrentRound == 0 {
+	if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 0 && !pokerGame.smallBlindPlayed {
+		// Small blind
 		return []string{"bet"}
+	} else if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 1 && !pokerGame.bigBlindPlayed {
+		// Big blind
+		return []string{"raise"}
 	} else if pokerGame.lastBetAmountCurrentRound == 0 {
 		return []string{"check", "bet"}
 	}
@@ -115,9 +118,17 @@ func isMoveAnAvailableNextMove(move string) bool {
 	return false
 }
 
+func resetRoundSpecificGameData(game *game) {
+	game.currentPlayer = 0
+	game.lastBetAmountCurrentRound = 0
+	game.maxBetAmountCurrentRound = 0
+	game.lastRaisePlayerNumber = 0
+}
+
 func resetRoundSpecificPlayerData(players []player) {
 	for i := range players {
 		players[i].ShowCardsIfPeek = false
 		players[i].TryPeekPlayerNumbers = []int{}
+		players[i].TotalBetAmountCurrentRound = 0
 	}
 }

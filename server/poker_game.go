@@ -36,8 +36,11 @@ type game struct {
 	currentRound              int
 	currentPlayer             int
 	lastBetAmountCurrentRound int
+	maxBetAmountCurrentRound  int
 	smallBlindAmount          int
 	lastRaisePlayerNumber     int
+	smallBlindPlayed          bool
+	bigBlindPlayed            bool
 }
 
 /*
@@ -79,20 +82,24 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	// Determine which other cards will appear in game
 	communityCards := deck.Draw(5)
 
-	players = sortPlayersAccordingToRandomBlind(players)
+	sortedPlayers := sortPlayersAccordingToRandomBlind(players)
 
-	players = allocateRelativeCardScores(players, communityCards)
+	allocateRelativeCardScores(sortedPlayers, communityCards)
 
 	return game{
 		active:                    true,
 		hasEnded:                  false,
 		deck:                      deck,
 		communityCards:            communityCards,
-		players:                   players,
+		players:                   sortedPlayers,
 		currentRound:              1,
 		currentPlayer:             0,
 		lastBetAmountCurrentRound: 0,
+		maxBetAmountCurrentRound:  0,
 		smallBlindAmount:          smallBlindAmount,
+		lastRaisePlayerNumber:     0,
+		smallBlindPlayed:          false,
+		bigBlindPlayed:            false,
 	}, nil
 }
 
@@ -114,21 +121,21 @@ func (g *game) next() {
 		return
 	}
 
-	// Skip folded players
-	if g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
-		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
-	}
-
 	if g.lastRaisePlayerNumber != (g.currentPlayer+1)%len(g.players) {
 		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	} else if g.currentRound < 4 {
 		g.currentRound++
-		g.currentPlayer = 0
-		g.lastBetAmountCurrentRound = 0
+		resetRoundSpecificGameData(g)
 		resetRoundSpecificPlayerData(g.players)
 	} else {
 		g.hasEnded = true
 		g.computeShowdownData()
+		return
+	}
+
+	// Skip player if no action possible
+	if g.players[g.currentPlayer].AllIn || g.players[g.currentPlayer].HasFolded {
+		g.next()
 	}
 }
 
@@ -162,11 +169,6 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		return fmt.Errorf("server: poker: updateGameWithFPGAData: not player %v's turn, cannot process active data", player.Name)
 	}
 
-	// Player can't do anything
-	if player.AllIn {
-		g.next()
-	}
-
 	if !isMoveAnAvailableNextMove(data.NewMoveType) {
 		return fmt.Errorf("server: poker: move %v is not one of the available moves", data.NewMoveType)
 	}
@@ -178,13 +180,13 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		// Do nothing
 	case "bet":
 		if err := player.bet(data.NewBetAmount); err != nil {
-			return fmt.Errorf("server: poker: failed to place bet")
+			return fmt.Errorf("server: poker: failed to place bet: %w", err)
 		}
 	case "call":
 		player.call()
 	case "raise":
 		if err := player.raise(data.NewBetAmount); err != nil {
-			return fmt.Errorf("server: poker: failed to place raise")
+			return fmt.Errorf("server: poker: failed to place raise: %w", err)
 		}
 	}
 
@@ -245,7 +247,7 @@ func (g *game) computeShowdownData() {
 	pokerGameShowdwon.Players = pokerGame.players
 
 	potMoneyAmount := 0
-	winningCardScore := 0
+	winningCardScore := -1
 	winningPlayers := []int{}
 	for i, player := range pokerGameShowdwon.Players {
 		potMoneyAmount += player.TotalMoneyBetAmount
@@ -293,36 +295,48 @@ func (g *game) startNewGame() {
 	pokerGame.currentRound = 1
 	pokerGame.currentPlayer = 0
 	pokerGame.lastBetAmountCurrentRound = 0
+	pokerGame.maxBetAmountCurrentRound = 0
+	pokerGame.smallBlindPlayed = false
+	pokerGame.bigBlindPlayed = false
 
 	pokerGame.deck = poker.NewDeck()
 
 	// Reset player attributes, give each player two new cards,
 	for i := range pokerGame.players {
-		pokerGame.players[i].HasFolded = false
-		pokerGame.players[i].LastBetAmount = 0
-		pokerGame.players[i].TotalMoneyBetAmount = 0
-		pokerGame.players[i].AllIn = false
-		pokerGame.players[i].ShowCardsMe = false
-		pokerGame.players[i].ShowCardsIfPeek = false
-		pokerGame.players[i].ShowCardsToPlayerNumbers = []int{}
-		pokerGame.players[i].FailedPeekAttemptsCurrentGame = 0
+		name := pokerGame.players[i].Name
+		moneyAvailableAmount := pokerGame.players[i].MoneyAvailableAmount
+		isDealer := pokerGame.players[i].IsDealer
+		isSmallBlind := pokerGame.players[i].IsSmallBlind
+		isBigBlind := pokerGame.players[i].IsBigBlind
 
-		pokerGame.players[i].Hand = pokerGame.deck.Draw(2)
+		pokerGame.players[i] = player{
+			Name:                 name,
+			Hand:                 pokerGame.deck.Draw(2),
+			MoneyAvailableAmount: moneyAvailableAmount,
+			IsDealer:             isDealer,
+			IsSmallBlind:         isSmallBlind,
+			IsBigBlind:           isBigBlind,
+		}
 
 		for j := range pokerGameShowdwon.Winners {
 			if pokerGame.players[i].Name == pokerGameShowdwon.Winners[j].Name {
 				pokerGame.players[i].MoneyAvailableAmount += pokerGameShowdwon.WinningMoneyAmounts[j]
 			}
 		}
+
+		if pokerGame.players[i].MoneyAvailableAmount == 0 {
+			pokerGame.players[i].HasFolded = true
+		}
 	}
 
 	// Determine which other cards will appear in game
-	communityCards := pokerGame.deck.Draw(5)
+	pokerGame.communityCards = pokerGame.deck.Draw(5)
 
 	// Move dealer button by one
-	pokerGame.players = sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
+	sortedPlayers := sortPlayersAccordingToBlind(pokerGame.players, (getDealerPlayerIdx(pokerGame.players)+1)%len(pokerGame.players))
 
-	pokerGame.players = allocateRelativeCardScores(pokerGame.players, communityCards)
+	allocateRelativeCardScores(sortedPlayers, pokerGame.communityCards)
+	pokerGame.players = sortedPlayers
 
 	pokerGameShowdwon.NewGameStarted = true
 }

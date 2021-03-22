@@ -11,6 +11,7 @@ import (
 	The score is between 0 and 100 with 0 being the worst and 100 being the best.
  	The score takes all counts that will appear during the duration of the game into account,
 	not just the player's hand.
+	TotalMoneyBetAmount refers to the current game.
 	ShowCardsToPlayerNumbers refers to the players that are able to see the player's cards.
 	TryPeekPlayerNumbers are the players that this player tried to peek in the current round.
 */
@@ -25,6 +26,7 @@ type player struct {
 	IsBigBlind                    bool         `json:"bigBlind"`
 	HasFolded                     bool         `json:"hasFolded"`
 	LastBetAmount                 int          `json:"lastBetAmount"`
+	TotalBetAmountCurrentRound    int          `json:"totalBetAmountCurrentRound"`
 	TotalMoneyBetAmount           int          `json:"totalMoneyBetAmount"`
 	AllIn                         bool         `json:"allIn"`
 	ShowCardsMe                   bool         `json:"showCardsMe"`
@@ -60,24 +62,24 @@ func getPlayerPointerFromName(players []player, playerName string) (*player, err
 
 func (p *player) getMinimumBetAmount() int {
 	var minimumNextBetAmount int
-	if pokerGame.lastBetAmountCurrentRound != 0 {
-		minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
-	} else if p.IsSmallBlind {
+	if pokerGame.currentRound == 1 && p.IsSmallBlind && !pokerGame.smallBlindPlayed {
 		minimumNextBetAmount = pokerGame.smallBlindAmount
-	} else if p.IsBigBlind {
-		minimumNextBetAmount = pokerGame.smallBlindAmount * 2
+	} else if pokerGame.currentRound == 1 && p.IsBigBlind && !pokerGame.bigBlindPlayed {
+		minimumNextBetAmount = pokerGame.smallBlindAmount*2 - 1 // Minus one due to raise logic
+	} else if pokerGame.lastBetAmountCurrentRound != 0 {
+		minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
 	}
 
 	return minimumNextBetAmount
 }
 
+// Does not set pokerGame attributes. Must be set by calling functions.
 func (p *player) allIn() {
 	p.AllIn = true
 	p.LastBetAmount = p.MoneyAvailableAmount
 	p.TotalMoneyBetAmount += p.LastBetAmount
+	p.TotalBetAmountCurrentRound += p.LastBetAmount
 	p.MoneyAvailableAmount = 0
-
-	pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 }
 
 func (p *player) bet(amount int) error {
@@ -88,22 +90,29 @@ func (p *player) bet(amount int) error {
 	} else {
 		p.LastBetAmount = amount
 		p.TotalMoneyBetAmount += p.LastBetAmount
+		p.TotalBetAmountCurrentRound += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
-
-		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
 
 	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
+	pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
+	pokerGame.maxBetAmountCurrentRound = p.TotalBetAmountCurrentRound
+
+	if p.IsSmallBlind && !pokerGame.smallBlindPlayed {
+		pokerGame.smallBlindPlayed = true
+	}
 
 	return nil
 }
 
 func (p *player) call() {
-	if p.MoneyAvailableAmount < pokerGame.lastBetAmountCurrentRound {
+	callAmount := pokerGame.maxBetAmountCurrentRound - p.TotalBetAmountCurrentRound
+	if p.MoneyAvailableAmount < callAmount {
 		p.allIn()
 	} else {
-		p.LastBetAmount = pokerGame.lastBetAmountCurrentRound
+		p.LastBetAmount = callAmount
 		p.TotalMoneyBetAmount += p.LastBetAmount
+		p.TotalBetAmountCurrentRound += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
 
 		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
@@ -118,12 +127,17 @@ func (p *player) raise(amount int) error {
 	} else {
 		p.LastBetAmount = amount
 		p.TotalMoneyBetAmount += p.LastBetAmount
+		p.TotalBetAmountCurrentRound += p.LastBetAmount
 		p.MoneyAvailableAmount -= p.LastBetAmount
-
-		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
 	}
 
 	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
+	pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
+	pokerGame.maxBetAmountCurrentRound = p.TotalBetAmountCurrentRound
+
+	if p.IsBigBlind && !pokerGame.bigBlindPlayed {
+		pokerGame.bigBlindPlayed = true
+	}
 
 	return nil
 }
