@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -99,7 +98,6 @@ func allocateRelativeCardScores(players []player, communityCards []poker.Card) {
 
 func getAvailableNextMoves() []string {
 	if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 0 && !pokerGame.smallBlindPlayed {
-		fmt.Println(pokerGame.smallBlindPlayed)
 		// Small blind
 		return []string{"bet"}
 	} else if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 1 && !pokerGame.bigBlindPlayed {
@@ -118,6 +116,12 @@ func isMoveAnAvailableNextMove(move string) bool {
 		}
 	}
 	return false
+}
+
+func resetRoundSpecificGameData(game *game) {
+	game.currentPlayer = 0
+	game.lastBetAmountCurrentRound = 0
+	game.maxBetAmountCurrentRound = 0
 }
 
 func resetRoundSpecificPlayerData(players []player) {

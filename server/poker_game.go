@@ -130,8 +130,7 @@ func (g *game) next() {
 		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	} else if g.currentRound < 4 {
 		g.currentRound++
-		g.currentPlayer = 0
-		g.lastBetAmountCurrentRound = 0
+		resetRoundSpecificGameData(g)
 		resetRoundSpecificPlayerData(g.players)
 	} else {
 		g.hasEnded = true

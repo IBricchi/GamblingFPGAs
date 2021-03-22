@@ -107,6 +107,10 @@ func (p *player) bet(amount int) error {
 
 func (p *player) call() {
 	callAmount := pokerGame.maxBetAmountCurrentRound - p.TotalBetAmountCurrentRound
+	fmt.Println("\n\n------------------------------------")
+	fmt.Println("max:", pokerGame.maxBetAmountCurrentRound)
+	fmt.Println("p total this round:", p.TotalBetAmountCurrentRound)
+	fmt.Println("call amount:", callAmount)
 	if p.MoneyAvailableAmount < callAmount {
 		p.allIn()
 	} else {
@@ -116,11 +120,6 @@ func (p *player) call() {
 		p.MoneyAvailableAmount -= p.LastBetAmount
 
 		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
-
-		fmt.Println("\n\n------------------------------------")
-		fmt.Println("max:", pokerGame.maxBetAmountCurrentRound)
-		fmt.Println("p total this round:", p.TotalBetAmountCurrentRound)
-		fmt.Println("call amount:", callAmount)
 	}
 }
 
