@@ -323,6 +323,10 @@ func (g *game) startNewGame() {
 				pokerGame.players[i].MoneyAvailableAmount += pokerGameShowdwon.WinningMoneyAmounts[j]
 			}
 		}
+
+		if pokerGame.players[i].MoneyAvailableAmount == 0 {
+			pokerGame.players[i].HasFolded = true
+		}
 	}
 
 	// Determine which other cards will appear in game
