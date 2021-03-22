@@ -96,7 +96,7 @@ func (p *player) bet(amount int) error {
 
 	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
 	pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
-	pokerGame.maxBetAmountCurrentRound = p.LastBetAmount
+	pokerGame.maxBetAmountCurrentRound += p.LastBetAmount
 
 	if p.IsSmallBlind && !pokerGame.smallBlindPlayed {
 		pokerGame.smallBlindPlayed = true
@@ -133,7 +133,7 @@ func (p *player) raise(amount int) error {
 
 	pokerGame.lastRaisePlayerNumber = pokerGame.getPlayerNumber(p.Name)
 	pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
-	pokerGame.maxBetAmountCurrentRound = p.LastBetAmount
+	pokerGame.maxBetAmountCurrentRound += p.LastBetAmount
 
 	if p.IsBigBlind && !pokerGame.bigBlindPlayed {
 		pokerGame.bigBlindPlayed = true
