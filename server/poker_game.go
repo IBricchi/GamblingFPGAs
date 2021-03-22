@@ -36,6 +36,7 @@ type game struct {
 	currentRound              int
 	currentPlayer             int
 	lastBetAmountCurrentRound int
+	maxBetAmountCurrentRound  int
 	smallBlindAmount          int
 	lastRaisePlayerNumber     int
 	smallBlindPlayed          bool
@@ -94,6 +95,7 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 		currentRound:              1,
 		currentPlayer:             0,
 		lastBetAmountCurrentRound: 0,
+		maxBetAmountCurrentRound:  0,
 		smallBlindAmount:          smallBlindAmount,
 		lastRaisePlayerNumber:     0,
 		smallBlindPlayed:          false,
@@ -298,6 +300,7 @@ func (g *game) startNewGame() {
 	pokerGame.currentRound = 1
 	pokerGame.currentPlayer = 0
 	pokerGame.lastBetAmountCurrentRound = 0
+	pokerGame.maxBetAmountCurrentRound = 0
 	pokerGame.smallBlindPlayed = false
 	pokerGame.bigBlindPlayed = false
 
