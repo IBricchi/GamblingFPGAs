@@ -116,6 +116,11 @@ func (p *player) call() {
 		p.MoneyAvailableAmount -= p.LastBetAmount
 
 		pokerGame.lastBetAmountCurrentRound = p.LastBetAmount
+
+		fmt.Println("\n\n------------------------------------")
+		fmt.Println("max:", pokerGame.maxBetAmountCurrentRound)
+		fmt.Println("p total this round:", p.TotalBetAmountCurrentRound)
+		fmt.Println("call amount:", callAmount)
 	}
 }
 
