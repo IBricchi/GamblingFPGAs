@@ -34,8 +34,8 @@ class DS {
         this.ptexts = this.playerch / 6; // size of rest of player text
         this.pfoldc = color(0, 0, 0, 150) // tint on folded players
 
-        this.cardw = 55; // card width
-        this.cardh = 80; // card height
+        this.cardw = 62; // card width
+        this.cardh = 90; // card height
 
         this.slotp = 10; // card slot padding (padding around the card)
         this.slotw = this.cardw + this.slotp; // card slot width
@@ -43,6 +43,10 @@ class DS {
         this.slotm = 20; // card slot margin
         this.slotc = color(255); // card slot colour
         this.deckc = color(237, 226, 21); // deck card slot colour
+
+        this.winnerbh = this.canvash - 3 * this.cardh;
+        this.winnerbw = 50;
+        this.winnerts = 30;
     }
 };
 
@@ -84,7 +88,33 @@ function drawTable(game) {
     noStroke();
     fill(color(0));
     textSize(ds.ttexts);
-    text("Pot: £" + game.currentPot, ds.tablew / 2, ds.tableh * 6 / 11);
+    text("Round: " + game.currentRound + "\nPot: £" + game.currentPot, ds.tablew / 2, ds.tableh * 6 / 11);
+}
+
+function drawShowdown(game) {
+    drawCloth();
+
+    // draw places for center cards
+    const centre_start_x = ds.tablew / 2 - 2 * ds.slotw - 2 * ds.slotm;
+    const centre_start_y = 80;
+    for (let i = 0; i < 5; i++) {
+        drawCardSlot(centre_start_x + i * ds.slotw + i * ds.slotm, centre_start_y, ds.slotw, ds.sloth, ds.slotc);
+    }
+
+    for (let i = 0; i < 5; i++) {
+        drawCard(centre_start_x + i * ds.slotw + i * ds.slotm, centre_start_y, ds.cardw, ds.cardh, game.communityCards[i]);
+    }
+
+    // draw money bar
+    let winnerMargins = drawMoneyBar(game.winners, game.winningPots, game.currentPot, ds.cardh, ds.cardh * 2);
+    for (let i = 0; i < game.winners.length; i++) {
+        drawWinnerPlayerData(game.winners[i], game.winningPots[i], ds.cardh + 3 / 2 * ds.winnerbw, ds.cardh * 2 + winnerMargins[i] - ds.playerch / 2);
+    }
+
+    // draw winning reason
+    fill(color(0));
+    textSize(ds.winnerts);
+    text(game.winningReason, ds.tablew / 2, ds.tableh - ds.winnerts);
 }
 
 function drawPlayerTable(game) {
@@ -156,6 +186,53 @@ function drawCard(x, y, w, h, v, t = 0) {
     pop();
 }
 
+function drawMoneyBar(winners, pots, pot, x, y) {
+    push();
+    translate(x, y);
+    rectMode(CORNER);
+
+    let out = [];
+    let avaiabley = 0;
+    noStroke();
+    for (let i = 0; i < winners.length; i++) {
+        fill(ds.playerc[winners[i].order]);
+        rect(avaiabley, 0, ds.winnerbw, ds.winnerbh * pots[i] / pot);
+        out.push(avaiabley + ds.winnerbh * pots[i] / pot / 2);
+        avaiabley += pots[i];
+    }
+
+    pop();
+
+    outMargins = [];
+    return out;
+}
+
+function drawWinnerPlayerData(winner, pot, x, y) {
+    push();
+    translate(x, y);
+
+    // used to dynamically manage how much of the x axis has been used up
+    let avaiablex = 0;
+
+    // draw cards
+    drawCard(10 + ds.cardw / 2, ds.playerch / 2, ds.cardw, ds.cardh, winner.hand[0]);
+    drawCard(10 + ds.cardw * 3 / 2, ds.playerch / 2, ds.cardw, ds.cardh, winner.hand[1]);
+    avaiablex += 2 * ds.cardw;
+
+    // remaining space left
+    translate(avaiablex, 0);
+    let remainingw = ds.playercw - avaiablex;
+
+    // draw name
+    noStroke();
+    fill(0);
+    textSize(ds.cardh / 2);
+    text(winner.name + ": £" + pot, remainingw / 2, ds.playerch / 2 + ds.cardh / 16);
+
+
+    pop();
+}
+
 function drawPlayerCard(game, player, x, y, turn) {
     push();
     translate(x, y);
@@ -171,7 +248,7 @@ function drawPlayerCard(game, player, x, y, turn) {
     // draw two cards
     let card1 = "back";
     let card2 = "back";
-    if (player.showCardsEveryone && player.name != game.me.name) {
+    if (player.hand != null && player.name != game.me.name) {
         card1 = player.hand[0];
         card2 = player.hand[1];
     }
@@ -212,13 +289,30 @@ function drawPlayerCard(game, player, x, y, turn) {
     textSize(ds.ptexts);
     text("Bet Total/Last: £" + player.totalMoneyBetAmount + "/" + player.lastBetAmount, remainingw / 2, ds.playerch - ds.ptexts / 2);
 
+    // draw failed attempts
+    if (player.name == game.me.name)
+        text("FA: " + player.failedPeekAttemptsCurrentGame, ds.picons / 3, ds.playerch - ds.ptexts / 2);
+
     translate(-avaiablex, 0);
 
-    if (player.hadFolded) {
+    if (player.hasFolded) {
         noStroke();
         fill(ds.pfoldc);
         rect(ds.playercw / 2, ds.playerch / 2, ds.playercw, ds.playerch);
     }
 
     pop();
+}
+
+function updateLeaglMoves(game, moves) {
+    if (game.availableMovesLength != moves.length) {
+        let ml = document.querySelector("#avaiableMovesList");
+        ml.innerHTML = "";
+        moves.forEach(move => {
+            let mli = document.createElement("li");
+            mli.innerText = move;
+            ml.append(mli);
+        });
+        availableMovesLength = moves.length;
+    }
 }

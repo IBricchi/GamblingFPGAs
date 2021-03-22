@@ -1,0 +1,40 @@
+{
+    "active": true,
+    "newGameStarted": false,
+    "communityCards": ["Qd", "Kh", "2d", "5s", "9c"],
+    "players": [{
+            "name": "player2",
+            "hand": null,
+            "moneyAvailableAmount": 2000,
+            "dealer": true,
+            "smallBlind": true,
+            "bigBlind": false,
+            "hasFolded": false,
+            "lastBetAmount": 0,
+            "totalMoneyBetAmount": 0,
+            "allIn": false,
+            "showCardsMe": false,
+            "failedPeekAttemptsCurrentGame": 0
+        },
+        {
+            "name": "player1",
+            "hand": ["Ks", "Qh"],
+            "moneyAvailableAmount": 2000,
+            "dealer": false,
+            "smallBlind": false,
+            "bigBlind": true,
+            "hasFolded": false,
+            "lastBetAmount": 0,
+            "totalMoneyBetAmount": 0,
+            "allIn": false,
+            "showCardsMe": false,
+            "failedPeekAttemptsCurrentGame": 0
+        }
+    ],
+    "winners": [{
+        "name": "player2"
+    }],
+    "winningReason": "flush",
+    "potMoneyAmount": 1000,
+    "winningMoneyAmounts": [1000]
+}

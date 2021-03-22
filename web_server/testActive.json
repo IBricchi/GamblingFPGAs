@@ -1,10 +1,10 @@
 {
     "active": true,
-    "hasEnded": false,
+    "hasEnded": true,
     "communityCards": ["6d", "2s", "9c", "Js", "Ah"],
     "players": [{
             "name": "John",
-            "hand": ["As", "Kc"],
+            "hand": null,
             "moneyAvailableAmount": 500,
             "relativeCardScore": 10,
             "verboseScore": "flush",
@@ -68,7 +68,7 @@
         }
     ],
     "playerAmmount": 4,
-    "currentRound": 1,
+    "currentRound": 2,
     "currentPlayer": 2,
     "smallBlineValue": 0
 }
