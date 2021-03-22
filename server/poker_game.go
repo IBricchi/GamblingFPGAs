@@ -307,16 +307,20 @@ func (g *game) startNewGame() {
 
 	// Reset player attributes, give each player two new cards,
 	for i := range pokerGame.players {
-		pokerGame.players[i].HasFolded = false
-		pokerGame.players[i].LastBetAmount = 0
-		pokerGame.players[i].TotalMoneyBetAmount = 0
-		pokerGame.players[i].AllIn = false
-		pokerGame.players[i].ShowCardsMe = false
-		pokerGame.players[i].ShowCardsIfPeek = false
-		pokerGame.players[i].ShowCardsToPlayerNumbers = []int{}
-		pokerGame.players[i].FailedPeekAttemptsCurrentGame = 0
+		name := pokerGame.players[i].Name
+		moneyAvailableAmount := pokerGame.players[i].MoneyAvailableAmount
+		isDealer := pokerGame.players[i].IsDealer
+		isSmallBlind := pokerGame.players[i].IsSmallBlind
+		isBigBlind := pokerGame.players[i].IsBigBlind
 
-		pokerGame.players[i].Hand = pokerGame.deck.Draw(2)
+		pokerGame.players[i] = player{
+			Name:                 name,
+			Hand:                 pokerGame.deck.Draw(2),
+			MoneyAvailableAmount: moneyAvailableAmount,
+			IsDealer:             isDealer,
+			IsSmallBlind:         isSmallBlind,
+			IsBigBlind:           isBigBlind,
+		}
 
 		for j := range pokerGameShowdwon.Winners {
 			if pokerGame.players[i].Name == pokerGameShowdwon.Winners[j].Name {
