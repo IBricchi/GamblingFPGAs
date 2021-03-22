@@ -121,12 +121,6 @@ func (g *game) next() {
 		return
 	}
 
-	// Skip folded players
-	if g.players[(g.currentPlayer+1)%len(g.players)].HasFolded {
-		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
-		g.next()
-	}
-
 	if g.lastRaisePlayerNumber != (g.currentPlayer+1)%len(g.players) {
 		g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	} else if g.currentRound < 4 {
@@ -170,7 +164,7 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	}
 
 	// Player can't do anything
-	if player.AllIn {
+	if player.AllIn || player.HasFolded {
 		g.next()
 	}
 
