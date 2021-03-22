@@ -130,6 +130,12 @@ func (g *game) next() {
 	} else {
 		g.hasEnded = true
 		g.computeShowdownData()
+		return
+	}
+
+	// Skip player if no action possible
+	if g.players[g.currentPlayer].AllIn || g.players[g.currentPlayer].HasFolded {
+		g.next()
 	}
 }
 
@@ -161,11 +167,6 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 	// check if it is the player's turn
 	if pokerGame.players[pokerGame.currentPlayer].Name != player.Name {
 		return fmt.Errorf("server: poker: updateGameWithFPGAData: not player %v's turn, cannot process active data", player.Name)
-	}
-
-	// Player can't do anything
-	if player.AllIn || player.HasFolded {
-		g.next()
 	}
 
 	if !isMoveAnAvailableNextMove(data.NewMoveType) {
