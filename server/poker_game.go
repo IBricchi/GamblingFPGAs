@@ -250,7 +250,7 @@ func (g *game) computeShowdownData() {
 	pokerGameShowdwon.Players = pokerGame.players
 
 	potMoneyAmount := 0
-	winningCardScore := 0
+	winningCardScore := -1
 	winningPlayers := []int{}
 	for i, player := range pokerGameShowdwon.Players {
 		potMoneyAmount += player.TotalMoneyBetAmount
