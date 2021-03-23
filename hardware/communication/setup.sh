@@ -1,2 +1,3 @@
 #!/bin/bash
-g++ -o main main.cpp
+g++ -o checkError checkError.cpp
+g++ -o readResponse readResponse.cpp
