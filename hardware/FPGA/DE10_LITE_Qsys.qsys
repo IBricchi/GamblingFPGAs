@@ -324,6 +324,14 @@
          type = "String";
       }
    }
+   element tilt_0
+   {
+      datum _sortIndex
+      {
+         value = "19";
+         type = "int";
+      }
+   }
    element timer
    {
       datum _sortIndex
@@ -436,6 +444,11 @@
  <interface
    name="switch_external_connection"
    internal="switch.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="tilt_0_conduit_end"
+   internal="tilt_0.conduit_end"
    type="conduit"
    dir="end" />
  <module
@@ -781,7 +794,7 @@
   <parameter name="cpuArchRev" value="1" />
   <parameter name="cpuID" value="0" />
   <parameter name="cpuReset" value="false" />
-  <parameter name="customInstSlavesSystemInfo" value="&lt;info/&gt;" />
+  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="tilt_0" baseAddress="0" addressSpan="1" clockCycleType="VARIABLE" /></info>]]></parameter>
   <parameter name="customInstSlavesSystemInfo_nios_a" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_b" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_c" value="&lt;info/&gt;" />
@@ -952,7 +965,7 @@
    version="20.1"
    enabled="1">
   <parameter name="allowInSystemMemoryContentEditor" value="false" />
-  <parameter name="autoInitializationFileName">$${FILENAME}_onchip_memory2</parameter>
+  <parameter name="autoInitializationFileName">DE10_LITE_Qsys_onchip_memory2</parameter>
   <parameter name="blockType" value="AUTO" />
   <parameter name="copyInitFile" value="false" />
   <parameter name="dataWidth" value="32" />
@@ -992,7 +1005,7 @@
   <parameter name="casLatency" value="3" />
   <parameter name="clockRate" value="100000000" />
   <parameter name="columnWidth" value="10" />
-  <parameter name="componentName" value="$${FILENAME}_sdram" />
+  <parameter name="componentName">DE10_LITE_Qsys_sdram</parameter>
   <parameter name="dataWidth" value="16" />
   <parameter name="generateSimulationModel" value="true" />
   <parameter name="initNOPDelay" value="0.0" />
@@ -1027,6 +1040,9 @@
    version="20.1"
    enabled="1">
   <parameter name="id" value="0" />
+ </module>
+ <module name="tilt_0" kind="tilt" version="1.0" enabled="1">
+  <parameter name="LATENCY" value="0" />
  </module>
  <module name="timer" kind="altera_avalon_timer" version="20.1" enabled="1">
   <parameter name="alwaysRun" value="false" />
@@ -1281,6 +1297,15 @@
    start="nios2_gen2_0.irq"
    end="timer.irq">
   <parameter name="irqNumber" value="2" />
+ </connection>
+ <connection
+   kind="nios_custom_instruction"
+   version="20.1"
+   start="nios2_gen2_0.custom_instruction_master"
+   end="tilt_0.nios_custom_instruction_slave">
+  <parameter name="CIName" value="tilt_0" />
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0" />
  </connection>
  <connection
    kind="reset"
