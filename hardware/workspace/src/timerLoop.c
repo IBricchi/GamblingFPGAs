@@ -66,31 +66,27 @@ void sys_timer_isr() {
 
 		if(inputData.isTurn == 1)
 		{
-			if(data.button_read == 2)
-			{
-				outputData.newMoveType = 'a'; // All in
+			if(inputData.allowFold && data.button_read == 2){
+				outputData.newMoveType = "fold";
 				outputData.isActiveData = 1;
-
 			}
-
-			else if( (data.switch_read & 0b0010000000) == 0b0010000000 ) //shake was not accurate enough //shake(&count, &previous_value, zfiltered ) == 1)
-			{
-				outputData.newMoveType = 'f'; // Fold
+			else if((inputData.allowCheck|inputData.allowCall) && data.button_read == 1){
+				outputData.newMoveType = inputData.allowCheck?"check":"call";
 				outputData.isActiveData = 1;
-
 			}
-			else if((data.switch_read & 0b0100000000) == 0b0100000000)
-			{
-				outputData.newMoveType = 'b'; // Bet
+			else if((inputData.allowBet | inputData.allowRaise) && data.button_read == 1){
+				outputData.newMoveType = inputData.allowBet?"bet":"raise";
 				digify(betData.m_digits, inputData.moneyAvailableAmount);
 				int b = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
-				if(b < inputData.moneyAvailableAmount)	// Fixing edge case
+				if(b < inputData.moneyAvailableAmount && b >= inputData.minimumNextBetAmount)	// Fixing edge case
 				{
 					outputData.newBetAmount = b;
 					outputData.isActiveData = 1;
 				}
 				else
-				{outputData.newBetAmount = 0;}
+				{
+					outputData.newBetAmount = 0;
+				}
 			}
 		}
 		pwm = 0;

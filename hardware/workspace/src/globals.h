@@ -39,9 +39,16 @@ typedef struct{
 	char **availableNextMoves;
 	int aviablableNextMovesCount;
 	int moneyAvailableAmount;
-	int minimumNextBetAmount; // not needed as this would be match which isnt implimented yet ...
+	int minimumNextBetAmount;
 	int relativeCardScore;
 	int failedPeekAttemptsCurrentGame;
+
+	// processed data
+	int allowFold;
+	int allowCheck;
+	int allowBet;
+	int allowCall;
+	int allowRaise;
 } InputData;
 extern InputData inputData;
 
@@ -51,7 +58,7 @@ typedef struct{
 	int showCardsEveryone;
 	int newTryPeek;
 	int newTryPeekPlayerNumber;
-	char newMoveType;
+	char *newMoveType;
 	int newBetAmount;
 } OutputData;
 extern OutputData outputData;

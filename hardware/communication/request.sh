@@ -20,4 +20,10 @@ sleep 0.9
 
 killall nios2-terminal.exe
 
-cat out.txt
+DATAOUT=$(cat out.txt)
+echo $DATAOUT
+
+curl --header "Content-Type: application/json; charset=UTF-8" \
+    --request POST \
+    --data "${DATAOUT}" \
+    $SRC

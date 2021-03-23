@@ -7,6 +7,7 @@
 
 #include "request.h"
 #include "jsonDecode.h"
+#include "jsonEncode.h"
 
 FILE* fp;
 
@@ -38,20 +39,41 @@ void requestLoop(){
 				return;
 			}
 
+			// process input strings
+			inputData.allowFold = 0;
+			inputData.allowCheck = 0;
+			inputData.allowBet = 0;
+			inputData.allowCall = 0;
+			inputData.allowRaise = 0;
+			for(int i = 0; i < inputData.aviablableNextMovesCount; i++){
+				if(!strcmp(inputData.availableNextMoves[i], "fold")){
+					inputData.allowFold = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "check")){
+					inputData.allowCheck = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "bet")){
+					inputData.allowBet = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "call")){
+					inputData.allowCall = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "raise")){
+					inputData.allowRaise = 1;
+					continue;
+				}
+			}
+
 			// print output;
 			printf("<data>\n");
-			printf("'{\"isActiveData\":%d,\"showCardsMe\":%d,\"showCardsEveryone\":%d,\"newTryPeek\":%d,\"newTryPeekPlayerNumber\":%d,\"newMoveType\":%c,\"newBetAmount\":%d}'\n",
-					outputData.isActiveData,
-					outputData.showCardsMe,
-					outputData.showCardsEveryone,
-					outputData.newTryPeek,
-					outputData.newTryPeekPlayerNumber,
-					outputData.newMoveType,
-					outputData.newBetAmount);
+			writeOutput(fp, &outputData);
 
 			// resetting values:
 			outputData.isActiveData = 0;
-			outputData.newMoveType = '0';
 		}
 	}
 }
