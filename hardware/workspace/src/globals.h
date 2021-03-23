@@ -36,11 +36,22 @@ typedef struct{
 	char **availableNextMoves;
 	int aviablableNextMovesCount;
 	int moneyAvailableAmount;
-	int minimumNextBetAmount;
+	int minimumNextBetAmount; // not needed as this would be match which isnt implimented yet ...
 	int relativeCardScore;
 	int failedPeekAttemptsCurrentGame;
 } InputData;
 extern InputData inputData;
+
+typedef struct{
+	int isActiveData;
+	int showCardsMe;
+	int showCardsEveryone;
+	int newTryPeek;
+	int newTryPeekPlayerNumber;
+	char newMoveType;
+	int newBetAmount;
+} OutputData;
+extern OutputData outputData;
 
 typedef struct{
 	alt_up_accelerometer_spi_dev * acc;

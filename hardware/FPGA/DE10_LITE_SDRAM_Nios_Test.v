@@ -136,7 +136,8 @@ DE10_LITE_Qsys u0 (
     .button_external_connection_export (KEY[1:0]),
 
     .switch_external_connection_export (SW[9:0]),
-
+	 .tilt_0_conduit_end_datac			(SW[9]),
+	 
     .accelerometer_spi_external_interface_I2C_SDAT      (GSENSOR_SDI),
     .accelerometer_spi_external_interface_I2C_SCLK      (GSENSOR_SCLK),
     .accelerometer_spi_external_interface_G_SENSOR_CS_N (GSENSOR_CS_N),
