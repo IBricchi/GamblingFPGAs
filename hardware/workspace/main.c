@@ -105,7 +105,7 @@ while(1){
 
 	 int peek = ALT_CI_TILT_0((((int)yfiltered)+30), inputData.RelativeCardScor);
 	 outputData.showCardsMe = (peek & 0b01);
-	 outputData.showCardsEveryone = (peek & 0b10);
+	 outputData.showCardsEveryone = (peek & 0b10);    // If peek attempt calculations going on in hardware, need extra input from server
 
 
 	 //-----------------------------------------------//
@@ -163,7 +163,7 @@ while(1){
 	 }
 
 	// Printing for testing
-	printf("'{isActiveData :%d,showCardsMe:%d,showCardsEveryone:%d,newTryPeek:%d,newTryPeekPlayerNumber:%d,newMoveType:%c,newBetAmount:%d}'\n",
+	printf("'{\"isActiveData\":%d,\"showCardsMe\":%d,\"showCardsEveryone\":%d,\"newTryPeek\":%d,\"newTryPeekPlayerNumber\":%d,\"newMoveType\":%c,\"newBetAmount\":%d}'\n",
 			outputData.isActiveData,
 			outputData.showCardsMe,
 			outputData.showCardsEveryone,
