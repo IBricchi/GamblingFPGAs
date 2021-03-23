@@ -18,7 +18,7 @@ fi
 
 echo $DATAIN | nios2-terminal.exe | ./readResponse > out.txt&
 
-sleep 0.9
+sleep 1.5
 
 killall nios2-terminal.exe
 
