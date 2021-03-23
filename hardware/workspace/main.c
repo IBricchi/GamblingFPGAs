@@ -68,12 +68,13 @@ int main()
 	// start main execution
 	printf("Running ..\n");
 
-
+	// Setting values for testing 
 	inputData.IsTurn =1;
 	inputData.MoneyAvailableAmount = 12345;
 	inputData.RelativeCardScor = 50;
 	outputData.newBetAmount = 0;
 
+	// Commented out for testing 
 
 	/*
 	// run request loop
@@ -98,9 +99,9 @@ while(1){
 	 // Peek/tilt function --- values set in hardware //
 	 //-----------------------------------------------//
 	 // Takes yfiltered and relative card score  	  //
-	 // Returns 2 bits, 							  //
-	 // LSB is show cards me		                  //
-	 // MSB is show cards all 						  //
+	 // Returns 2 bits, 				  //
+	 // LSB is show cards me		          //
+	 // MSB is show cards all 			  //
 
 	 int peek = ALT_CI_TILT_0((((int)yfiltered)+30), inputData.RelativeCardScor);
 	 outputData.showCardsMe = (peek & 0b01);
@@ -108,9 +109,9 @@ while(1){
 
 
 	 //-----------------------------------------------//
-	 //            Peek attempt function 		      //
+	 //            Peek attempt function 		  //
 	 //-----------------------------------------------//
-	 // checks is turn and button val			  	  //
+	 // checks is turn and button val		  //
 
 	 if(inputData.IsTurn == 0 && data.button_read == 2)
 	 {
@@ -120,18 +121,16 @@ while(1){
 	 else
 	 { outputData.newTryPeek = 0;}
 
-	 //printf("peek attempt: %d  \n", outputData.newTryPeek);
-
 
 	 // TO DO: not sure how to implement new try peek player?
 
 
 	 //-----------------------------------------------//
-	 //            Bet option			 		      //
+	 //            Bet option			  //
 	 //-----------------------------------------------//
 	 // checks not folding or all in then runs bet 	  //
-	 // returns integer value of bet amount 		  //
-	 // only occurs during go
+	 // returns integer value of bet amount           //
+	 // only occurs during go			  //
 
 	 if(inputData.IsTurn == 1)
 	 {
@@ -163,7 +162,7 @@ while(1){
 		 }
 	 }
 
-
+	// Printing for testing
 	printf("'{isActiveData :%d,showCardsMe:%d,showCardsEveryone:%d,newTryPeek:%d,newTryPeekPlayerNumber:%d,newMoveType:%c,newBetAmount:%d}'\n",
 			outputData.isActiveData,
 			outputData.showCardsMe,
