@@ -19,57 +19,38 @@ int Bet(alt_32  *count, int *segvalue, int *maxQ, alt_32 x_value, uint16_t switc
 	int s_digits[6];
 	bitify(s_digits, switch_read);
 
-
-
-
-	 if(*count == 100 )
-	{
-
-
-		 	 // Checking if confirmed || change to a return?
-			 if(button_read == 1 )
-			 {
-				 //printf("Bet value: ");
-				 return ((bet_value[5]*100000)+(bet_value[4]*10000)+(bet_value[3]*1000)+(bet_value[2]*100)+(bet_value[1]*10)+(bet_value[0]));
-
+	// If switch locked
+	if(s_digits[*segvalue] == 1 ){
+		//printf("locked switch: %d ", *segvalue);
+		print_dec(bet_value[*segvalue], *segvalue);
+		if(bet_value[*segvalue] != m_digits[*segvalue]){
+			*maxQ=1;
+		}
+		//printf(" %d \n", mx);
+		if(*segvalue == 0){
+			*segvalue = 5;
+		}
+		else{
+			 *segvalue = *segvalue - 1;
+			 if(*maxQ == 1){
+				 m_digits[*segvalue] = 9;
+				//printf(" %d \n", m_digits[*segvalue]);
 			 }
-
-			 // If switch locked
-			else if(s_digits[*segvalue] == 1 )
-			 {
-				//printf("locked switch: %d ", *segvalue);
-				print_dec(bet_value[*segvalue], *segvalue);
-				if(bet_value[*segvalue] != m_digits[*segvalue])
-				{*maxQ=1;}
-				//printf(" %d \n", mx);
-				if( *segvalue == 0){*segvalue = 5;}
-				 else{
-					 	 *segvalue = *segvalue - 1;
-					 	 if(*maxQ == 1){
-					 		 m_digits[*segvalue] = 9;
-					 		//printf(" %d \n", m_digits[*segvalue]);
-					 	 }
-					 }
-
-			 }
-
-			 // If switch unlocked
-			else if(s_digits[*segvalue] == 0)
-				 {
-					if(m_digits[*segvalue] == 0)
-					{bet_value[*segvalue] = 0;}
-					else
-					{
-						 int intermedA = ((m_digits[*segvalue]*100)/range) + 1;
-						 int intermedB = (intermedA*xval) - (intermedA*min);
-						 bet_value[*segvalue] = m_digits[*segvalue] - (intermedB/100);
-					}
-					 print_dec(bet_value[*segvalue], *segvalue);
-				 }
-
-		*count = -1;
+		 }
+	}
+	// If switch unlocked
+	else if(s_digits[*segvalue] == 0){
+		if(m_digits[*segvalue] == 0){
+			bet_value[*segvalue] = 0;
+		}
+		else{
+			int intermedA = ((m_digits[*segvalue]*100)/range) + 1;
+			int intermedB = (intermedA*xval) - (intermedA*min);
+			bet_value[*segvalue] = m_digits[*segvalue] - (intermedB/100);
+		}
+		print_dec(bet_value[*segvalue], *segvalue);
 	}
 
-	*count = *count + 1;
+	return ((bet_value[5]*100000)+(bet_value[4]*10000)+(bet_value[3]*1000)+(bet_value[2]*100)+(bet_value[1]*10)+(bet_value[0]));
 }
 

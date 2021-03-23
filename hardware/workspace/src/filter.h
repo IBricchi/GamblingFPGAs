@@ -27,7 +27,7 @@ typedef struct {
 
 // void quantised_filt(int coef[], int buffer[], int x_read, int * quantised, int N);
 
-// void filt(float buffer[], int x_read, float * filtered, int N);
+void filt(float buffer[], int x_read, float * filtered, int N);
 
 void filterAccelerometer(FilterData* src);
 

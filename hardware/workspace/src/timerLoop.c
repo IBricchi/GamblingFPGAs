@@ -8,10 +8,13 @@
 #include "timerLoop.h"
 #include "bet.h"
 #include "filter.h"
+#include "printdec.h"
 
 // setup timer information
 #define PWM_PERIOD 16
 uint8_t pwm = 0;
+
+extern FILE* fp;
 
 FilterData filterData;
 BetData betData = {5,0,0,{0},{0}};
@@ -26,7 +29,15 @@ void sys_timer_isr() {
 		data.switch_read = IORD_ALTERA_AVALON_PIO_DATA(SWITCH_BASE);
 		data.button_read = IORD_ALTERA_AVALON_PIO_DATA(BUTTON_BASE);
 
-		filterAccelerometer(&filterData);
+		//Filtering x-axis values
+		filt(filterData.xbuffer, data.acc_x_read, &filterData.xfiltered, 24);
+		//Filtering x-axis values
+		filt(filterData.ybuffer, data.acc_y_read, &filterData.yfiltered, 24);
+		//Filtering x-axis values
+		filt(filterData.zbuffer, data.acc_z_read, &filterData.zfiltered, 24);
+//		filterAccelerometer(&filterData);
+
+//		fprintf(fp, "%i, %i, %i\n", filterData.xfiltered, filterData.yfiltered, filterData.zfiltered);
 
 		//-----------------------------------------------//
 		// Peek/tilt function --- values set in hardware //
@@ -74,18 +85,35 @@ void sys_timer_isr() {
 				outputData.newMoveType = inputData.allowCheck?"check":"call";
 				outputData.isActiveData = 1;
 			}
-			else if((inputData.allowBet | inputData.allowRaise) && data.button_read == 1){
-				outputData.newMoveType = inputData.allowBet?"bet":"raise";
-				digify(betData.m_digits, inputData.moneyAvailableAmount);
-				int b = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
-				if(b < inputData.moneyAvailableAmount && b >= inputData.minimumNextBetAmount)	// Fixing edge case
-				{
-					outputData.newBetAmount = b;
-					outputData.isActiveData = 1;
+			else if(inputData.allowBet | inputData.allowRaise){
+				if((data.switch_read & 0b0100000000) == 0b0100000000){
+					digify(betData.m_digits, inputData.moneyAvailableAmount);
+					Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
 				}
-				else
-				{
-					outputData.newBetAmount = 0;
+				else{
+					betData.segvalue = 5;
+					betData.bcount = 0;
+					betData.maxQ = 0;
+					for(int i = 0; i < 6; i++){
+						betData.bet_value[i] = 0;
+						betData.m_digits[i] = 0;
+						print_dec(10, i);
+					}
+					Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
+				}
+				if(data.button_read == 1){
+					outputData.newMoveType = inputData.allowBet?"bet":"raise";
+					digify(betData.m_digits, inputData.moneyAvailableAmount);
+					int b = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
+					if(b < inputData.moneyAvailableAmount && b >= inputData.minimumNextBetAmount)	// Fixing edge case
+					{
+						outputData.newBetAmount = b;
+						outputData.isActiveData = 1;
+					}
+					else
+					{
+						outputData.newBetAmount = 0;
+					}
 				}
 			}
 		}

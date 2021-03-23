@@ -6,6 +6,8 @@ SRC="http://${1}:${2}@${IP}/poker/fpgaData"
 
 DATAIN=$(curl $SRC)
 
+echo $DATAIN
+
 echo $DATAIN | ./checkError
 
 if ! [ $? ] 
@@ -21,7 +23,16 @@ sleep 0.9
 killall nios2-terminal.exe
 
 DATAOUT=$(cat out.txt)
+
 echo $DATAOUT
+
+echo $DATAOUT | ./checkError
+
+if ! [ $? ] 
+then
+    echo "FPGA responded with invalid output: \"${DATAIN}\". Terminating Request."
+    exit 1
+fi
 
 curl --header "Content-Type: application/json; charset=UTF-8" \
     --request POST \

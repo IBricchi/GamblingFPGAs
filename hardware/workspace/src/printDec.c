@@ -21,6 +21,7 @@ void print_dec(int dig, int base)
  			case 7: prod = 0b1111000; break;
  			case 8: prod = 0b0000000; break;
  			case 9: prod = 0b0011000; break;
+ 			case 10: prod = 0b1111111; break;
 
  	}
 	switch(base){
