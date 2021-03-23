@@ -12,12 +12,12 @@
 
 // setup timer information
 #define PWM_PERIOD 16
-uint8_t pwm = 0;
+uint8_t pwm = -1;
 
 extern FILE* fp;
 
 FilterData filterData;
-BetData betData = {5,0,0,{0},{0}};
+BetData betData = {5,0,0,{0},{0},0};
 void sys_timer_isr() {
     IOWR_ALTERA_AVALON_TIMER_STATUS(TIMER_BASE, 0);
 
@@ -87,24 +87,24 @@ void sys_timer_isr() {
 			}
 			else if(inputData.allowBet | inputData.allowRaise){
 				if((data.switch_read & 0b0100000000) == 0b0100000000){
-					digify(betData.m_digits, inputData.moneyAvailableAmount);
-					Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
+					betData.bet_total = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
 				}
 				else{
 					betData.segvalue = 5;
 					betData.bcount = 0;
 					betData.maxQ = 0;
+					betData.bet_total = 0;
 					for(int i = 0; i < 6; i++){
 						betData.bet_value[i] = 0;
 						betData.m_digits[i] = 0;
 						print_dec(10, i);
 					}
-					Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
+					digify(betData.m_digits, inputData.moneyAvailableAmount);
+					betData.bet_total = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
 				}
 				if(data.button_read == 1){
 					outputData.newMoveType = inputData.allowBet?"bet":"raise";
-					digify(betData.m_digits, inputData.moneyAvailableAmount);
-					int b = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
+					int b = betData.bet_total;
 					if(b < inputData.moneyAvailableAmount && b >= inputData.minimumNextBetAmount)	// Fixing edge case
 					{
 						outputData.newBetAmount = b;

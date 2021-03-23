@@ -31,12 +31,11 @@ int Bet(alt_32  *count, int *segvalue, int *maxQ, alt_32 x_value, uint16_t switc
 			*segvalue = 5;
 		}
 		else{
-			 *segvalue = *segvalue - 1;
-			 if(*maxQ == 1){
-				 m_digits[*segvalue] = 9;
-				//printf(" %d \n", m_digits[*segvalue]);
-			 }
-		 }
+			*segvalue = *segvalue - 1;
+			if(*maxQ == 1){
+				m_digits[*segvalue] = 9;
+			}
+		}
 	}
 	// If switch unlocked
 	else if(s_digits[*segvalue] == 0){
