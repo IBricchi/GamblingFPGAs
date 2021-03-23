@@ -22,10 +22,13 @@
 
 // setup data struct
 typedef struct{
+	// accelerometer data
 	uint32_t acc_x_read;
 	uint32_t acc_y_read;
 	uint32_t acc_z_read;
+	// switch data
 	uint16_t switch_read;
+	// button data
 	uint8_t button_read;
 } Data;
 extern Data data;

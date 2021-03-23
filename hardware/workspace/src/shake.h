@@ -10,6 +10,11 @@
 
 #include "globals.h"
 
+typedef struct{
+	int count;
+	int previous_value;
+} ShakeData;
+
 int shake(alt_32 * count, alt_32 * previous_value, alt_32 new_data);
 
 #endif /* SHAKE_H_ */

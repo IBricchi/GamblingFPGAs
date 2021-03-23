@@ -10,14 +10,25 @@
 
 #include "globals.h"
 
-int float_to_fixed(float input);
+typedef struct {
+	float xbuffer[24];
+	float xfiltered;
+	float ybuffer[24];
+	float yfiltered;
+	float zbuffer[24];
+	float zfiltered;
+} FilterData;
 
-float fixed_to_float(int input);
+// int float_to_fixed(float input);
 
-int fixed_mult(int x, int y);
+// float fixed_to_float(int input);
 
-void quantised_filt(int coef[], int buffer[], int x_read, int * quantised, int N);
+// int fixed_mult(int x, int y);
 
-void filt(float buffer[], int x_read, float * filtered, int N);
+// void quantised_filt(int coef[], int buffer[], int x_read, int * quantised, int N);
+
+// void filt(float buffer[], int x_read, float * filtered, int N);
+
+void filterAccelerometer(FilterData* src);
 
 #endif /* FILTER_H_ */

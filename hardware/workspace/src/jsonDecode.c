@@ -178,7 +178,9 @@ int readInput(FILE* in, InputData* out){
         // read final }
         if(c != '}')
             return 1;
+        // consume newline
+        getc(in);
         return 0;
     }
-    return -1;
+    return 1;
 }

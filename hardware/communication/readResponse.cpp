@@ -1,13 +1,14 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 int main(){
     string line;
-    cin >> line;
+    getline(cin, line);
     while(!cin.fail()){
         if(line == "<data>") break;
-        cin >> line;
+        getline(cin, line);
     }
     cin >> line;
     cout << line << endl;

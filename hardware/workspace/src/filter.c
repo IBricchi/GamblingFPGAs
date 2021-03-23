@@ -4,11 +4,6 @@
  *  Created on: 22 Mar 2021
  *      Author: bjs3118
  */
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-
-#include "system.h"
 #include "filter.h"
 
 
@@ -57,4 +52,13 @@ void filt(float buffer[], int x_read, float * filtered, int N)
 			//printf("\nfilt: %d\n", (int)intermediate);
 	*filtered = intermediate;
 
+}
+
+void filterAccelerometer(FilterData* src){
+	//Filtering x-axis values
+	filt(src->xbuffer, data.acc_x_read, &src->xfiltered, 24);
+	//Filtering x-axis values
+	filt(src->ybuffer, data.acc_y_read, &src->yfiltered, 24);
+	//Filtering x-axis values
+	filt(src->zbuffer, data.acc_z_read, &src->zfiltered, 24);
 }
