@@ -34,7 +34,7 @@ void requestLoop(){
 
 			// print output;
 			// should replace with an output json file
-			fprintf(fp, "<data>\n%s", inputData.AvailableNextMoves[0]);
+			fprintf(fp, "<data>\n%s", inputData.availableNextMoves[0]);
 		}
 	}
 }

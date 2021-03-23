@@ -31,12 +31,14 @@ typedef struct{
 extern Data data;
 
 typedef struct{
-	int IsTurn;
-	char **AvailableNextMoves;
-	int AviablableNextMovesCount;
-	int MoneyAvailableAmount;
-	int MinimumNextBetAmount;
-	int RelativeCardScor;
+	int isTurn;
+	int currentPlayerNumber;
+	char **availableNextMoves;
+	int aviablableNextMovesCount;
+	int moneyAvailableAmount;
+	int minimumNextBetAmount;
+	int relativeCardScore;
+	int failedPeekAttemptsCurrentGame;
 } InputData;
 extern InputData inputData;
 

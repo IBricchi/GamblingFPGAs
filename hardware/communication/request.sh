@@ -1,37 +1,23 @@
 #!/bin/bash
-rm -f err.txt
 rm -f out.txt
 
 IP=18.132.52.158:3000
 SRC="http://${1}:${2}@${IP}/poker/fpgaData"
 
-
-
 DATAIN=$(curl $SRC)
 
-if [ $(echo $DATAIN | ./checkError) ] 
+echo $DATAIN | ./checkError
+
+if ! [ $? ] 
 then
     echo "Server responded with an error message: \"${DATAIN}\". Terminating Request."
+    exit 1
 fi
 
-(echo $DATAIN | nios2-terminal.exe | ./main > out.txt) &
-i=0
-while ! [ -s out.txt ]; do
-    ((i++))
-    if [ $i -eq 10 ]
-    then
-        echo "FPGA took too long to respond. Terminating Request."
-        echo "FAIL" > err.txt
-        break
-    fi
-    echo "File empty, continue checking."
-    sleep 0.1
-done
+echo $DATAIN | nios2-terminal.exe | ./readResponse > out.txt&
 
-if [[ -s err.txt ]
-then
-    cat out.txt
-else
-    echo "Unable to complete request."
-fi
+sleep 0.9
+
 killall nios2-terminal.exe
+
+cat out.txt
