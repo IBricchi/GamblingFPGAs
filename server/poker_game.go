@@ -197,9 +197,24 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 // playerNumber refers to the player that just finished their turn.
 func (g *game) evaluatePeek(playerNumber int) {
 	for i := range g.players {
-		if g.players[i].TriedPeekCurrentPlayer && g.players[playerNumber].ShowCardsIfPeek {
-			g.players[playerNumber].ShowCardsToPlayerNumbers = append(g.players[playerNumber].ShowCardsToPlayerNumbers, i)
-			return
+		if g.players[i].TriedPeekCurrentPlayer {
+			// check if can already see this players cards => not allowed to peek again and hence peek attempt does not count
+			previouslySucceeded := false
+			for _, showToPlayerNumber := range g.players[playerNumber].ShowCardsToPlayerNumbers {
+				if i == showToPlayerNumber {
+					previouslySucceeded = true
+					break
+				}
+			}
+			if previouslySucceeded {
+				continue
+			}
+
+			if g.players[playerNumber].ShowCardsIfPeek {
+				g.players[playerNumber].ShowCardsToPlayerNumbers = append(g.players[playerNumber].ShowCardsToPlayerNumbers, i)
+			} else {
+				g.players[i].FailedPeekAttemptsCurrentGame++
+			}
 		}
 	}
 }
