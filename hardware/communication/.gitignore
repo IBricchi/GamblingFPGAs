@@ -1,2 +1,4 @@
-main
+readResponse
+checkError
 out.txt
+err.txt

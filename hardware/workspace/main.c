@@ -1,15 +1,33 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+#include "system.h"
+
+
 #include "src/globals.h"
 #include "src/setup.h"
 #include "src/request.h"
 #include "src/timerLoop.h"
 #include "src/jsonDecode.h"
+#include "src/bet.h"
+#include "src/shake.h"
+#include "src/filter.h"
+#include "src/bitify.h"
+#include "src/digify.h"
+#include "src/printDec.h"
 
 Data data;
 InputData inputData;
+OutputData outputData;
 DataSrc dataSrc;
 
-int main()
-{
+
+
+int main(){
+	// clearing segments
+	clear_dec();
+
 	// setup inputData
 	setupInputData();
 

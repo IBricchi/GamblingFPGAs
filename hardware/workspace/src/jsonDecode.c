@@ -10,9 +10,9 @@
 void setupInputData(){
 	int a_length = 5;
 	int w_length = 100;
-	inputData.AvailableNextMoves = malloc(sizeof(char[a_length][w_length]));
+	inputData.availableNextMoves = malloc(sizeof(char[a_length][w_length]));
 	for(int i = 0; i < a_length; i++){
-		inputData.AvailableNextMoves[i] = malloc(sizeof(char) * w_length);
+		inputData.availableNextMoves[i] = malloc(sizeof(char) * w_length);
 	}
 }
 
@@ -143,32 +143,44 @@ int readInput(FILE* in, InputData* out){
     char c = getc(in);
     // errors return 1
     if(c == '{'){
-        if(readBoolInput(in, &c, "\"isTurn\"", 8, &out->IsTurn))
+        if(readBoolInput(in, &c, "\"isTurn\"", 8, &out->isTurn))
             return 1;
         // check for comma
         if(c != ',')
             return 1;
-        if(readStrArrayInput(in, &c, "\"availableNextMoves\"", 20, out->AvailableNextMoves, &out->AviablableNextMovesCount))
+        if(readIntInput(in, &c, "\"currentPlayerNumber\"", 21, out->currentPlayerNumber))
             return 1;
         // check for comma
         if(c != ',')
             return 1;
-        if(readIntInput(in, &c, "\"moneyAvailableAmount\"", 22, &out->MoneyAvailableAmount))
+        if(readStrArrayInput(in, &c, "\"availableNextMoves\"", 20, out->availableNextMoves, &out->aviablableNextMovesCount))
             return 1;
         // check for comma
         if(c != ',')
             return 1;
-        if(readIntInput(in, &c, "\"minimumNextBetAmount\"", 22, &out->MinimumNextBetAmount))
+        if(readIntInput(in, &c, "\"moneyAvailableAmount\"", 22, &out->moneyAvailableAmount))
             return 1;
         // check for comma
         if(c != ',')
             return 1;
-        if(readIntInput(in, &c, "\"relativeCardScore\"", 19, &out->RelativeCardScor))
+        if(readIntInput(in, &c, "\"minimumNextBetAmount\"", 22, &out->minimumNextBetAmount))
+            return 1;
+        // check for comma
+        if(c != ',')
+            return 1;
+        if(readIntInput(in, &c, "\"relativeCardScore\"", 19, &out->relativeCardScore))
+            return 1;
+        // check for comma
+        if(c != ',')
+            return 1;
+        if(readIntInput(in, &c, "\"failedPeekAttemptsCurrentGame\"", 31, &out->failedPeekAttemptsCurrentGame))
             return 1;
         // read final }
         if(c != '}')
             return 1;
+        // consume newline
+        getc(in);
         return 0;
     }
-    return -1;
+    return 1;
 }

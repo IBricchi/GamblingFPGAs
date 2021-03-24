@@ -7,6 +7,7 @@
 
 #include "request.h"
 #include "jsonDecode.h"
+#include "jsonEncode.h"
 
 FILE* fp;
 
@@ -26,15 +27,53 @@ void requestLoop(){
 	char prompt = 0;
 	if (fp) {
 		while(1){
+			// Setting values for testing
+//			inputData.isTurn =1;
+//			inputData.moneyAvailableAmount = 12345;
+//			inputData.relativeCardScore = 50;
+//			outputData.newBetAmount = 0;
+
 			// read input
-			if(readInput(fp, &inputData) == -1){
-				fprintf(stderr, "ERROR: Unable to parse input json.");
+			if(readInput(fp, &inputData)){
+				fprintf(stderr, "ERROR: Unable to parse input json.\n");
 				return;
 			}
 
+			// process input strings
+			inputData.allowFold = 0;
+			inputData.allowCheck = 0;
+			inputData.allowBet = 0;
+			inputData.allowCall = 0;
+			inputData.allowRaise = 0;
+			for(int i = 0; i < inputData.aviablableNextMovesCount; i++){
+				if(!strcmp(inputData.availableNextMoves[i], "fold")){
+					inputData.allowFold = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "check")){
+					inputData.allowCheck = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "bet")){
+					inputData.allowBet = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "call")){
+					inputData.allowCall = 1;
+					continue;
+				}
+				else if(!strcmp(inputData.availableNextMoves[i], "raise")){
+					inputData.allowRaise = 1;
+					continue;
+				}
+			}
+
 			// print output;
-			// should replace with an output json file
-			fprintf(fp, "<data>\n%s", inputData.AvailableNextMoves[0]);
+			printf("<data>\n");
+			writeOutput(fp, &outputData);
+
+			// resetting values:
+			outputData.isActiveData = 0;
 		}
 	}
 }

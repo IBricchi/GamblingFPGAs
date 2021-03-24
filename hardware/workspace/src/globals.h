@@ -22,23 +22,46 @@
 
 // setup data struct
 typedef struct{
+	// accelerometer data
 	uint32_t acc_x_read;
 	uint32_t acc_y_read;
 	uint32_t acc_z_read;
+	// switch data
 	uint16_t switch_read;
+	// button data
 	uint8_t button_read;
 } Data;
 extern Data data;
 
 typedef struct{
-	int IsTurn;
-	char **AvailableNextMoves;
-	int AviablableNextMovesCount;
-	int MoneyAvailableAmount;
-	int MinimumNextBetAmount;
-	int RelativeCardScor;
+	int isTurn;
+	int currentPlayerNumber;
+	char **availableNextMoves;
+	int aviablableNextMovesCount;
+	int moneyAvailableAmount;
+	int minimumNextBetAmount;
+	int relativeCardScore;
+	int failedPeekAttemptsCurrentGame;
+
+	// processed data
+	int allowFold;
+	int allowCheck;
+	int allowBet;
+	int allowCall;
+	int allowRaise;
 } InputData;
 extern InputData inputData;
+
+typedef struct{
+	int isActiveData;
+	int showCardsMe;
+	int showCardsEveryone;
+	int newTryPeek;
+	int newTryPeekPlayerNumber;
+	char *newMoveType;
+	int newBetAmount;
+} OutputData;
+extern OutputData outputData;
 
 typedef struct{
 	alt_up_accelerometer_spi_dev * acc;
