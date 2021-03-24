@@ -108,16 +108,14 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	Go to next round if last player of this round.
 */
 func (g *game) next() {
+	resetTurnSpecificPlayerData(g.players)
+
 	// Check if only one player remaining
 	foldedPlayerAmount := 0
 	for i := range g.players {
 		if g.players[i].HasFolded {
 			foldedPlayerAmount++
 		}
-
-		// Reset current turn specific player values
-		g.players[i].DidPeekCurrentPlayer = false
-		g.players[i].ShowCardsMe = false
 	}
 	if foldedPlayerAmount == len(g.players)-1 {
 		g.hasEnded = true
@@ -151,16 +149,12 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		player.ShowCardsMe = data.ShowCardsMe
 	}
 
-	if callingPlayerNumber == g.currentPlayer && data.ShowCardsIfPeek {
-		// Will be set back to false at end of round
-		player.ShowCardsIfPeek = data.ShowCardsIfPeek
-
-		g.tryPeek(callingPlayerNumber, true)
-	} else if !player.DidPeekCurrentPlayer && data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
-		// Will be set back to []int{} at end of round
-		player.TryPeekPlayerNumbers = append(player.TryPeekPlayerNumbers, data.NewTryPeekPlayerNumber)
-
-		g.tryPeek(callingPlayerNumber, false)
+	if data.ShowCardsIfPeek && callingPlayerNumber == g.currentPlayer {
+		// Will be set back to false at end of turn
+		player.ShowCardsIfPeek = true
+	} else if !player.TriedPeekCurrentPlayer && data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
+		// Will be set back to false at end of turn
+		player.TriedPeekCurrentPlayer = true
 	}
 
 	if !data.IsActiveData {
@@ -193,29 +187,20 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		}
 	}
 
+	g.evaluatePeek(g.currentPlayer)
+
 	g.next()
 
 	return nil
 }
 
-func (g *game) tryPeek(peekingPlayerNumber int, isPlayersTurn bool) {
+// playerNumber refers to the player that just finished their turn.
+func (g *game) evaluatePeek(playerNumber int) {
 	for i := range g.players {
-		for _, peekedAtPlayerNumber := range g.players[i].TryPeekPlayerNumbers {
-			if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
-				g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
-
-				if !isPlayersTurn && !g.players[peekingPlayerNumber].DidPeekCurrentPlayer {
-					g.players[peekingPlayerNumber].DidPeekCurrentPlayer = true
-				}
-
-				return
-			}
+		if g.players[i].TriedPeekCurrentPlayer && g.players[playerNumber].ShowCardsIfPeek {
+			g.players[playerNumber].ShowCardsToPlayerNumbers = append(g.players[playerNumber].ShowCardsToPlayerNumbers, i)
+			return
 		}
-	}
-
-	if !isPlayersTurn && !g.players[peekingPlayerNumber].DidPeekCurrentPlayer {
-		g.players[peekingPlayerNumber].DidPeekCurrentPlayer = true
-		g.players[peekingPlayerNumber].FailedPeekAttemptsCurrentGame++
 	}
 }
 
