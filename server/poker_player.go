@@ -65,7 +65,11 @@ func (p *player) getMinimumBetAmount() int {
 	if pokerGame.currentRound == 1 && p.IsSmallBlind && !pokerGame.smallBlindPlayed {
 		minimumNextBetAmount = pokerGame.smallBlindAmount
 	} else if pokerGame.currentRound == 1 && p.IsBigBlind && !pokerGame.bigBlindPlayed {
-		minimumNextBetAmount = pokerGame.smallBlindAmount*2 - 1 // Minus one due to raise logic
+		if pokerGame.lastBetAmountCurrentRound > pokerGame.smallBlindAmount*2 {
+			minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
+		} else {
+			minimumNextBetAmount = pokerGame.smallBlindAmount*2 - 1 // Minus one due to raise logic
+		}
 	} else if pokerGame.lastBetAmountCurrentRound != 0 {
 		minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
 	}
