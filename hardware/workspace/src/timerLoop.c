@@ -60,7 +60,7 @@ void sys_timer_isr() {
 		{
 			outputData.newTryPeek = 1;
 		}
-      
+
 		// TO DO: not sure how to implement new try peek player?
 
 		//-----------------------------------------------//
@@ -80,7 +80,7 @@ void sys_timer_isr() {
 				outputData.newMoveType = inputData.allowCheck?"check":"call";
 				outputData.isActiveData = 1;
 			}
-			else if((inputData.allowBet | inputData.allowRaise) & ((data.switch_read & 0b0100000000) == 0b0100000000)){
+			else if(inputData.allowBet | inputData.allowRaise){
 				if((data.switch_read & 0b0100000000) == 0b0100000000){
 					betData.bet_total = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
 				}
