@@ -22,9 +22,10 @@ The recomended setup for this project follows the following steps:
     - enter wsl terminal
     - ``` sudo apt update ```
     - ``` sudo apt-get install wsl ```
+    - ``` sudo apt-get install g++ ```
     - ``` sudo apt install dos2unix ```
     - ``` sudo apt install make ```
-    - nios2 uses this package
+    - nios2 uses these packages
 6. The final step is to edit your path:
     - Type in 'Edit environment variables' in the start menu, and open the control panel program
     - In the list select 'Path' and click the edit button
@@ -38,8 +39,10 @@ Everythign should now be set up and working.
 Only the minimum required files are included in the repo so to set everything up a few files need to be compiled on your system.
 
 1. Open Quartus, select open project, and select the bdf file in /hardware/FPGA
-2. In files you should see a qsys file, double click on that, and compile to HDL
-3. From here you can program you device
+2. This should set everything up correctly, no need to add extra files or anything
+2. In the files tab on quartus you should see a qsys file, double click on that, and compile to HDL
+3. After this you can now compile you're entire project, this takes a while but only needs to be done once so at least there's that
+4. From here you can program you device
 4. Open eclipse tools for nios2
 5. For the workspace I recomend selecting /hardware/workspace it has .gitignore setup to ignore almost everything
 6. Copy the sopcinfo file from /hardware/FPGA/ into the workspace folder
@@ -48,8 +51,7 @@ Only the minimum required files are included in the repo so to set everything up
     - Set name to whatever you want (setting it to fpga is recomeded)
     - From project template select hello Wolrd
     - Delete the hello_world.c file
-    - From file explorer on windows, drag both main.c and the src folder from /hardware/workspace into your created project. This should link up the make files appropriately.
-Now you should be able to run the project.
+    - From file explorer on windows, drag both main.c and the src folder from /hardware/workspace into your created project on the eclipse side bar. IT IS IMPORTANT YOU DRAG IT INTO THE ECLIPSE SIDEBAR so that the files get properly linked up. If you see a popup select copy files the other options will not work. This should link up the make files appropriately and update the makefiles so eclipse can handle building.
 
 ## Developing
 
@@ -63,12 +65,13 @@ Just in case you accidentally use the projtosrc.sh command at the wrong time. Th
 ## Run Project
 
 1. On quartus compile, and programme the fpga
+2. Before running the eclipse project open an instance of powershell and run the command ```nios2-terminal.exe```
+2. MAKE SURE YOU DID THE PREVIOUS STEP AS IF YOU DON'T AND RUN THE PROJECT, ECLIPSE WILL TAKE OVER YTHE NIOS2-TERMINAL AND YOU WILL HAVE TO UNPLUG THE FPGA AND RE-PROGRAMME IT!!!!
 2. On eclipse (or using the cli for eclipse) compile and run the project.
-3. Open wsl (or powershell and then the wsl command), go to /hardware/communication folder
-4. Run ./setup.sh to setup running
-5. Run ./run.sh <char>, and you should see a response printed onto your screen from the fpga
-    - x, y, z will return the accelerometer values for the respective axis
-    - s will return the vlaue of the switch
-    - b will return the vlaue of the button
-    - v will terminate the c program
-    - everythin else will return nothing
+2. Once the program is running you should see the message "Running.." written on the powershell you opened
+3. You can now press CTR-C to terminate the nios2-terminal on powershell, DO NOT PRESS CTR-Z as this sometimes terminates the C programme as well
+3. Open wsl (or got through powershell using the the ```wsl``` command), go to /hardware/communication folder
+4. Run ./setup.sh to compiler any requirements to run the proper script running
+5. Run ```./requestLoop.sh <username> <password>```
+6. If you get any errors in about non existing files and the shell scripts do not run, try using ```dos2unix``` on the shell scripts and re-run.
+7. requestLoop.sh should print some messages about download speed, one json file, another json file, and then repeat that over and over again. If anywhere in the output you see a string that looks like it could say 'terminate' but is weridly chopped off, as long as it only happens occasionally that is expected. If it's happening all the time then unplug your FPGA and re-programme it. If that doesn't solve the problem, or if you're getting any other wiered messages please let me know (Ignacio) and we can try and figure out why.
