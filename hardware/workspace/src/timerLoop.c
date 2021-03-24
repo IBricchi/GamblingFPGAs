@@ -8,7 +8,7 @@
 #include "timerLoop.h"
 #include "bet.h"
 #include "filter.h"
-#include "printdec.h"
+#include "printDec.h"
 
 // setup timer information
 #define PWM_PERIOD 16
@@ -76,11 +76,11 @@ void sys_timer_isr() {
 				outputData.newMoveType = "fold";
 				outputData.isActiveData = 1;
 			}
-			else if((inputData.allowCheck|inputData.allowCall) && data.button_read == 1){
+			else if((inputData.allowCheck|inputData.allowCall) & ((data.switch_read & 0b0010000000) == 0b0010000000) & data.button_read == 1){
 				outputData.newMoveType = inputData.allowCheck?"check":"call";
 				outputData.isActiveData = 1;
 			}
-			else if(inputData.allowBet | inputData.allowRaise){
+			else if((inputData.allowBet | inputData.allowRaise) & ((data.switch_read & 0b0100000000) == 0b0100000000)){
 				if((data.switch_read & 0b0100000000) == 0b0100000000){
 					betData.bet_total = Bet(&betData.bcount, &betData.segvalue, &betData.maxQ, filterData.xfiltered, data.switch_read, data.button_read, betData.m_digits, betData.bet_value);
 				}
