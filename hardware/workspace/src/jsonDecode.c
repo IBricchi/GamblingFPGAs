@@ -148,12 +148,12 @@ int readInput(FILE* in, InputData* out){
         // check for comma
         if(c != ',')
             return 1;
-        if(readIntInput(in, &c, "\"currentPlayerNumber\"", 21, out->currentPlayerNumber))
+        if(readIntInput(in, &c, "\"currentPlayerNumber\"", 21, &out->currentPlayerNumber))
             return 1;
         // check for comma
         if(c != ',')
             return 1;
-        if(readStrArrayInput(in, &c, "\"availableNextMoves\"", 20, out->availableNextMoves, &out->aviablableNextMovesCount))
+        if(readStrArrayInput(in, &c, "\"availableNextMoves\"", 20, &out->availableNextMoves, &out->aviablableNextMovesCount))
             return 1;
         // check for comma
         if(c != ',')
