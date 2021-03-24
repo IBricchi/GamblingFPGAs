@@ -56,6 +56,11 @@ void sys_timer_isr() {
 		//-----------------------------------------------//
 		// checks is turn and button val		  //
 
+		if(inputData.isTurn == 0 && data.button_read == 2)
+		{
+			outputData.newTryPeek = 1;
+		}
+      
 		// TO DO: not sure how to implement new try peek player?
 
 		//-----------------------------------------------//
@@ -105,13 +110,6 @@ void sys_timer_isr() {
 						outputData.newBetAmount = 0;
 					}
 				}
-			}
-		}
-		else{
-			if(data.button_read == 2)
-			{
-				outputData.newTryPeek = 1;
-				outputData.isActiveData = 1;
 			}
 		}
 		pwm = 0;
