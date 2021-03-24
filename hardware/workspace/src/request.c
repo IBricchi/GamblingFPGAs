@@ -74,6 +74,7 @@ void requestLoop(){
 
 			// resetting values:
 			outputData.isActiveData = 0;
+			outputData.newTryPeek = 0;
 		}
 	}
 }
