@@ -111,6 +111,8 @@ func (p *player) bet(amount int) error {
 		p.allIn()
 	} else if amount < p.getMinimumBetAmount() {
 		return fmt.Errorf("server: poker: player %v's bet amount is smaller than the minimum bet amount", p.Name)
+	} else if amount < 1 {
+		return fmt.Errorf("server: poker: player %v's bet amount is smaller than one", p.Name)
 	} else {
 		p.LastBetAmount = amount
 		p.TotalMoneyBetAmount += p.LastBetAmount
