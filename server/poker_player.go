@@ -65,12 +65,35 @@ func (p *player) getMinimumBetAmount() int {
 	if pokerGame.currentRound == 1 && p.IsSmallBlind && !pokerGame.smallBlindPlayed {
 		minimumNextBetAmount = pokerGame.smallBlindAmount
 	} else if pokerGame.currentRound == 1 && p.IsBigBlind && !pokerGame.bigBlindPlayed {
-		minimumNextBetAmount = pokerGame.smallBlindAmount*2 - 1 // Minus one due to raise logic
+		if pokerGame.lastBetAmountCurrentRound > pokerGame.smallBlindAmount*2 {
+			minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
+		} else {
+			minimumNextBetAmount = pokerGame.smallBlindAmount*2 - 1 // Minus one due to raise logic
+		}
 	} else if pokerGame.lastBetAmountCurrentRound != 0 {
 		minimumNextBetAmount = pokerGame.lastBetAmountCurrentRound
 	}
 
 	return minimumNextBetAmount
+}
+
+func (p *player) fold() {
+	if p.IsBigBlind && !pokerGame.bigBlindPlayed {
+		pokerGame.bigBlindPlayed = true
+
+		// Must play smallBlindAmount*2 even if fold
+		amount := pokerGame.smallBlindAmount * 2
+		if p.MoneyAvailableAmount < amount {
+			p.allIn()
+		} else {
+			p.LastBetAmount = amount
+			p.TotalMoneyBetAmount += p.LastBetAmount
+			p.TotalBetAmountCurrentRound += p.LastBetAmount
+			p.MoneyAvailableAmount -= p.LastBetAmount
+		}
+	}
+
+	p.HasFolded = true
 }
 
 // Does not set pokerGame attributes. Must be set by calling functions.

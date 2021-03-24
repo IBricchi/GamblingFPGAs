@@ -175,7 +175,7 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 
 	switch data.NewMoveType {
 	case "fold":
-		player.HasFolded = true
+		player.fold()
 	case "check":
 		// Do nothing
 	case "bet":
