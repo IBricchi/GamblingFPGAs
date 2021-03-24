@@ -108,15 +108,14 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 	Go to next round if last player of this round.
 */
 func (g *game) next() {
+	resetTurnSpecificPlayerData(g.players)
+
 	// Check if only one player remaining
 	foldedPlayerAmount := 0
-	for _, player := range g.players {
-		if player.HasFolded {
+	for i := range g.players {
+		if g.players[i].HasFolded {
 			foldedPlayerAmount++
 		}
-
-		// Reset peek current player
-		player.DidPeekCurrentPlayer = false
 	}
 	if foldedPlayerAmount == len(g.players)-1 {
 		g.hasEnded = true
@@ -143,18 +142,19 @@ func (g *game) next() {
 }
 
 func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
-	player.ShowCardsMe = data.ShowCardsMe
+	callingPlayerNumber := g.getPlayerNumber(player.Name)
 
-	if data.ShowCardsIfPeek {
-		// Will be set back to false at end of round
-		player.ShowCardsIfPeek = data.ShowCardsIfPeek
+	// Only allow current player to look at their cards
+	if callingPlayerNumber == g.currentPlayer {
+		player.ShowCardsMe = data.ShowCardsMe
+	}
 
-		g.tryPeek(g.getPlayerNumber(player.Name), true)
-	} else if !player.DidPeekCurrentPlayer && data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
-		// Will be set back to []int{} at end of round
-		player.TryPeekPlayerNumbers = append(player.TryPeekPlayerNumbers, data.NewTryPeekPlayerNumber)
-
-		g.tryPeek(g.getPlayerNumber(player.Name), false)
+	if data.ShowCardsIfPeek && callingPlayerNumber == g.currentPlayer {
+		// Will be set back to false at end of turn
+		player.ShowCardsIfPeek = true
+	} else if !player.TriedPeekCurrentPlayer && data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
+		// Will be set back to false at end of turn
+		player.TriedPeekCurrentPlayer = true
 	}
 
 	if !data.IsActiveData {
@@ -187,29 +187,35 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		}
 	}
 
+	g.evaluatePeek(g.currentPlayer)
+
 	g.next()
 
 	return nil
 }
 
-func (g *game) tryPeek(peekingPlayerNumber int, isPlayersTurn bool) {
+// playerNumber refers to the player that just finished their turn.
+func (g *game) evaluatePeek(playerNumber int) {
 	for i := range g.players {
-		for _, peekedAtPlayerNumber := range g.players[i].TryPeekPlayerNumbers {
-			if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
-				g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
-
-				if !isPlayersTurn && !g.players[peekingPlayerNumber].DidPeekCurrentPlayer {
-					g.players[peekingPlayerNumber].DidPeekCurrentPlayer = true
+		if g.players[i].TriedPeekCurrentPlayer {
+			// check if can already see this players cards => not allowed to peek again and hence peek attempt does not count
+			previouslySucceeded := false
+			for _, showToPlayerNumber := range g.players[playerNumber].ShowCardsToPlayerNumbers {
+				if i == showToPlayerNumber {
+					previouslySucceeded = true
+					break
 				}
+			}
+			if previouslySucceeded {
+				continue
+			}
 
-				return
+			if g.players[playerNumber].ShowCardsIfPeek {
+				g.players[playerNumber].ShowCardsToPlayerNumbers = append(g.players[playerNumber].ShowCardsToPlayerNumbers, i)
+			} else {
+				g.players[i].FailedPeekAttemptsCurrentGame++
 			}
 		}
-	}
-
-	if !isPlayersTurn && !g.players[peekingPlayerNumber].DidPeekCurrentPlayer {
-		g.players[peekingPlayerNumber].DidPeekCurrentPlayer = true
-		g.players[peekingPlayerNumber].FailedPeekAttemptsCurrentGame++
 	}
 }
 
