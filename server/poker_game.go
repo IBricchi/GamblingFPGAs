@@ -114,6 +114,9 @@ func (g *game) next() {
 		if player.HasFolded {
 			foldedPlayerAmount++
 		}
+
+		// Reset peek current player
+		player.DidPeekCurrentPlayer = false
 	}
 	if foldedPlayerAmount == len(g.players)-1 {
 		g.hasEnded = true
@@ -146,18 +149,12 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 		// Will be set back to false at end of round
 		player.ShowCardsIfPeek = data.ShowCardsIfPeek
 
-		peekSucceeded := g.tryPeek(g.players, g.getPlayerNumber(player.Name))
-		if !peekSucceeded {
-			player.FailedPeekAttemptsCurrentGame++
-		}
-	} else if data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
+		g.tryPeek(g.getPlayerNumber(player.Name))
+	} else if !player.DidPeekCurrentPlayer && data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
 		// Will be set back to []int{} at end of round
 		player.TryPeekPlayerNumbers = append(player.TryPeekPlayerNumbers, data.NewTryPeekPlayerNumber)
 
-		peekSucceeded := g.tryPeek(g.players, g.getPlayerNumber(player.Name))
-		if !peekSucceeded {
-			player.FailedPeekAttemptsCurrentGame++
-		}
+		g.tryPeek(g.getPlayerNumber(player.Name))
 	}
 
 	if !data.IsActiveData {
@@ -196,16 +193,25 @@ func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
 }
 
 // Return true if peek succeeded
-func (g *game) tryPeek(players []player, peekingPlayerNumber int) bool {
-	for i := range players {
-		for _, peekedAtPlayerNumber := range players[i].TryPeekPlayerNumbers {
+func (g *game) tryPeek(peekingPlayerNumber int) {
+	for i := range g.players {
+		for _, peekedAtPlayerNumber := range g.players[i].TryPeekPlayerNumbers {
 			if g.players[peekedAtPlayerNumber].ShowCardsIfPeek {
 				g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers = append(g.players[peekedAtPlayerNumber].ShowCardsToPlayerNumbers, peekingPlayerNumber)
-				return true
+
+				if !g.players[peekingPlayerNumber].DidPeekCurrentPlayer {
+					g.players[peekingPlayerNumber].DidPeekCurrentPlayer = true
+				}
+
+				return
 			}
 		}
 	}
-	return false
+
+	if !g.players[peekingPlayerNumber].DidPeekCurrentPlayer {
+		g.players[peekingPlayerNumber].DidPeekCurrentPlayer = true
+		g.players[peekingPlayerNumber].FailedPeekAttemptsCurrentGame++
+	}
 }
 
 func (g *game) getPlayerNumber(playerName string) int {
