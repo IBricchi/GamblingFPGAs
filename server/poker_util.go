@@ -103,7 +103,7 @@ func getAvailableNextMoves() []string {
 	} else if pokerGame.currentRound == 1 && pokerGame.currentPlayer == 1 && !pokerGame.bigBlindPlayed {
 		// Big blind
 		if pokerGame.lastBetAmountCurrentRound > pokerGame.smallBlindAmount*2 {
-			return []string{"raise", "call"}
+			return []string{"fold", "call", "raise"} // Must still play smallBlindAmount*2 when fold
 		}
 		return []string{"raise"}
 	} else if pokerGame.lastBetAmountCurrentRound == 0 {
