@@ -110,13 +110,14 @@ func initGame(players []player, initialPlayerMoney int, smallBlindAmount int) (g
 func (g *game) next() {
 	// Check if only one player remaining
 	foldedPlayerAmount := 0
-	for _, player := range g.players {
-		if player.HasFolded {
+	for i := range g.players {
+		if g.players[i].HasFolded {
 			foldedPlayerAmount++
 		}
 
-		// Reset peek current player
-		player.DidPeekCurrentPlayer = false
+		// Reset current turn specific player values
+		g.players[i].DidPeekCurrentPlayer = false
+		g.players[i].ShowCardsMe = false
 	}
 	if foldedPlayerAmount == len(g.players)-1 {
 		g.hasEnded = true
@@ -143,18 +144,23 @@ func (g *game) next() {
 }
 
 func (g *game) updateWithFPGAData(player *player, data incomingFPGAData) error {
-	player.ShowCardsMe = data.ShowCardsMe
+	callingPlayerNumber := g.getPlayerNumber(player.Name)
 
-	if data.ShowCardsIfPeek {
+	// Only allow current player to look at their cards
+	if callingPlayerNumber == g.currentPlayer {
+		player.ShowCardsMe = data.ShowCardsMe
+	}
+
+	if callingPlayerNumber == g.currentPlayer && data.ShowCardsIfPeek {
 		// Will be set back to false at end of round
 		player.ShowCardsIfPeek = data.ShowCardsIfPeek
 
-		g.tryPeek(g.getPlayerNumber(player.Name), true)
+		g.tryPeek(callingPlayerNumber, true)
 	} else if !player.DidPeekCurrentPlayer && data.NewTryPeek && data.NewTryPeekPlayerNumber == g.currentPlayer {
 		// Will be set back to []int{} at end of round
 		player.TryPeekPlayerNumbers = append(player.TryPeekPlayerNumbers, data.NewTryPeekPlayerNumber)
 
-		g.tryPeek(g.getPlayerNumber(player.Name), false)
+		g.tryPeek(callingPlayerNumber, false)
 	}
 
 	if !data.IsActiveData {
