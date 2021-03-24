@@ -60,7 +60,7 @@ void sys_timer_isr() {
 		{
 			outputData.newTryPeek = 1;
 		}
-
+      
 		// TO DO: not sure how to implement new try peek player?
 
 		//-----------------------------------------------//

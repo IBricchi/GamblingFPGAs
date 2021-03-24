@@ -31,6 +31,7 @@ type player struct {
 	AllIn                         bool         `json:"allIn"`
 	ShowCardsMe                   bool         `json:"showCardsMe"`
 	ShowCardsIfPeek               bool         `json:"showCardsIfPeek"`
+	DidPeekCurrentPlayer          bool         `json:"didPeekCurrentPlayer"`
 	TryPeekPlayerNumbers          []int        `json:"tryPeekPlayerNumbers"`
 	ShowCardsToPlayerNumbers      []int        `json:"showCardsToPlayerNumbers"`
 	FailedPeekAttemptsCurrentGame int          `json:"failedPeekAttemptsCurrentGame"`
