@@ -89,18 +89,7 @@ ACDS_VERSION := 20.1
 ELF := bigtest1.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS += src/bet.c
-C_SRCS += src/bitify.c
-C_SRCS += src/digify.c
-C_SRCS += src/filter.c
-C_SRCS += src/jsonDecode.c
-C_SRCS += src/jsonEncode.c
-C_SRCS += src/printDec.c
-C_SRCS += src/request.c
-C_SRCS += src/setup.c
-C_SRCS += src/shake.c
-C_SRCS += src/timerLoop.c
-C_SRCS += main.c
+C_SRCS := main.c
 CXX_SRCS :=
 ASM_SRCS :=
 

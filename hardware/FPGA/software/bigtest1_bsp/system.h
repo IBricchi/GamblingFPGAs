@@ -4,7 +4,7 @@
  * Machine generated for CPU 'nios2_gen2_0' in SOPC Builder design 'DE10_LITE_Qsys'
  * SOPC Builder design path: ../../DE10_LITE_Qsys.sopcinfo
  *
- * Generated: Wed Mar 24 16:13:58 GMT 2021
+ * Generated: Thu Mar 25 12:24:10 GMT 2021
  */
 
 /*
@@ -141,6 +141,8 @@
  *
  */
 
+#define ALT_CI_FIR1_0(A,B) __builtin_custom_inii(ALT_CI_FIR1_0_N,(A),(B))
+#define ALT_CI_FIR1_0_N 0x1
 #define ALT_CI_TILT_0(A,B) __builtin_custom_inii(ALT_CI_TILT_0_N,(A),(B))
 #define ALT_CI_TILT_0_N 0x0
 
@@ -159,6 +161,7 @@
 #define __ALTERA_NIOS2_GEN2
 #define __ALTERA_UP_AVALON_ACCELEROMETER_SPI
 #define __ALTPLL
+#define __FIR1
 #define __TILT
 
 
@@ -605,7 +608,7 @@
 #define SYSID_QSYS_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYSID_QSYS_NAME "/dev/sysid_qsys"
 #define SYSID_QSYS_SPAN 8
-#define SYSID_QSYS_TIMESTAMP 1616601880
+#define SYSID_QSYS_TIMESTAMP 1616674722
 #define SYSID_QSYS_TYPE "altera_avalon_sysid_qsys"
 
 

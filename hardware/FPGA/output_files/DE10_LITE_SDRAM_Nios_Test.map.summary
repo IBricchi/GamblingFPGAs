@@ -1,12 +1,12 @@
-Analysis & Synthesis Status : Successful - Wed Mar 24 16:06:34 2021
+Analysis & Synthesis Status : Successful - Thu Mar 25 12:20:54 2021
 Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 Revision Name : DE10_LITE_SDRAM_Nios_Test
 Top-level Entity Name : DE10_LITE_SDRAM_Nios_Test
 Family : MAX 10
-Total logic elements : 6,878
-    Total combinational functions : 5,010
-    Dedicated logic registers : 4,216
-Total registers : 4216
+Total logic elements : 6,915
+    Total combinational functions : 5,047
+    Dedicated logic registers : 4,221
+Total registers : 4221
 Total pins : 187
 Total virtual pins : 0
 Total memory bits : 865,280

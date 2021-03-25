@@ -2,10 +2,10 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Mar 24, 2021 4:13:56 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1616602437015</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Mar 25, 2021 12:24:08 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1616675048540</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/e2/Documents/GamblingFPGAs3/GamblingFPGAs/hardware/FPGA/software/bigtest1_bsp</BspGeneratedLocation>
-        <BspSettingsFile>./settings.bsp</BspSettingsFile>
+        <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../DE10_LITE_Qsys.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>nios2_gen2_0</Cpu>

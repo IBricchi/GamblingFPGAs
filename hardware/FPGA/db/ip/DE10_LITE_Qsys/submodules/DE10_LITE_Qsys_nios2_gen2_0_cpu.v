@@ -3957,6 +3957,7 @@ wire             A_op_custom;
 wire             A_op_div;
 wire             A_op_divu;
 wire             A_op_eret;
+wire             A_op_fir1_0;
 wire             A_op_flushd;
 wire             A_op_flushda;
 wire             A_op_flushi;
@@ -4255,6 +4256,7 @@ wire             D_op_custom;
 wire             D_op_div;
 wire             D_op_divu;
 wire             D_op_eret;
+wire             D_op_fir1_0;
 wire             D_op_flushd;
 wire             D_op_flushda;
 wire             D_op_flushi;
@@ -4643,6 +4645,7 @@ wire             E_op_custom;
 wire             E_op_div;
 wire             E_op_divu;
 wire             E_op_eret;
+wire             E_op_fir1_0;
 wire             E_op_flushd;
 wire             E_op_flushda;
 wire             E_op_flushi;
@@ -4869,6 +4872,7 @@ wire             F_op_custom;
 wire             F_op_div;
 wire             F_op_divu;
 wire             F_op_eret;
+wire             F_op_fir1_0;
 wire             F_op_flushd;
 wire             F_op_flushda;
 wire             F_op_flushi;
@@ -5305,6 +5309,7 @@ wire             M_op_custom;
 wire             M_op_div;
 wire             M_op_divu;
 wire             M_op_eret;
+wire             M_op_fir1_0;
 wire             M_op_flushd;
 wire             M_op_flushda;
 wire             M_op_flushi;
@@ -5747,6 +5752,7 @@ wire             W_op_custom;
 wire             W_op_div;
 wire             W_op_divu;
 wire             W_op_eret;
+wire             W_op_fir1_0;
 wire             W_op_flushd;
 wire             W_op_flushda;
 wire             W_op_flushi;
@@ -5997,6 +6003,7 @@ reg              wait_for_one_post_bret_inst;
       .W_estatus_reg                        (W_estatus_reg),
       .W_exception_reg                      (W_exception_reg),
       .W_iw                                 (W_iw),
+      .W_iw_custom_n                        (W_iw_custom_n),
       .W_iw_op                              (W_iw_op),
       .W_iw_opx                             (W_iw_opx),
       .W_pcb                                (W_pcb),
@@ -6246,7 +6253,8 @@ reg              wait_for_one_post_bret_inst;
   assign F_op_intr = (F_iw_opx == 61) & F_is_opx_inst;
   assign F_op_crst = (F_iw_opx == 62) & F_is_opx_inst;
   assign F_op_opx_rsv63 = (F_iw_opx == 63) & F_is_opx_inst;
-  assign F_op_tilt_0 = F_op_custom & 1'b1;
+  assign F_op_fir1_0 = F_op_custom & ({F_iw_custom_n[0]} == 1'h1);
+  assign F_op_tilt_0 = F_op_custom & ({F_iw_custom_n[0]} == 1'h0);
   assign F_is_opx_inst = F_iw_op == 58;
   assign D_op_call = D_iw_op == 0;
   assign D_op_jmpi = D_iw_op == 1;
@@ -6375,7 +6383,8 @@ reg              wait_for_one_post_bret_inst;
   assign D_op_intr = (D_iw_opx == 61) & D_is_opx_inst;
   assign D_op_crst = (D_iw_opx == 62) & D_is_opx_inst;
   assign D_op_opx_rsv63 = (D_iw_opx == 63) & D_is_opx_inst;
-  assign D_op_tilt_0 = D_op_custom & 1'b1;
+  assign D_op_fir1_0 = D_op_custom & ({D_iw_custom_n[0]} == 1'h1);
+  assign D_op_tilt_0 = D_op_custom & ({D_iw_custom_n[0]} == 1'h0);
   assign D_is_opx_inst = D_iw_op == 58;
   assign E_op_call = E_iw_op == 0;
   assign E_op_jmpi = E_iw_op == 1;
@@ -6504,7 +6513,8 @@ reg              wait_for_one_post_bret_inst;
   assign E_op_intr = (E_iw_opx == 61) & E_is_opx_inst;
   assign E_op_crst = (E_iw_opx == 62) & E_is_opx_inst;
   assign E_op_opx_rsv63 = (E_iw_opx == 63) & E_is_opx_inst;
-  assign E_op_tilt_0 = E_op_custom & 1'b1;
+  assign E_op_fir1_0 = E_op_custom & ({E_iw_custom_n[0]} == 1'h1);
+  assign E_op_tilt_0 = E_op_custom & ({E_iw_custom_n[0]} == 1'h0);
   assign E_is_opx_inst = E_iw_op == 58;
   assign M_op_call = M_iw_op == 0;
   assign M_op_jmpi = M_iw_op == 1;
@@ -6633,7 +6643,8 @@ reg              wait_for_one_post_bret_inst;
   assign M_op_intr = (M_iw_opx == 61) & M_is_opx_inst;
   assign M_op_crst = (M_iw_opx == 62) & M_is_opx_inst;
   assign M_op_opx_rsv63 = (M_iw_opx == 63) & M_is_opx_inst;
-  assign M_op_tilt_0 = M_op_custom & 1'b1;
+  assign M_op_fir1_0 = M_op_custom & ({M_iw_custom_n[0]} == 1'h1);
+  assign M_op_tilt_0 = M_op_custom & ({M_iw_custom_n[0]} == 1'h0);
   assign M_is_opx_inst = M_iw_op == 58;
   assign A_op_call = A_iw_op == 0;
   assign A_op_jmpi = A_iw_op == 1;
@@ -6762,7 +6773,8 @@ reg              wait_for_one_post_bret_inst;
   assign A_op_intr = (A_iw_opx == 61) & A_is_opx_inst;
   assign A_op_crst = (A_iw_opx == 62) & A_is_opx_inst;
   assign A_op_opx_rsv63 = (A_iw_opx == 63) & A_is_opx_inst;
-  assign A_op_tilt_0 = A_op_custom & 1'b1;
+  assign A_op_fir1_0 = A_op_custom & ({A_iw_custom_n[0]} == 1'h1);
+  assign A_op_tilt_0 = A_op_custom & ({A_iw_custom_n[0]} == 1'h0);
   assign A_is_opx_inst = A_iw_op == 58;
   assign W_op_call = W_iw_op == 0;
   assign W_op_jmpi = W_iw_op == 1;
@@ -6891,7 +6903,8 @@ reg              wait_for_one_post_bret_inst;
   assign W_op_intr = (W_iw_opx == 61) & W_is_opx_inst;
   assign W_op_crst = (W_iw_opx == 62) & W_is_opx_inst;
   assign W_op_opx_rsv63 = (W_iw_opx == 63) & W_is_opx_inst;
-  assign W_op_tilt_0 = W_op_custom & 1'b1;
+  assign W_op_fir1_0 = W_op_custom & ({W_iw_custom_n[0]} == 1'h1);
+  assign W_op_tilt_0 = W_op_custom & ({W_iw_custom_n[0]} == 1'h0);
   assign W_is_opx_inst = W_iw_op == 58;
   assign F_pc_nxt = (A_pipe_flush)? A_pipe_flush_waddr :
     (M_pipe_flush)? M_pipe_flush_waddr :
@@ -10500,7 +10513,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     end
 
 
-  assign D_ctrl_custom_multi = D_op_tilt_0;
+  assign D_ctrl_custom_multi = D_op_fir1_0|D_op_tilt_0;
   assign E_ctrl_custom_multi_nxt = D_ctrl_custom_multi;
   always @(posedge clk or negedge reset_n)
     begin
@@ -14199,6 +14212,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     D_op_opx_rsv42|
     D_op_opx_rsv43|
     D_op_rdctl|
+    D_op_fir1_0|
     D_op_tilt_0|
     D_op_muli|
     D_op_mul|
@@ -14522,6 +14536,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     (F_op_sub)? 56'h20202020737562 :
     (F_op_srai)? 56'h20202073726169 :
     (F_op_sra)? 56'h20202020737261 :
+    (F_op_fir1_0)? 56'h20666972315f30 :
     (F_op_tilt_0)? 56'h2074696c745f30 :
     56'h20202020424144;
 
@@ -14610,6 +14625,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     (D_op_sub)? 56'h20202020737562 :
     (D_op_srai)? 56'h20202073726169 :
     (D_op_sra)? 56'h20202020737261 :
+    (D_op_fir1_0)? 56'h20666972315f30 :
     (D_op_tilt_0)? 56'h2074696c745f30 :
     56'h20202020424144;
 
@@ -14698,6 +14714,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     (E_op_sub)? 56'h20202020737562 :
     (E_op_srai)? 56'h20202073726169 :
     (E_op_sra)? 56'h20202020737261 :
+    (E_op_fir1_0)? 56'h20666972315f30 :
     (E_op_tilt_0)? 56'h2074696c745f30 :
     56'h20202020424144;
 
@@ -14786,6 +14803,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     (M_op_sub)? 56'h20202020737562 :
     (M_op_srai)? 56'h20202073726169 :
     (M_op_sra)? 56'h20202020737261 :
+    (M_op_fir1_0)? 56'h20666972315f30 :
     (M_op_tilt_0)? 56'h2074696c745f30 :
     56'h20202020424144;
 
@@ -14874,6 +14892,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     (A_op_sub)? 56'h20202020737562 :
     (A_op_srai)? 56'h20202073726169 :
     (A_op_sra)? 56'h20202020737261 :
+    (A_op_fir1_0)? 56'h20666972315f30 :
     (A_op_tilt_0)? 56'h2074696c745f30 :
     56'h20202020424144;
 
@@ -14962,6 +14981,7 @@ DE10_LITE_Qsys_nios2_gen2_0_cpu_dc_victim_module DE10_LITE_Qsys_nios2_gen2_0_cpu
     (W_op_sub)? 56'h20202020737562 :
     (W_op_srai)? 56'h20202073726169 :
     (W_op_sra)? 56'h20202020737261 :
+    (W_op_fir1_0)? 56'h20666972315f30 :
     (W_op_tilt_0)? 56'h2074696c745f30 :
     56'h20202020424144;
 
