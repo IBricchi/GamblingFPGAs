@@ -59,6 +59,7 @@ void sys_timer_isr() {
 		if(inputData.isTurn == 0 && data.button_read == 2)
 		{
 			outputData.newTryPeek = 1;
+			outputData.newTryPeekPlayerNumber = inputData.currentPlayerNumber;
 		}
 
 		// TO DO: not sure how to implement new try peek player?
