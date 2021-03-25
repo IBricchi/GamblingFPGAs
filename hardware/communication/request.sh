@@ -16,11 +16,11 @@ then
     exit 1
 fi
 
-echo $DATAIN | nios2-terminal.exe | ./readResponse > out.txt&
+echo $DATAIN | nios2-terminal | ./readResponse > out.txt&
 
 sleep 1.5
 
-killall nios2-terminal.exe
+killall nios2-terminal
 
 DATAOUT=$(cat out.txt)
 
