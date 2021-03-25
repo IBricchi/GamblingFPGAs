@@ -130,8 +130,14 @@ func resetRoundSpecificGameData(game *game) {
 
 func resetRoundSpecificPlayerData(players []player) {
 	for i := range players {
-		players[i].ShowCardsIfPeek = false
-		players[i].TryPeekPlayerNumbers = []int{}
 		players[i].TotalBetAmountCurrentRound = 0
+	}
+}
+
+func resetTurnSpecificPlayerData(players []player) {
+	for i := range players {
+		players[i].TriedPeekCurrentPlayer = false
+		players[i].ShowCardsMe = false
+		players[i].ShowCardsIfPeek = false
 	}
 }

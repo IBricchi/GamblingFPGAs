@@ -13,7 +13,6 @@ import (
 	not just the player's hand.
 	TotalMoneyBetAmount refers to the current game.
 	ShowCardsToPlayerNumbers refers to the players that are able to see the player's cards.
-	TryPeekPlayerNumbers are the players that this player tried to peek in the current round.
 */
 type player struct {
 	Name                          string       `json:"name"`
@@ -31,8 +30,7 @@ type player struct {
 	AllIn                         bool         `json:"allIn"`
 	ShowCardsMe                   bool         `json:"showCardsMe"`
 	ShowCardsIfPeek               bool         `json:"showCardsIfPeek"`
-	DidPeekCurrentPlayer          bool         `json:"didPeekCurrentPlayer"`
-	TryPeekPlayerNumbers          []int        `json:"tryPeekPlayerNumbers"`
+	TriedPeekCurrentPlayer        bool         `json:"triedPeekCurrentPlayer"`
 	ShowCardsToPlayerNumbers      []int        `json:"showCardsToPlayerNumbers"`
 	FailedPeekAttemptsCurrentGame int          `json:"failedPeekAttemptsCurrentGame"`
 }
@@ -111,6 +109,8 @@ func (p *player) bet(amount int) error {
 		p.allIn()
 	} else if amount < p.getMinimumBetAmount() {
 		return fmt.Errorf("server: poker: player %v's bet amount is smaller than the minimum bet amount", p.Name)
+	} else if amount < 1 {
+		return fmt.Errorf("server: poker: player %v's bet amount is smaller than one", p.Name)
 	} else {
 		p.LastBetAmount = amount
 		p.TotalMoneyBetAmount += p.LastBetAmount
