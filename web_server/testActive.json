@@ -1,5 +1,6 @@
 {
     "active": true,
+    "showdown": true,
     "hasEnded": true,
     "communityCards": ["6d", "2s", "9c", "Js", "Ah"],
     "players": [{

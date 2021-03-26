@@ -1,40 +1,221 @@
 {
     "active": true,
     "newGameStarted": false,
-    "communityCards": ["Qd", "Kh", "2d", "5s", "9c"],
+    "communityCards": [
+        "6h",
+        "6d",
+        "Ac",
+        "9c",
+        "5h"
+    ],
     "players": [{
-            "name": "player2",
-            "hand": null,
-            "moneyAvailableAmount": 2000,
+            "name": "IBricchi",
+            "hand": [
+                "8s",
+                "Js"
+            ],
+            "moneyAvailableAmount": 1406,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
             "dealer": true,
             "smallBlind": true,
             "bigBlind": false,
             "hasFolded": false,
-            "lastBetAmount": 0,
-            "totalMoneyBetAmount": 0,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
             "allIn": false,
             "showCardsMe": false,
+            "showCardsIfPeek": false,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                1
+            ],
             "failedPeekAttemptsCurrentGame": 0
         },
         {
-            "name": "player1",
-            "hand": ["Ks", "Qh"],
-            "moneyAvailableAmount": 2000,
+            "name": "Nicholas",
+            "hand": [
+                "2d",
+                "Jc"
+            ],
+            "moneyAvailableAmount": 2414,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
             "dealer": false,
             "smallBlind": false,
             "bigBlind": true,
             "hasFolded": false,
-            "lastBetAmount": 0,
-            "totalMoneyBetAmount": 0,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
             "allIn": false,
-            "showCardsMe": false,
+            "showCardsMe": true,
+            "showCardsIfPeek": true,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                0
+            ],
+            "failedPeekAttemptsCurrentGame": 0
+        },
+        {
+            "name": "John",
+            "hand": [
+                "2d",
+                "Jc"
+            ],
+            "moneyAvailableAmount": 2414,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
+            "dealer": false,
+            "smallBlind": false,
+            "bigBlind": true,
+            "hasFolded": false,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
+            "allIn": false,
+            "showCardsMe": true,
+            "showCardsIfPeek": true,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                0
+            ],
+            "failedPeekAttemptsCurrentGame": 0
+        },
+        {
+            "name": "James",
+            "hand": [
+                "2d",
+                "Jc"
+            ],
+            "moneyAvailableAmount": 2414,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
+            "dealer": false,
+            "smallBlind": false,
+            "bigBlind": true,
+            "hasFolded": false,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
+            "allIn": false,
+            "showCardsMe": true,
+            "showCardsIfPeek": true,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                0
+            ],
             "failedPeekAttemptsCurrentGame": 0
         }
     ],
     "winners": [{
-        "name": "player2"
-    }],
-    "winningReason": "flush",
-    "potMoneyAmount": 1000,
-    "winningMoneyAmounts": [1000]
+            "name": "IBricchi",
+            "hand": [
+                "8s",
+                "Js"
+            ],
+            "moneyAvailableAmount": 1406,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
+            "dealer": true,
+            "smallBlind": true,
+            "bigBlind": false,
+            "hasFolded": false,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
+            "allIn": false,
+            "showCardsMe": false,
+            "showCardsIfPeek": false,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                1
+            ],
+            "failedPeekAttemptsCurrentGame": 0
+        },
+        {
+            "name": "Nicholas",
+            "hand": [
+                "2d",
+                "Jc"
+            ],
+            "moneyAvailableAmount": 2414,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
+            "dealer": false,
+            "smallBlind": false,
+            "bigBlind": true,
+            "hasFolded": false,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
+            "allIn": false,
+            "showCardsMe": false,
+            "showCardsIfPeek": false,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                0
+            ],
+            "failedPeekAttemptsCurrentGame": 0
+        },
+        {
+            "name": "John",
+            "hand": [
+                "2d",
+                "Jc"
+            ],
+            "moneyAvailableAmount": 2414,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
+            "dealer": false,
+            "smallBlind": false,
+            "bigBlind": true,
+            "hasFolded": false,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
+            "allIn": false,
+            "showCardsMe": false,
+            "showCardsIfPeek": false,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                0
+            ],
+            "failedPeekAttemptsCurrentGame": 0
+        },
+        {
+            "name": "James",
+            "hand": [
+                "2d",
+                "Jc"
+            ],
+            "moneyAvailableAmount": 2414,
+            "relativeCardScore": 0,
+            "verboseScore": "Pair",
+            "dealer": false,
+            "smallBlind": false,
+            "bigBlind": true,
+            "hasFolded": false,
+            "lastBetAmount": 90,
+            "totalBetAmountCurrentRound": 0,
+            "totalMoneyBetAmount": 90,
+            "allIn": false,
+            "showCardsMe": false,
+            "showCardsIfPeek": false,
+            "triedPeekCurrentPlayer": false,
+            "showCardsToPlayerNumbers": [
+                0
+            ],
+            "failedPeekAttemptsCurrentGame": 0
+        }
+    ],
+    "winningReason": "Pair",
+    "potMoneyAmount": 360,
+    "winningMoneyAmounts": [
+        90,
+        90,
+        90,
+        90
+    ]
 }

@@ -96,6 +96,7 @@ canvas {
 }
 
 #content {
+    overflow-y: scroll;
     box-sizing: border-box;
     padding: 5%;
     display: block;
@@ -111,12 +112,14 @@ canvas {
 }
 
 #content img {
-    width: 40%;
+    width: 50%;
     float: left;
 }
 
 #content p {
+    padding-right: 51;
     margin-top: 5%;
+    text-align: left;
     position: relative;
     display: block;
     float: left;

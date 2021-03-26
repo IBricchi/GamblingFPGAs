@@ -196,9 +196,9 @@ function drawMoneyBar(winners, pots, pot, x, y) {
     noStroke();
     for (let i = 0; i < winners.length; i++) {
         fill(ds.playerc[winners[i].order]);
-        rect(avaiabley, 0, ds.winnerbw, ds.winnerbh * pots[i] / pot);
+        rect(0, avaiabley, ds.winnerbw, ds.winnerbh * pots[i] / pot);
         out.push(avaiabley + ds.winnerbh * pots[i] / pot / 2);
-        avaiabley += pots[i];
+        avaiabley += ds.winnerbh * pots[i] / pot;
     }
 
     pop();
@@ -306,6 +306,8 @@ function drawPlayerCard(game, player, x, y, turn) {
 
 function updateLeaglMoves(game, moves) {
     if (game.availableMovesLength != moves.length) {
+        document.querySelector("#sbb")
+            .innerHTML = "Small Blind Bet: £" + game.sbb;
         let ml = document.querySelector("#avaiableMovesList");
         ml.innerHTML = "";
         moves.forEach(move => {

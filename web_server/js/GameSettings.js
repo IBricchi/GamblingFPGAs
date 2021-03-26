@@ -112,8 +112,7 @@ class GameSettings {
         this.me = {};
         this.players = [];
         this.leaglMoves = data.availableNextMoves;
-
-        updateLeaglMoves(this, data.availableNextMoves);
+        this.sbb = data.smallBlindValue;
 
         for (let i = 0; i < data.players.length; i++) {
             let player = data.players[i];
@@ -125,6 +124,12 @@ class GameSettings {
             this.players.push(player);
         }
         this.currentRound = data.currentRound;
+
+        if (this.currentPlayer == this.me.order)
+            updateLeaglMoves(this, data.availableNextMoves);
+        else
+            updateLeaglMoves(this, ["peek"]);
+
     }
 
     updateShowdown() {
