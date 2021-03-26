@@ -122,15 +122,16 @@ func (h *HttpServer) handlePokerGetGameOpenStatus() http.HandlerFunc {
 // Status of poker game in active phase.
 func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 	type gameActiveInfo struct {
-		Active             bool           `json:"active"`
-		HasEnded           bool           `json:"hasEnded"`
-		CommunityCards     []poker.Card   `json:"communityCards"`
-		Players            []maskedPlayer `json:"players"`
-		PlayerAmount       int            `json:"playerAmount"`
-		CurrentRound       int            `json:"currentRound"`
-		CurrentPlayer      int            `json:"currentPlayer"`
-		SmallBlindValue    int            `json:"smallBlindValue"`
-		AvailableNextMoves []string       `json:"availableNextMoves"`
+		Active               bool           `json:"active"`
+		HasEnded             bool           `json:"hasEnded"`
+		CommunityCards       []poker.Card   `json:"communityCards"`
+		Players              []maskedPlayer `json:"players"`
+		PlayerAmount         int            `json:"playerAmount"`
+		CurrentRound         int            `json:"currentRound"`
+		CurrentPlayer        int            `json:"currentPlayer"`
+		SmallBlindValue      int            `json:"smallBlindValue"`
+		AvailableNextMoves   []string       `json:"availableNextMoves"`
+		MinimumNextBetAmount int            `json:"minimumNextBetAmount"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -151,15 +152,16 @@ func (h *HttpServer) handlePokerGetGameActiveStatus() http.HandlerFunc {
 		}
 
 		gameActiveInfo := gameActiveInfo{
-			Active:             pokerGame.active,
-			HasEnded:           pokerGame.hasEnded,
-			CommunityCards:     pokerGame.getCommunityCardsCurrentRound(),
-			Players:            player.computeMaskedPlayers(pokerGame.players),
-			PlayerAmount:       len(pokerGame.players),
-			CurrentRound:       pokerGame.currentRound,
-			CurrentPlayer:      pokerGame.currentPlayer,
-			SmallBlindValue:    pokerGame.smallBlindAmount,
-			AvailableNextMoves: getAvailableNextMoves(),
+			Active:               pokerGame.active,
+			HasEnded:             pokerGame.hasEnded,
+			CommunityCards:       pokerGame.getCommunityCardsCurrentRound(),
+			Players:              player.computeMaskedPlayers(pokerGame.players),
+			PlayerAmount:         len(pokerGame.players),
+			CurrentRound:         pokerGame.currentRound,
+			CurrentPlayer:        pokerGame.currentPlayer,
+			SmallBlindValue:      pokerGame.smallBlindAmount,
+			AvailableNextMoves:   getAvailableNextMoves(),
+			MinimumNextBetAmount: pokerGame.players[pokerGame.currentPlayer].getMinimumBetAmount(),
 		}
 
 		if err := json.NewEncoder(w).Encode(gameActiveInfo); err != nil {
