@@ -204,6 +204,8 @@ Please see [here](https://github.com/IBricchi/GamblingFPGAs/blob/master/server/p
   http://player1:player1@localhost:3000/poker/fpgaData
 ```
 
+## Poker - Testing
+
 ### Random game flow testing
 
 Open `test/simulate_random_poker_game.sh` to adjust the game variables at the top.
