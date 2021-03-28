@@ -306,6 +306,8 @@ function drawPlayerCard(game, player, x, y, turn) {
 
 function updateLeaglMoves(game, moves) {
     if (game.availableMovesLength != moves.length) {
+        document.querySelector("#mnb")
+            .innerHTML = "Minimum Bet Ammount: £" + game.mnb
         document.querySelector("#sbb")
             .innerHTML = "Small Blind Bet: £" + game.sbb;
         let ml = document.querySelector("#avaiableMovesList");
