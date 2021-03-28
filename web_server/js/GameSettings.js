@@ -113,6 +113,7 @@ class GameSettings {
         this.players = [];
         this.leaglMoves = data.availableNextMoves;
         this.sbb = data.smallBlindValue;
+        this.mnb = data.minimumNextBetAmount;
 
         for (let i = 0; i < data.players.length; i++) {
             let player = data.players[i];
