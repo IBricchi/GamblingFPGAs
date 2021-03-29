@@ -7,3 +7,5 @@
 !DE10_LITE_SDRAM_Nios_Test.sdc
 !DE10_LITE_SDRAM_Nios_Test.v
 !DE10_LITE_SDRAM_Nios_Test_assignment_defaults.qdf
+!*.tcl
+!verilog
