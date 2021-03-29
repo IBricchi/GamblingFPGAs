@@ -94,14 +94,6 @@
          type = "int";
       }
    }
-   element hexToSeg_0
-   {
-      datum _sortIndex
-      {
-         value = "24";
-         type = "int";
-      }
-   }
    element hex_0
    {
       datum _sortIndex
@@ -705,9 +697,6 @@
  <module name="fir5_1" kind="fir5" version="1.0" enabled="1">
   <parameter name="LATENCY" value="0" />
  </module>
- <module name="hexToSeg_0" kind="hexToSeg" version="1.0" enabled="1">
-  <parameter name="LATENCY" value="0" />
- </module>
  <module name="hex_0" kind="altera_avalon_pio" version="20.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -856,7 +845,7 @@
   <parameter name="cpuArchRev" value="1" />
   <parameter name="cpuID" value="0" />
   <parameter name="cpuReset" value="false" />
-  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="tilt3_0" baseAddress="1" addressSpan="1" clockCycleType="VARIABLE" /><slave name="bet1_0" baseAddress="0" addressSpan="1" clockCycleType="VARIABLE" /><slave name="tilt4_0" baseAddress="3" addressSpan="1" clockCycleType="VARIABLE" /><slave name="fir5_0" baseAddress="2" addressSpan="1" clockCycleType="VARIABLE" /><slave name="fir5_1" baseAddress="4" addressSpan="1" clockCycleType="VARIABLE" /><slave name="hextoseg_0" baseAddress="5" addressSpan="1" clockCycleType="VARIABLE" /></info>]]></parameter>
+  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="tilt3_0" baseAddress="1" addressSpan="1" clockCycleType="VARIABLE" /><slave name="bet1_0" baseAddress="0" addressSpan="1" clockCycleType="VARIABLE" /><slave name="tilt4_0" baseAddress="3" addressSpan="1" clockCycleType="VARIABLE" /><slave name="fir5_0" baseAddress="2" addressSpan="1" clockCycleType="VARIABLE" /><slave name="fir5_1" baseAddress="4" addressSpan="1" clockCycleType="VARIABLE" /></info>]]></parameter>
   <parameter name="customInstSlavesSystemInfo_nios_a" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_b" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_c" value="&lt;info/&gt;" />
@@ -1427,15 +1416,6 @@
   <parameter name="CIName" value="fir5_1" />
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="4" />
- </connection>
- <connection
-   kind="nios_custom_instruction"
-   version="20.1"
-   start="nios2_gen2_0.custom_instruction_master"
-   end="hexToSeg_0.nios_custom_instruction_slave">
-  <parameter name="CIName" value="hextoseg_0" />
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="5" />
  </connection>
  <connection
    kind="reset"
