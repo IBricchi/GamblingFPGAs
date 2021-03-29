@@ -13,7 +13,7 @@
 
 // setup timer information
 #define PWM_PERIOD 16
-uint8_t pwm = -1;
+int pwm = -1;
 
 extern FILE* fp;
 
@@ -109,6 +109,10 @@ void sys_timer_isr() {
 						outputData.newBetAmount = 0;
 					}
 				}
+			}
+			// check if too many peak attempts were made
+			if(inputData.failedPeekAttemptsCurrentGame > 5){
+				outputData.showCardsEveryone = 1;
 			}
 		}
 		pwm = 0;
