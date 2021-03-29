@@ -10,6 +10,7 @@
 #include "filter.h"
 #include "digify.h"
 #include "printDec.h"
+#include "system.h"
 
 // setup timer information
 #define PWM_PERIOD 16
@@ -31,10 +32,16 @@ void sys_timer_isr() {
 		data.button_read = IORD_ALTERA_AVALON_PIO_DATA(BUTTON_BASE);
 
 		//Filtering x-axis values
+			//Hardware
+		int x = ALT_CI_FIR5_0(data.acc_x_read, 0);
+			//Software
 		filt(filterData.xbuffer, data.acc_x_read, &filterData.xfiltered, 24);
-		//Filtering x-axis values
+		//Filtering y-axis values
+			//Hardware
+		int y = ALT_CI_FIR5_1(data.acc_y_read,0);
+			//Software
 		filt(filterData.ybuffer, data.acc_y_read, &filterData.yfiltered, 24);
-		//Filtering x-axis values
+		//Filtering z-axis values
 		filt(filterData.zbuffer, data.acc_z_read, &filterData.zfiltered, 24);
 
 		//-----------------------------------------------//
@@ -45,7 +52,7 @@ void sys_timer_isr() {
 		// LSB is show cards me		          //
 		// MSB is show cards all 			  //
 
-		int peek = ALT_CI_TILT_0((((int)filterData.yfiltered)+30), inputData.relativeCardScore);
+		int peek = ALT_CI_TILT4_0((((int)filterData.yfiltered)+30), inputData.relativeCardScore);
 		outputData.showCardsMe = (peek & 0b01);
 		outputData.showCardsEveryone = (peek & 0b10);    // If peek attempt calculations going on in hardware, need extra input from server
 
