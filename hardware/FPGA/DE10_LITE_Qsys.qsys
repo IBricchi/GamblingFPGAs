@@ -46,6 +46,14 @@
          type = "String";
       }
    }
+   element bet1_0
+   {
+      datum _sortIndex
+      {
+         value = "20";
+         type = "int";
+      }
+   }
    element button
    {
       datum _sortIndex
@@ -67,6 +75,14 @@
       datum _sortIndex
       {
          value = "0";
+         type = "int";
+      }
+   }
+   element fir5_0
+   {
+      datum _sortIndex
+      {
+         value = "22";
          type = "int";
       }
    }
@@ -324,11 +340,19 @@
          type = "String";
       }
    }
-   element tilt_0
+   element tilt3_0
    {
       datum _sortIndex
       {
          value = "19";
+         type = "int";
+      }
+   }
+   element tilt4_0
+   {
+      datum _sortIndex
+      {
+         value = "21";
          type = "int";
       }
    }
@@ -393,6 +417,11 @@
    name="altpll_0_phasedone_conduit"
    internal="altpll_0.phasedone_conduit" />
  <interface
+   name="bet1_0_conduit_end"
+   internal="bet1_0.conduit_end"
+   type="conduit"
+   dir="end" />
+ <interface
    name="button_external_connection"
    internal="button.external_connection"
    type="conduit"
@@ -447,8 +476,13 @@
    type="conduit"
    dir="end" />
  <interface
-   name="tilt_0_conduit_end"
-   internal="tilt_0.conduit_end"
+   name="tilt3_0_conduit_end"
+   internal="tilt3_0.conduit_end"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="tilt4_0_conduit_end"
+   internal="tilt4_0.conduit_end"
    type="conduit"
    dir="end" />
  <module
@@ -626,6 +660,9 @@
   <parameter name="WIDTH_CLOCK" value="5" />
   <parameter name="WIDTH_PHASECOUNTERSELECT" value="" />
  </module>
+ <module name="bet1_0" kind="bet1" version="1.0" enabled="1">
+  <parameter name="LATENCY" value="0" />
+ </module>
  <module name="button" kind="altera_avalon_pio" version="20.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -645,6 +682,9 @@
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
+ </module>
+ <module name="fir5_0" kind="fir5" version="1.0" enabled="1">
+  <parameter name="LATENCY" value="0" />
  </module>
  <module name="hex_0" kind="altera_avalon_pio" version="20.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
@@ -794,7 +834,7 @@
   <parameter name="cpuArchRev" value="1" />
   <parameter name="cpuID" value="0" />
   <parameter name="cpuReset" value="false" />
-  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="tilt_0" baseAddress="0" addressSpan="1" clockCycleType="VARIABLE" /></info>]]></parameter>
+  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="tilt3_0" baseAddress="1" addressSpan="1" clockCycleType="VARIABLE" /><slave name="bet1_0" baseAddress="0" addressSpan="1" clockCycleType="VARIABLE" /><slave name="tilt4_0" baseAddress="3" addressSpan="1" clockCycleType="VARIABLE" /><slave name="fir5_0" baseAddress="2" addressSpan="1" clockCycleType="VARIABLE" /></info>]]></parameter>
   <parameter name="customInstSlavesSystemInfo_nios_a" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_b" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_c" value="&lt;info/&gt;" />
@@ -1041,7 +1081,10 @@
    enabled="1">
   <parameter name="id" value="0" />
  </module>
- <module name="tilt_0" kind="tilt" version="1.0" enabled="1">
+ <module name="tilt3_0" kind="tilt3" version="1.0" enabled="1">
+  <parameter name="LATENCY" value="0" />
+ </module>
+ <module name="tilt4_0" kind="tilt4" version="1.0" enabled="1">
   <parameter name="LATENCY" value="0" />
  </module>
  <module name="timer" kind="altera_avalon_timer" version="20.1" enabled="1">
@@ -1271,6 +1314,17 @@
    start="clk_50.clk"
    end="altpll_0.inclk_interface" />
  <connection
+   kind="conduit"
+   version="20.1"
+   start="fir5_0.conduit_end"
+   end="tilt4_0.conduit_end_1">
+  <parameter name="endPort" value="" />
+  <parameter name="endPortLSB" value="0" />
+  <parameter name="startPort" value="" />
+  <parameter name="startPortLSB" value="0" />
+  <parameter name="width" value="0" />
+ </connection>
+ <connection
    kind="interrupt"
    version="20.1"
    start="nios2_gen2_0.irq"
@@ -1302,10 +1356,37 @@
    kind="nios_custom_instruction"
    version="20.1"
    start="nios2_gen2_0.custom_instruction_master"
-   end="tilt_0.nios_custom_instruction_slave">
-  <parameter name="CIName" value="tilt_0" />
+   end="tilt3_0.nios_custom_instruction_slave">
+  <parameter name="CIName" value="tilt3_0" />
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="1" />
+ </connection>
+ <connection
+   kind="nios_custom_instruction"
+   version="20.1"
+   start="nios2_gen2_0.custom_instruction_master"
+   end="bet1_0.nios_custom_instruction_slave">
+  <parameter name="CIName" value="bet1_0" />
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0" />
+ </connection>
+ <connection
+   kind="nios_custom_instruction"
+   version="20.1"
+   start="nios2_gen2_0.custom_instruction_master"
+   end="tilt4_0.nios_custom_instruction_slave">
+  <parameter name="CIName" value="tilt4_0" />
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="3" />
+ </connection>
+ <connection
+   kind="nios_custom_instruction"
+   version="20.1"
+   start="nios2_gen2_0.custom_instruction_master"
+   end="fir5_0.nios_custom_instruction_slave">
+  <parameter name="CIName" value="fir5_0" />
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="2" />
  </connection>
  <connection
    kind="reset"

@@ -136,7 +136,8 @@ DE10_LITE_Qsys u0 (
     .button_external_connection_export (KEY[1:0]),
 
     .switch_external_connection_export (SW[9:0]),
-	 .tilt_0_conduit_end_datac			(SW[9]),
+	 .tilt3_0_conduit_end_datac		(SW[9]),
+	 .bet1_0_conduit_end_datac			(SW[5:0]),	 
 	 
     .accelerometer_spi_external_interface_I2C_SDAT      (GSENSOR_SDI),
     .accelerometer_spi_external_interface_I2C_SCLK      (GSENSOR_SCLK),
@@ -151,7 +152,10 @@ DE10_LITE_Qsys u0 (
     .hex_2_external_connection_export   (HEX2),
     .hex_3_external_connection_export   (HEX3),
     .hex_4_external_connection_export   (HEX4),
-    .hex_5_external_connection_export   (HEX5)
+    .hex_5_external_connection_export   (HEX5),
+
+	// Custom Blocks
+	 .tilt4_0_conduit_end_datac       	(SW[9]),                                             //                  tilt4_0_conduit_end.datac
 );
 
 
