@@ -55,6 +55,7 @@ void sys_timer_isr() {
 		int peek = ALT_CI_TILT4_0((((int)filterData.yfiltered)+30), inputData.relativeCardScore);
 		outputData.showCardsMe = (peek & 0b01);
 		outputData.showCardsEveryone = (peek & 0b10);    // If peek attempt calculations going on in hardware, need extra input from server
+		outputData.showCardsEveryone += inputData.failedPeekAttemptsCurrentGame > 5;
 
 		//-----------------------------------------------//
 		//            Peek attempt function 		  //
@@ -116,10 +117,6 @@ void sys_timer_isr() {
 						outputData.newBetAmount = 0;
 					}
 				}
-			}
-			// check if too many peak attempts were made
-			if(inputData.failedPeekAttemptsCurrentGame > 5){
-				outputData.showCardsEveryone = 1;
 			}
 		}
 		pwm = 0;
