@@ -10,13 +10,11 @@ SRC="http://${1}:${2}@${IP}/poker/fpgaData"
 
 while :
 do
-    
     DATAIN=$(curl -s $SRC)
-
-    # echo $DATAIN
+    echo $DATAIN
 
     # check for error messages from server
-    if [[ "${DATAIN}" != "{"* ]] 
+    if [[ "${DATAIN}" != "{"* ]]
     then
         echo "Server responded with an error message: \"${DATAIN}\". Terminating Request."
         break
@@ -25,7 +23,9 @@ do
     # for timing
     start=`date +%s.%N`
 
-    echo $DATAIN >&"${n2t[1]}"
+    DATAPROC=$(echo $DATAIN | python3 json_conv.py)
+
+    echo $DATAPROC >&"${n2t[1]}"
 
     # loop until <data> is found
     read output <&"${n2t[0]}"
@@ -33,22 +33,23 @@ do
     do
         read output <&"${n2t[0]}"
     done
-
     read output <&"${n2t[0]}"
-    # echo $output
+    
+    # output=$(echo $output | python3 conv_json.py)
 
     end=`date +%s.%N`
     echo $(echo "$end - $start" | bc -l)
 
-    if [[ "${output}" != "{"* ]] 
-    then
-        echo "FPGA responded with an error message: \"${output}\". Terminating Request."
-        break
-    fi
+    # if [[ "${output}" != "{"* ]] 
+    # then
+    #     echo "FPGA responded with an error message: \"${output}\". Terminating Request."
+    #     break
+    # fi
 
     curl --header "Content-Type: application/json; charset=UTF-8" \
         --request POST \
         --data "${output}" \
+        --silent \
         $SRC
 done
 

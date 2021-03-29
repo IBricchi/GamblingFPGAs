@@ -39,5 +39,5 @@ int writeOutput(FILE* out, OutputData* in){
 	writeString(out,"newMoveType",outputData.newMoveType);
 	fprintf(out,",");
 	writeInt(out,"newBetAmount",outputData.newBetAmount);
-	fprintf(out,"}");
+	fprintf(out,"}\n");
 }

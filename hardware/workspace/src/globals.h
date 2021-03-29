@@ -36,8 +36,6 @@ extern Data data;
 typedef struct{
 	int isTurn;
 	int currentPlayerNumber;
-	char **availableNextMoves;
-	int aviablableNextMovesCount;
 	int moneyAvailableAmount;
 	int minimumNextBetAmount;
 	int relativeCardScore;

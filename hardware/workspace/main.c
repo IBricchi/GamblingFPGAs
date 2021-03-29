@@ -9,13 +9,6 @@
 #include "src/setup.h"
 #include "src/request.h"
 #include "src/timerLoop.h"
-#include "src/jsonDecode.h"
-#include "src/bet.h"
-#include "src/shake.h"
-#include "src/filter.h"
-#include "src/bitify.h"
-#include "src/digify.h"
-#include "src/printDec.h"
 
 Data data;
 InputData inputData;
@@ -27,9 +20,6 @@ DataSrc dataSrc;
 int main(){
 	// clearing segments
 	clear_dec();
-
-	// setup inputData
-	setupInputData();
 
 	// setup peripherals
 	if (setupPeripherals()) {

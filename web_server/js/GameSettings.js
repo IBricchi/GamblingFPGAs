@@ -1,6 +1,6 @@
 // let q;
 class GameSettings {
-    refreshRate = 1000;
+    refreshRate = 100;
 
     state;
 

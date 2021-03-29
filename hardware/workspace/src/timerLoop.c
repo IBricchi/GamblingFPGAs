@@ -8,6 +8,7 @@
 #include "timerLoop.h"
 #include "bet.h"
 #include "filter.h"
+#include "digify.h"
 #include "printDec.h"
 
 // setup timer information
@@ -35,9 +36,6 @@ void sys_timer_isr() {
 		filt(filterData.ybuffer, data.acc_y_read, &filterData.yfiltered, 24);
 		//Filtering x-axis values
 		filt(filterData.zbuffer, data.acc_z_read, &filterData.zfiltered, 24);
-//		filterAccelerometer(&filterData);
-
-//		fprintf(fp, "%i, %i, %i\n", filterData.xfiltered, filterData.yfiltered, filterData.zfiltered);
 
 		//-----------------------------------------------//
 		// Peek/tilt function --- values set in hardware //
