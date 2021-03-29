@@ -10,6 +10,11 @@ ADDRESS="localhost:3000"
 # Seed for RANDOM
 RANDOM=$(date +%s)
 
+# Add duplicates to PLAYERS for more peeking
+for (( i=${#PLAYERS[@]}-1; i>=0; i-- )); do
+    PLAYERS+=(${PLAYERS[i]})
+done
+
 # Play
 GAME_NUMBER=0
 while true; do
